@@ -70,6 +70,26 @@ export default async function handler(req, res) {
 async function handleJsonRpcRequest(req, res, body, baseUrl) {
   const { method, params, id } = body;
 
+  // Método initialize - requerido por Agent Builder
+  if (method === 'initialize') {
+    return res.status(200).json({
+      jsonrpc: '2.0',
+      id: id,
+      result: {
+        protocolVersion: '2024-11-05',
+        serverInfo: {
+          name: 'job-search-mcp',
+          version: '1.0.0'
+        },
+        capabilities: {
+          tools: {
+            listChanged: false
+          }
+        }
+      }
+    });
+  }
+
   if (method === 'tools/list') {
     return res.status(200).json({
       jsonrpc: '2.0',

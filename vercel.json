@@ -1,0 +1,14 @@
+{
+  "functions": {
+    "api/**/*.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/jobs/refresh",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}

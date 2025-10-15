@@ -1,201 +1,268 @@
 // api/mcp/index.js
-// Endpoint MCP compatible con Agent Builder
+// MCP Server compatible con Agent Builder - Versión corregida
 
 export default async function handler(req, res) {
-  // La URL base se obtiene automáticamente de Vercel
   const baseUrl = `https://${req.headers.host}`;
 
-  // Configurar CORS
+  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Content-Type', 'application/json');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // GET - Información del servidor MCP
-  if (req.method === 'GET') {
+  // Log para debug
+  console.log('MCP Request:', {
+    method: req.method,
+    path: req.url,
+    body: req.body
+  });
+
+  try {
+    // Manejo de diferentes tipos de requests MCP
+    if (req.method === 'POST') {
+      const body = req.body || {};
+
+      // Protocolo MCP standard
+      if (body.jsonrpc === '2.0') {
+        return handleJsonRpcRequest(req, res, body, baseUrl);
+      }
+
+      // Fallback para otros formatos
+      if (body.method) {
+        return handleMethodRequest(req, res, body, baseUrl);
+      }
+    }
+
+    // GET request - devolver capabilities
+    if (req.method === 'GET') {
+      return res.status(200).json({
+        protocolVersion: '2024-11-05',
+        serverInfo: {
+          name: 'job-search-mcp',
+          version: '1.0.0'
+        },
+        capabilities: {
+          tools: {
+            listChanged: false
+          }
+        }
+      });
+    }
+
+    return res.status(400).json({
+      error: 'Invalid request format'
+    });
+
+  } catch (error) {
+    console.error('MCP Error:', error);
+    return res.status(500).json({
+      error: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+}
+
+// Handler para JSON-RPC 2.0
+async function handleJsonRpcRequest(req, res, body, baseUrl) {
+  const { method, params, id } = body;
+
+  if (method === 'tools/list') {
     return res.status(200).json({
-      name: 'job-search-mcp',
-      version: '1.0.0',
-      description: 'MCP Server para búsqueda de empleos',
-      protocol_version: '2024-11-05',
-      capabilities: {
-        tools: {}
-      },
-      tools: [
-        {
-          name: 'check_cache_status',
-          description: 'Verifica el estado del caché de ofertas: última actualización, cantidad de ofertas y si necesita actualizarse.',
-          inputSchema: {
-            type: 'object',
-            properties: {},
-            required: []
+      jsonrpc: '2.0',
+      id: id,
+      result: {
+        tools: getToolsList()
+      }
+    });
+  }
+
+  if (method === 'tools/call') {
+    const toolName = params.name;
+    const args = params.arguments || {};
+
+    const result = await executeToolCall(toolName, args, baseUrl);
+
+    return res.status(200).json({
+      jsonrpc: '2.0',
+      id: id,
+      result: {
+        content: [
+          {
+            type: 'text',
+            text: result
           }
-        },
+        ]
+      }
+    });
+  }
+
+  return res.status(400).json({
+    jsonrpc: '2.0',
+    id: id,
+    error: {
+      code: -32601,
+      message: `Method not found: ${method}`
+    }
+  });
+}
+
+// Handler para requests sin JSON-RPC
+async function handleMethodRequest(req, res, body, baseUrl) {
+  const { method, params } = body;
+
+  if (method === 'tools/list') {
+    return res.status(200).json({
+      tools: getToolsList()
+    });
+  }
+
+  if (method === 'tools/call') {
+    const toolName = params.name;
+    const args = params.arguments || {};
+
+    const result = await executeToolCall(toolName, args, baseUrl);
+
+    return res.status(200).json({
+      content: [
         {
-          name: 'refresh_jobs',
-          description: 'Actualiza el caché descargando nuevas ofertas del feed XML.',
-          inputSchema: {
-            type: 'object',
-            properties: {},
-            required: []
-          }
-        },
-        {
-          name: 'search_jobs',
-          description: 'Busca ofertas de empleo con filtros opcionales.',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              query: {
-                type: 'string',
-                description: 'Término de búsqueda: puesto, empresa o palabra clave'
-              },
-              location: {
-                type: 'string',
-                description: 'Ciudad o región'
-              },
-              category: {
-                type: 'string',
-                description: 'Categoría del puesto'
-              },
-              limit: {
-                type: 'string',
-                description: 'Número máximo de resultados'
-              }
-            },
-            required: ['query']
-          }
+          type: 'text',
+          text: result
         }
       ]
     });
   }
 
-  // POST - Ejecutar herramientas
-  if (req.method === 'POST') {
-    try {
-      const { method, params } = req.body;
+  return res.status(400).json({
+    error: `Unknown method: ${method}`
+  });
+}
 
-      // Listar herramientas disponibles
-      if (method === 'tools/list') {
-        return res.status(200).json({
-          tools: [
-            {
-              name: 'check_cache_status',
-              description: 'Verifica el estado del caché de ofertas',
-              inputSchema: { type: 'object', properties: {}, required: [] }
-            },
-            {
-              name: 'refresh_jobs',
-              description: 'Actualiza el caché',
-              inputSchema: { type: 'object', properties: {}, required: [] }
-            },
-            {
-              name: 'search_jobs',
-              description: 'Busca ofertas',
-              inputSchema: {
-                type: 'object',
-                properties: {
-                  query: { type: 'string' },
-                  location: { type: 'string' },
-                  category: { type: 'string' },
-                  limit: { type: 'string' }
-                },
-                required: ['query']
-              }
-            }
-          ]
-        });
+// Lista de herramientas disponibles
+function getToolsList() {
+  return [
+    {
+      name: 'check_cache_status',
+      description: 'Verifica el estado del caché de ofertas: última actualización, cantidad de ofertas y si necesita actualizarse. Llama SIEMPRE a esta función al iniciar una búsqueda.',
+      inputSchema: {
+        type: 'object',
+        properties: {},
+        required: []
       }
-
-      // Ejecutar herramienta
-      if (method === 'tools/call') {
-        const toolName = params.name;
-        const args = params.arguments || {};
-        let result;
-
-        if (toolName === 'check_cache_status') {
-          const response = await fetch(`${baseUrl}/api/jobs/status`);
-          const data = await response.json();
-
-          if (!data.cached) {
-            result = '❌ **Caché vacío**\n\nNo hay datos. Ejecuta refresh_jobs primero.';
-          } else {
-            const cacheAge = data.cache_age || {};
-            const metadata = data.metadata || {};
-
-            if (cacheAge.is_expired) {
-              result = `⚠️ **Caché desactualizado**\n\nÚltima actualización: hace ${cacheAge.hours} horas\nTotal: ${metadata.total_jobs} ofertas\n\nRecomendación: Ejecuta refresh_jobs.`;
-            } else {
-              result = `✅ **Caché actualizado**\n\nÚltima actualización: hace ${cacheAge.hours} horas\nTotal: ${metadata.total_jobs} ofertas\n\nListo para búsqueda.`;
-            }
-          }
-        }
-        else if (toolName === 'refresh_jobs') {
-          const response = await fetch(`${baseUrl}/api/jobs/refresh`);
-          const data = await response.json();
-
-          if (data.success) {
-            result = `✅ **Caché actualizado**\n\nOfertas descargadas: ${data.total_jobs}\nTimestamp: ${data.timestamp}\n\nYa puedes buscar ofertas.`;
-          } else {
-            result = `❌ Error al actualizar: ${data.error}`;
-          }
-        }
-        else if (toolName === 'search_jobs') {
-          const params = new URLSearchParams();
-          if (args.query) params.append('query', args.query);
-          if (args.location) params.append('location', args.location);
-          if (args.category) params.append('category', args.category);
-          if (args.limit) params.append('limit', args.limit);
-
-          const response = await fetch(`${baseUrl}/api/jobs/search?${params}`);
-          const data = await response.json();
-
-          if (!data.success) {
-            result = `❌ Error: ${data.message || 'Error en búsqueda'}`;
-          } else {
-            const results = data.results || [];
-            const totalMatches = data.total_matches || 0;
-
-            if (results.length === 0) {
-              result = `🔍 No se encontraron ofertas\n\nBúsqueda: ${args.query}\n${args.location ? `Ubicación: ${args.location}\n` : ''}\nIntenta términos más generales.`;
-            } else {
-              result = `✅ Encontré **${totalMatches}** ofertas\n\n`;
-
-              results.slice(0, 5).forEach((job, i) => {
-                result += `**${i + 1}. ${job.titulo}**\n`;
-                result += `🏛️ ${job.empresa}\n`;
-                result += `📍 ${job.ciudad}, ${job.region}\n`;
-                result += `💼 ${job.categoria}\n`;
-                result += `💰 ${job.salario}\n\n`;
-                result += `🔗 ${job.url}\n`;
-                result += `✅ Aplicar: ${job.url_aplicar}\n\n`;
-                result += `---\n\n`;
-              });
-            }
-          }
-        }
-        else {
-          return res.status(400).json({ error: `Herramienta desconocida: ${toolName}` });
-        }
-
-        return res.status(200).json({
-          content: [{ type: 'text', text: result }]
-        });
+    },
+    {
+      name: 'refresh_jobs',
+      description: 'Fuerza la actualización del caché descargando nuevas ofertas del feed XML. Úsalo cuando el caché esté desactualizado (más de 24 horas) o vacío.',
+      inputSchema: {
+        type: 'object',
+        properties: {},
+        required: []
       }
-
-      return res.status(400).json({ error: 'Método desconocido' });
-
-    } catch (error) {
-      console.error('Error en MCP:', error);
-      return res.status(500).json({
-        error: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-      });
+    },
+    {
+      name: 'search_jobs',
+      description: 'Busca ofertas de empleo en el caché con filtros opcionales. Siempre verifica primero que el caché esté actualizado con check_cache_status.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          query: {
+            type: 'string',
+            description: 'Término de búsqueda: puesto de trabajo, empresa o palabra clave (ej: chef, camarero, Meliá)'
+          },
+          location: {
+            type: 'string',
+            description: 'Ciudad o región donde buscar (ej: Madrid, Barcelona, Valencia)'
+          },
+          category: {
+            type: 'string',
+            description: 'Categoría del puesto (ej: Cocina, Sala, Recepción, RRHH)'
+          },
+          limit: {
+            type: 'string',
+            description: 'Número máximo de resultados a devolver (default: 10)'
+          }
+        },
+        required: ['query']
+      }
     }
+  ];
+}
+
+// Ejecutar llamada a herramienta
+async function executeToolCall(toolName, args, baseUrl) {
+  if (toolName === 'check_cache_status') {
+    const response = await fetch(`${baseUrl}/api/jobs/status`);
+    const data = await response.json();
+
+    if (!data.cached) {
+      return '❌ **Caché vacío**\n\nNo hay datos disponibles. Es necesario ejecutar refresh_jobs para inicializar.';
+    }
+
+    const cacheAge = data.cache_age || {};
+    const metadata = data.metadata || {};
+
+    if (cacheAge.is_expired) {
+      return `⚠️ **Caché desactualizado**\n\nÚltima actualización: hace ${cacheAge.hours} horas\nTotal de ofertas: ${metadata.total_jobs}\n\n💡 Recomendación: Ejecuta refresh_jobs para obtener ofertas actualizadas.`;
+    }
+
+    return `✅ **Caché actualizado**\n\nÚltima actualización: hace ${cacheAge.hours} horas\nTotal de ofertas: ${metadata.total_jobs}\n\nLas ofertas están listas para búsqueda.`;
   }
 
-  return res.status(405).json({ error: 'Método no permitido' });
+  if (toolName === 'refresh_jobs') {
+    const response = await fetch(`${baseUrl}/api/jobs/refresh`);
+    const data = await response.json();
+
+    if (data.success) {
+      return `✅ **Caché actualizado exitosamente**\n\nOfertas descargadas: ${data.total_jobs}\nTimestamp: ${data.timestamp}\n\nYa puedes usar search_jobs para buscar ofertas actualizadas.`;
+    }
+
+    return `❌ **Error al actualizar caché**\n\nError: ${data.error}\n\nIntenta de nuevo en unos minutos.`;
+  }
+
+  if (toolName === 'search_jobs') {
+    const params = new URLSearchParams();
+    if (args.query) params.append('query', args.query);
+    if (args.location) params.append('location', args.location);
+    if (args.category) params.append('category', args.category);
+    if (args.limit) params.append('limit', args.limit);
+
+    const response = await fetch(`${baseUrl}/api/jobs/search?${params}`);
+    const data = await response.json();
+
+    if (!data.success) {
+      return `❌ **Error en búsqueda**\n\n${data.message}\n\n${data.metadata?.error_message || ''}`;
+    }
+
+    const results = data.results || [];
+    const totalMatches = data.total_matches || 0;
+
+    if (!results.length) {
+      return `🔍 No se encontraron ofertas\n\nBúsqueda: ${args.query}\n${args.location ? `Ubicación: ${args.location}\n` : ''}\n💡 Intenta:\n- Usar términos más generales\n- Revisar la ortografía\n- Buscar sin filtros de ubicación`;
+    }
+
+    let text = `✅ Encontré **${totalMatches}** ofertas relevantes\n📊 Mostrando: ${results.length} resultados\n\n`;
+
+    results.slice(0, 5).forEach((job, i) => {
+      text += `**${i + 1}. ${job.titulo}**\n`;
+      text += `🏛️ ${job.empresa}\n`;
+      text += `📍 ${job.ciudad}, ${job.region}\n`;
+      text += `💼 ${job.categoria}\n`;
+      text += `💰 ${job.salario}\n`;
+      text += `⏰ ${job.tipo_jornada}\n\n`;
+      text += `🔗 Ver oferta: ${job.url}\n`;
+      text += `✅ Aplicar: ${job.url_aplicar}\n\n`;
+      text += `---\n\n`;
+    });
+
+    if (totalMatches > results.length) {
+      text += `\n📌 Hay ${totalMatches - results.length} ofertas más. Ajusta los filtros para ver más resultados.`;
+    }
+
+    return text;
+  }
+
+  throw new Error(`Herramienta desconocida: ${toolName}`);
 }

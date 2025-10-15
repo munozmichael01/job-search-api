@@ -222,76 +222,112 @@ function getToolsList() {
 
 // Ejecutar llamada a herramienta
 async function executeToolCall(toolName, args, baseUrl) {
-  if (toolName === 'check_cache_status') {
-    const response = await fetch(`${baseUrl}/api/jobs/status`);
-    const data = await response.json();
+  try {
+    if (toolName === 'check_cache_status') {
+      const response = await fetch(`${baseUrl}/api/jobs/status`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
 
-    if (!data.cached) {
-      return '❌ **Caché vacío**\n\nNo hay datos disponibles. Es necesario ejecutar refresh_jobs para inicializar.';
+      if (!response.ok) {
+        throw new Error(`Status endpoint failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.cached) {
+        return '❌ **Caché vacío**\n\nNo hay datos disponibles. Es necesario ejecutar refresh_jobs para inicializar.';
+      }
+
+      const cacheAge = data.cache_age || {};
+      const metadata = data.metadata || {};
+
+      if (cacheAge.is_expired) {
+        return `⚠️ **Caché desactualizado**\n\nÚltima actualización: hace ${cacheAge.hours} horas\nTotal de ofertas: ${metadata.total_jobs}\n\n💡 Recomendación: Ejecuta refresh_jobs para obtener ofertas actualizadas.`;
+      }
+
+      return `✅ **Caché actualizado**\n\nÚltima actualización: hace ${cacheAge.hours} horas\nTotal de ofertas: ${metadata.total_jobs}\n\nLas ofertas están listas para búsqueda.`;
     }
 
-    const cacheAge = data.cache_age || {};
-    const metadata = data.metadata || {};
+    if (toolName === 'refresh_jobs') {
+      const response = await fetch(`${baseUrl}/api/jobs/refresh`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
 
-    if (cacheAge.is_expired) {
-      return `⚠️ **Caché desactualizado**\n\nÚltima actualización: hace ${cacheAge.hours} horas\nTotal de ofertas: ${metadata.total_jobs}\n\n💡 Recomendación: Ejecuta refresh_jobs para obtener ofertas actualizadas.`;
+      if (!response.ok) {
+        throw new Error(`Refresh endpoint failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        return `✅ **Caché actualizado exitosamente**\n\nOfertas descargadas: ${data.total_jobs}\nTimestamp: ${data.timestamp}\n\nYa puedes usar search_jobs para buscar ofertas actualizadas.`;
+      }
+
+      return `❌ **Error al actualizar caché**\n\nError: ${data.error}\n\nIntenta de nuevo en unos minutos.`;
     }
 
-    return `✅ **Caché actualizado**\n\nÚltima actualización: hace ${cacheAge.hours} horas\nTotal de ofertas: ${metadata.total_jobs}\n\nLas ofertas están listas para búsqueda.`;
+    if (toolName === 'search_jobs') {
+      const params = new URLSearchParams();
+      if (args.query) params.append('query', args.query);
+      if (args.location) params.append('location', args.location);
+      if (args.category) params.append('category', args.category);
+      if (args.limit) params.append('limit', args.limit);
+      else params.append('limit', '50'); // Aumentar a 50 por defecto
+
+      const url = `${baseUrl}/api/jobs/search?${params.toString()}`;
+      console.log('Fetching:', url);
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Search endpoint failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Search results:', { total_matches: data.total_matches, returned: data.returned_results });
+
+      if (!data.success) {
+        return `❌ **Error en búsqueda**\n\n${data.message}\n\n${data.metadata?.error_message || ''}`;
+      }
+
+      const results = data.results || [];
+      const totalMatches = data.total_matches || 0;
+
+      if (!results.length) {
+        return `🔍 No se encontraron ofertas\n\nBúsqueda: ${args.query}\n${args.location ? `Ubicación: ${args.location}\n` : ''}\n💡 Intenta:\n- Usar términos más generales\n- Revisar la ortografía\n- Buscar sin filtros de ubicación`;
+      }
+
+      // Formatear resultados con datos REALES del XML
+      let text = `✅ Encontré **${totalMatches}** ofertas relevantes\n📊 Mostrando: ${results.length} resultados\n\n`;
+
+      results.forEach((job, i) => {
+        text += `**${i + 1}. ${job.titulo}**\n`;
+        text += `🏛️ ${job.empresa}\n`;
+        text += `📍 ${job.ciudad}, ${job.region}\n`;
+        text += `💼 ${job.categoria}\n`;
+        text += `💰 ${job.salario}\n`;
+        text += `⏰ ${job.tipo_jornada}\n\n`;
+        text += `🔗 Ver oferta: ${job.url}\n`;
+        text += `✅ Aplicar: ${job.url_aplicar}\n\n`;
+        text += `---\n\n`;
+      });
+
+      if (totalMatches > results.length) {
+        text += `\n📌 Hay ${totalMatches - results.length} ofertas más que coinciden con tu búsqueda.`;
+      }
+
+      return text;
+    }
+
+    throw new Error(`Herramienta desconocida: ${toolName}`);
+
+  } catch (error) {
+    console.error('Error in executeToolCall:', error);
+    return `❌ Error técnico: ${error.message}`;
   }
-
-  if (toolName === 'refresh_jobs') {
-    const response = await fetch(`${baseUrl}/api/jobs/refresh`);
-    const data = await response.json();
-
-    if (data.success) {
-      return `✅ **Caché actualizado exitosamente**\n\nOfertas descargadas: ${data.total_jobs}\nTimestamp: ${data.timestamp}\n\nYa puedes usar search_jobs para buscar ofertas actualizadas.`;
-    }
-
-    return `❌ **Error al actualizar caché**\n\nError: ${data.error}\n\nIntenta de nuevo en unos minutos.`;
-  }
-
-  if (toolName === 'search_jobs') {
-    const params = new URLSearchParams();
-    if (args.query) params.append('query', args.query);
-    if (args.location) params.append('location', args.location);
-    if (args.category) params.append('category', args.category);
-    if (args.limit) params.append('limit', args.limit);
-
-    const response = await fetch(`${baseUrl}/api/jobs/search?${params}`);
-    const data = await response.json();
-
-    if (!data.success) {
-      return `❌ **Error en búsqueda**\n\n${data.message}\n\n${data.metadata?.error_message || ''}`;
-    }
-
-    const results = data.results || [];
-    const totalMatches = data.total_matches || 0;
-
-    if (!results.length) {
-      return `🔍 No se encontraron ofertas\n\nBúsqueda: ${args.query}\n${args.location ? `Ubicación: ${args.location}\n` : ''}\n💡 Intenta:\n- Usar términos más generales\n- Revisar la ortografía\n- Buscar sin filtros de ubicación`;
-    }
-
-    let text = `✅ Encontré **${totalMatches}** ofertas relevantes\n📊 Mostrando: ${results.length} resultados\n\n`;
-
-    results.slice(0, 5).forEach((job, i) => {
-      text += `**${i + 1}. ${job.titulo}**\n`;
-      text += `🏛️ ${job.empresa}\n`;
-      text += `📍 ${job.ciudad}, ${job.region}\n`;
-      text += `💼 ${job.categoria}\n`;
-      text += `💰 ${job.salario}\n`;
-      text += `⏰ ${job.tipo_jornada}\n\n`;
-      text += `🔗 Ver oferta: ${job.url}\n`;
-      text += `✅ Aplicar: ${job.url_aplicar}\n\n`;
-      text += `---\n\n`;
-    });
-
-    if (totalMatches > results.length) {
-      text += `\n📌 Hay ${totalMatches - results.length} ofertas más. Ajusta los filtros para ver más resultados.`;
-    }
-
-    return text;
-  }
-
-  throw new Error(`Herramienta desconocida: ${toolName}`);
 }

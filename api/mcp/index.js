@@ -90,6 +90,15 @@ async function handleJsonRpcRequest(req, res, body, baseUrl) {
     });
   }
 
+  // Método notifications/initialized - notificación después de initialize
+  if (method === 'notifications/initialized') {
+    // Las notificaciones no requieren respuesta según el protocolo MCP
+    return res.status(200).json({
+      jsonrpc: '2.0',
+      id: id
+    });
+  }
+
   if (method === 'tools/list') {
     return res.status(200).json({
       jsonrpc: '2.0',

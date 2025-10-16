@@ -110,10 +110,17 @@ async function handleJsonRpcRequest(req, res, body, baseUrl) {
   }
 
   if (method === 'tools/call') {
+    console.log('=== TOOLS/CALL ===');
+    console.log('Tool name:', params.name);
+    console.log('Arguments:', JSON.stringify(params.arguments, null, 2));
+
     const toolName = params.name;
     const args = params.arguments || {};
 
     const result = await executeToolCall(toolName, args, baseUrl);
+
+    console.log('Result:', result.substring(0, 200) + '...');
+    console.log('==================');
 
     return res.status(200).json({
       jsonrpc: '2.0',
@@ -179,7 +186,7 @@ function getToolsList() {
       inputSchema: {
         type: 'object',
         properties: {},
-        required: []
+        additionalProperties: false
       }
     },
     {
@@ -188,7 +195,7 @@ function getToolsList() {
       inputSchema: {
         type: 'object',
         properties: {},
-        required: []
+        additionalProperties: false
       }
     },
     {
@@ -211,10 +218,11 @@ function getToolsList() {
           },
           limit: {
             type: 'string',
-            description: 'Número máximo de resultados a devolver (default: 10)'
+            description: 'Número máximo de resultados a devolver (default: 50)'
           }
         },
-        required: ['query']
+        required: ['query'],
+        additionalProperties: false
       }
     }
   ];

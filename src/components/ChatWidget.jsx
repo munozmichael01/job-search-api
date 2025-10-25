@@ -10,18 +10,14 @@ export default function ChatWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const [threadId, setThreadId] = useState(null);
   const messagesEndRef = useRef(null);
-
-  // Scroll al último mensaje
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const lastMessageRef = useRef(null);
 
   useEffect(() => {
-    if (messages.length > 0) {
+    if (messages.length > 0 && lastMessageRef.current) {
       // Scroll al inicio del último mensaje
-      messagesEndRef.current?.scrollIntoView({ 
+      lastMessageRef.current.scrollIntoView({ 
         behavior: 'smooth',
-        block: 'start'  // Scroll al inicio, no al final
+        block: 'start'
       });
     }
   }, [messages]);
@@ -273,10 +269,11 @@ export default function ChatWidget() {
           </div>
 
           {/* Mensajes */}
-          <div className="turijobs-chat-messages" ref={messagesEndRef}>
+          <div className="turijobs-chat-messages">
             {messages.map((msg, index) => (
               <div 
                 key={index}
+                ref={index === messages.length - 1 ? lastMessageRef : null}
                 className={`turijobs-message turijobs-message-${msg.role}`}
               >
                 {msg.role === 'assistant' && (

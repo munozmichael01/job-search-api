@@ -1,0 +1,237 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Turijobs API",
+    "description": "API para buscar ofertas de empleo del sector turístico de Turijobs.com. Descarga, cachea y busca ofertas con filtros avanzados.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://tu-proyecto.vercel.app",
+      "description": "Production Server"
+    }
+  ],
+  "paths": {
+    "/api/jobs/status": {
+      "get": {
+        "operationId": "checkCacheStatus",
+        "summary": "Verificar estado del caché de ofertas",
+        "description": "Verifica si el caché de ofertas está actualizado, cuántas ofertas hay disponibles y cuándo fue la última actualización. SIEMPRE llama a este endpoint primero antes de buscar ofertas.",
+        "responses": {
+          "200": {
+            "description": "Estado del caché",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "cached": {
+                      "type": "boolean",
+                      "description": "Si hay datos en caché"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Estado: success, error, o empty"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "last_update": {
+                          "type": "string",
+                          "description": "Timestamp de última actualización"
+                        },
+                        "total_jobs": {
+                          "type": "integer",
+                          "description": "Total de ofertas disponibles"
+                        }
+                      }
+                    },
+                    "cache_age": {
+                      "type": "object",
+                      "properties": {
+                        "hours": {
+                          "type": "number",
+                          "description": "Edad del caché en horas"
+                        },
+                        "is_expired": {
+                          "type": "boolean",
+                          "description": "Si el caché está desactualizado (más de 24h)"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/refresh": {
+      "get": {
+        "operationId": "refreshJobs",
+        "summary": "Actualizar ofertas de empleo",
+        "description": "Descarga el feed XML de Turijobs, parsea las ofertas y actualiza el caché. Usa esto cuando el caché esté desactualizado (más de 24 horas) o vacío.",
+        "responses": {
+          "200": {
+            "description": "Ofertas actualizadas exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "total_jobs": {
+                      "type": "integer",
+                      "description": "Cantidad de ofertas descargadas"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "description": "Timestamp de la actualización"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/search": {
+      "get": {
+        "operationId": "searchJobs",
+        "summary": "Buscar ofertas de empleo",
+        "description": "Busca ofertas de trabajo en el caché con filtros opcionales. Devuelve información completa: título, empresa, ubicación, salario, tipo de jornada, descripción y enlaces para aplicar. Siempre verifica primero que el caché esté actualizado con checkCacheStatus.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Término de búsqueda: puesto de trabajo, empresa o palabra clave. Busca en título, descripción y nombre de empresa. Ejemplos: 'chef', 'camarero', 'recepcionista', 'Meliá', 'cocinero'",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "description": "Ciudad o región donde buscar. Ejemplos: 'Madrid', 'Barcelona', 'Valencia', 'Málaga', 'Islas Baleares', 'Canarias'",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Categoría del puesto. Ejemplos: 'Cocina', 'Sala', 'Recepción', 'Dirección', 'RRHH', 'Mantenimiento'",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Número máximo de resultados a devolver. Por defecto: 10. Rango: 1-100",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "10"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados de búsqueda",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "total_matches": {
+                      "type": "integer",
+                      "description": "Total de ofertas que coinciden"
+                    },
+                    "returned_results": {
+                      "type": "integer",
+                      "description": "Cantidad de resultados devueltos"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "titulo": {
+                            "type": "string",
+                            "description": "Título del puesto"
+                          },
+                          "empresa": {
+                            "type": "string",
+                            "description": "Nombre de la empresa"
+                          },
+                          "ciudad": {
+                            "type": "string",
+                            "description": "Ciudad"
+                          },
+                          "region": {
+                            "type": "string",
+                            "description": "Región o provincia"
+                          },
+                          "categoria": {
+                            "type": "string",
+                            "description": "Categoría del puesto"
+                          },
+                          "salario": {
+                            "type": "string",
+                            "description": "Rango salarial"
+                          },
+                          "tipo_jornada": {
+                            "type": "string",
+                            "description": "Tipo de jornada laboral"
+                          },
+                          "descripcion": {
+                            "type": "string",
+                            "description": "Descripción completa de la oferta"
+                          },
+                          "url": {
+                            "type": "string",
+                            "description": "URL para ver la oferta completa"
+                          },
+                          "url_aplicar": {
+                            "type": "string",
+                            "description": "URL para aplicar a la oferta"
+                          },
+                          "fecha_publicacion": {
+                            "type": "string",
+                            "description": "Fecha de publicación"
+                          },
+                          "num_vacantes": {
+                            "type": "string",
+                            "description": "Número de vacantes disponibles"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "turijobs": {
+      "command": "node",
+      "args": [
+        "C:\\Dev\\job-search-api\\mcp-server.js"
+      ],
+      "env": {
+        "API_BASE_URL": "https://tu-proyecto.vercel.app"
+      }
+    }
+  }
+}
+

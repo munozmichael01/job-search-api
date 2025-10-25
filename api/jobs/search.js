@@ -73,13 +73,25 @@ export default async function handler(req, res) {
       }).toString();
 
       // Limpiar URLs de parámetros existentes y agregar UTMs
-      const cleanUrl = job.url ? job.url.split('?')[0].split('&cid=')[0] : job.url;
-      const cleanUrlAplicar = job.url_aplicar ? job.url_aplicar.split('?')[0].split('&cid=')[0] : job.url_aplicar;
+      let cleanUrl = job.url || '';
+      let cleanUrlAplicar = job.url_aplicar || '';
+
+      // Eliminar todos los query params existentes (después del ?)
+      if (cleanUrl) {
+        cleanUrl = cleanUrl.split('?')[0].split('&')[0];
+        cleanUrl = `${cleanUrl}?${utmParams}`;
+      }
+
+      if (cleanUrlAplicar) {
+        // Para url_aplicar, eliminar tanto ? como & y todo lo que sigue
+        cleanUrlAplicar = cleanUrlAplicar.split('?')[0].split('&')[0];
+        cleanUrlAplicar = `${cleanUrlAplicar}?${utmParams}`;
+      }
 
       return {
         ...job,
-        url: cleanUrl ? `${cleanUrl}?${utmParams}` : job.url,
-        url_aplicar: cleanUrlAplicar ? `${cleanUrlAplicar}?${utmParams}` : job.url_aplicar
+        url: cleanUrl,
+        url_aplicar: cleanUrlAplicar
       };
     });
 

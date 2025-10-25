@@ -17,7 +17,13 @@ export default function ChatWidget() {
   };
 
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length > 0) {
+      // Scroll al inicio del último mensaje
+      messagesEndRef.current?.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'  // Scroll al inicio, no al final
+      });
+    }
   }, [messages]);
 
   // Crear thread al abrir por primera vez
@@ -145,30 +151,65 @@ export default function ChatWidget() {
     createThread();
   };
 
-  // Función para renderizar líneas con URLs como links
+  // Función para renderizar líneas con URLs como links y formato Markdown
   const renderMessageLine = (line) => {
-    // Regex para detectar URLs (excluyendo paréntesis finales)
+    // Si la línea contiene una URL, procesarla
     const urlRegex = /(https?:\/\/[^\s)]+)/g;
-    const parts = line.split(urlRegex);
     
-    return parts.map((part, index) => {
-      if (part.match(urlRegex)) {
-        // Limpiar URL de caracteres finales no deseados
-        let cleanUrl = part.replace(/[),;.!?]+$/, '');
-        
-        return (
-          <a 
-            key={index} 
-            href={cleanUrl} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="turijobs-link"
-          >
-            {cleanUrl.includes('aplicar') ? '✅ Aplicar aquí' : '🔗 Ver oferta'}
-          </a>
-        );
+    // Primero, procesar negritas (**texto**)
+    let processedLine = line;
+    const boldRegex = /\*\*(.*?)\*\*/g;
+    const boldParts = [];
+    let lastIndex = 0;
+    let match;
+    
+    while ((match = boldRegex.exec(line)) !== null) {
+      // Agregar texto antes del bold
+      if (match.index > lastIndex) {
+        boldParts.push({
+          type: 'text',
+          content: line.substring(lastIndex, match.index)
+        });
       }
-      return part;
+      // Agregar texto en bold
+      boldParts.push({
+        type: 'bold',
+        content: match[1]
+      });
+      lastIndex = match.index + match[0].length;
+    }
+    
+    // Agregar texto restante
+    if (lastIndex < line.length) {
+      boldParts.push({
+        type: 'text',
+        content: line.substring(lastIndex)
+      });
+    }
+    
+    // Si no hay negritas, procesar como texto normal
+    if (boldParts.length === 0) {
+      boldParts.push({ type: 'text', content: line });
+    }
+    
+    // Ahora procesar cada parte para URLs
+    return boldParts.map((part, partIndex) => {
+      if (part.type === 'bold') {
+        return <strong key={`bold-${partIndex}`}>{part.content}</strong>;
+      }
+      
+      // Procesar URLs en texto normal
+      const urlParts = part.content.split(urlRegex);
+      return urlParts.map((text, index) => {
+        if (text.match(urlRegex)) {
+          // Limpiar URL de caracteres finales no deseados y parámetros viejos
+          let cleanUrl = text.replace(/[),;.!?]+$/, '');
+          
+          // NO mostrar la URL como texto, solo como link clickeable
+          return null;
+        }
+        return <span key={`text-${partIndex}-${index}`}>{text}</span>;
+      });
     });
   };
 
@@ -232,7 +273,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Mensajes */}
-          <div className="turijobs-chat-messages">
+          <div className="turijobs-chat-messages" ref={messagesEndRef}>
             {messages.map((msg, index) => (
               <div 
                 key={index}
@@ -247,12 +288,41 @@ export default function ChatWidget() {
                 )}
                 <div className="turijobs-message-content">
                   <div className="turijobs-message-text">
-                    {msg.content.split('\n').map((line, i) => (
-                      <React.Fragment key={i}>
-                        {renderMessageLine(line)}
-                        {i < msg.content.split('\n').length - 1 && <br />}
-                      </React.Fragment>
-                    ))}
+                    {msg.content.split('\n').map((line, i) => {
+                      // Detectar si la línea tiene URLs
+                      const urlRegex = /(https?:\/\/[^\s)]+)/g;
+                      const hasUrl = urlRegex.test(line);
+                      
+                      if (hasUrl) {
+                        // Extraer URLs
+                        const urls = line.match(urlRegex) || [];
+                        const cleanUrls = urls.map(url => url.replace(/[),;.!?]+$/, ''));
+                        
+                        // Mostrar solo los botones, sin el texto de la URL
+                        return (
+                          <div key={i} className="turijobs-message-links">
+                            {cleanUrls.map((url, urlIndex) => (
+                              <a 
+                                key={urlIndex}
+                                href={url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="turijobs-link"
+                              >
+                                {url.includes('aplicar') ? '✅ Aplicar aquí' : '🔗 Ver oferta'}
+                              </a>
+                            ))}
+                          </div>
+                        );
+                      }
+                      
+                      return (
+                        <React.Fragment key={i}>
+                          {renderMessageLine(line)}
+                          {i < msg.content.split('\n').length - 1 && <br />}
+                        </React.Fragment>
+                      );
+                    })}
                   </div>
                   <div className="turijobs-message-time">
                     {new Date(msg.timestamp).toLocaleTimeString('es-ES', { 
@@ -280,8 +350,6 @@ export default function ChatWidget() {
                 </div>
               </div>
             )}
-            
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}

@@ -8,12 +8,12 @@ const ASSISTANT_ID = process.env.OPENAI_ASSISTANT_ID;
 
 // Ejecutar las funciones cuando el Assistant las llame
 async function executeFunctionCall(functionName, functionArgs) {
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : 'https://job-search-api-psi.vercel.app';
+  // Usar siempre la URL de producción
+  const baseUrl = 'https://job-search-api-psi.vercel.app';
 
   console.log(`🔧 Ejecutando función: ${functionName}`);
   console.log(`📋 Argumentos:`, functionArgs);
+  console.log(`🌐 Base URL: ${baseUrl}`);
 
   try {
     if (functionName === 'checkCacheStatus') {

@@ -1,5 +1,5 @@
 import React from 'react';
-import ChatWidget from '../components/ChatWidget';
+import ChatWidget from '../components/ChatWidget.jsx';
 import '../components/ChatWidget.css';
 import './Demo.css';
 

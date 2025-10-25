@@ -1,4 +1,14 @@
 {
+  "buildCommand": "npm run build:react",
+  "outputDirectory": "build",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/api/.*", "dest": "/api" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ],
   "functions": {
     "api/**/*.js": {
       "memory": 1024,

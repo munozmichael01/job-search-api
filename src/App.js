@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Demo from './pages/Demo';
-import HtmlDemo from './pages/HtmlDemo';
+import Demo from './pages/Demo.jsx';
+import HtmlDemo from './pages/HtmlDemo.jsx';
 
 function App() {
   return (

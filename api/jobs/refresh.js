@@ -63,6 +63,23 @@ export default async function handler(req, res) {
         return String(field);
       };
 
+      // Función para limpiar URLs y agregar UTM params
+      const cleanAndAddUTM = (url) => {
+        if (!url) return '';
+        
+        // Eliminar todo después de ? o &
+        let cleanUrl = url.split('?')[0].split('&')[0];
+        
+        // Agregar UTM params
+        const utmParams = new URLSearchParams({
+          utm_source: 'chatbot_ai',
+          utm_medium: 'chat_widget',
+          utm_campaign: 'job_search_assistant'
+        }).toString();
+        
+        return `${cleanUrl}?${utmParams}`;
+      };
+
       return {
         id: getText(job.id),
         titulo: getText(job.title),
@@ -74,8 +91,8 @@ export default async function handler(req, res) {
         salario: getText(job.salary) || 'No especificado',
         tipo_jornada: getText(job.jobtype) || 'No especificado',
         descripcion: getText(job.content),
-        url: getText(job.url),
-        url_aplicar: getText(job.url_apply),
+        url: cleanAndAddUTM(getText(job.url)),
+        url_aplicar: cleanAndAddUTM(getText(job.url_apply)),
         fecha_publicacion: getText(job.publication),
         num_vacantes: getText(job.num_vacancies) || '1'
       };

@@ -64,36 +64,7 @@ export default async function handler(req, res) {
     const totalMatches = results.length;
     results = results.slice(0, maxResults);
 
-    // Agregar parámetros UTM a las URLs
-    const resultsWithUTM = results.map(job => {
-      const utmParams = new URLSearchParams({
-        utm_source: 'chatbot_ai',
-        utm_medium: 'chat_widget',
-        utm_campaign: 'job_search_assistant'
-      }).toString();
-
-      // Limpiar URLs de parámetros existentes y agregar UTMs
-      let cleanUrl = job.url || '';
-      let cleanUrlAplicar = job.url_aplicar || '';
-
-      // Eliminar todos los query params existentes (después del ?)
-      if (cleanUrl) {
-        cleanUrl = cleanUrl.split('?')[0].split('&')[0];
-        cleanUrl = `${cleanUrl}?${utmParams}`;
-      }
-
-      if (cleanUrlAplicar) {
-        // Para url_aplicar, eliminar tanto ? como & y todo lo que sigue
-        cleanUrlAplicar = cleanUrlAplicar.split('?')[0].split('&')[0];
-        cleanUrlAplicar = `${cleanUrlAplicar}?${utmParams}`;
-      }
-
-      return {
-        ...job,
-        url: cleanUrl,
-        url_aplicar: cleanUrlAplicar
-      };
-    });
+    // URLs ya vienen limpias del refresh con UTM params, no necesitamos procesarlas aquí
 
     // Calcular edad del caché
     const lastUpdate = new Date(cacheData.metadata.last_update);
@@ -108,8 +79,8 @@ export default async function handler(req, res) {
         query_params: { query, location, category, limit: maxResults }
       },
       total_matches: totalMatches,
-      returned_results: resultsWithUTM.length,
-      results: resultsWithUTM
+      returned_results: results.length,
+      results: results
     });
 
   } catch (error) {

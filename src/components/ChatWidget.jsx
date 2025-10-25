@@ -147,21 +147,24 @@ export default function ChatWidget() {
 
   // Función para renderizar líneas con URLs como links
   const renderMessageLine = (line) => {
-    // Regex para detectar URLs
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    // Regex para detectar URLs (excluyendo paréntesis finales)
+    const urlRegex = /(https?:\/\/[^\s)]+)/g;
     const parts = line.split(urlRegex);
     
     return parts.map((part, index) => {
       if (part.match(urlRegex)) {
+        // Limpiar URL de caracteres finales no deseados
+        let cleanUrl = part.replace(/[),;.!?]+$/, '');
+        
         return (
           <a 
             key={index} 
-            href={part} 
+            href={cleanUrl} 
             target="_blank" 
             rel="noopener noreferrer"
             className="turijobs-link"
           >
-            {part.includes('aplicar') ? '✅ Aplicar aquí' : '🔗 Ver oferta'}
+            {cleanUrl.includes('aplicar') ? '✅ Aplicar aquí' : '🔗 Ver oferta'}
           </a>
         );
       }

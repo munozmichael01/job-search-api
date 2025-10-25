@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo - Turijobs Chat Widget</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+    }
+    
+    .demo-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+      color: #0066cc;
+      margin-top: 0;
+    }
+    
+    .demo-section {
+      margin: 30px 0;
+    }
+    
+    .demo-code {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #0066cc;
+      overflow-x: auto;
+    }
+    
+    pre {
+      margin: 0;
+      font-size: 14px;
+    }
+    
+    code {
+      color: #e83e8c;
+    }
+    
+    .demo-note {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <h1>🚀 Turijobs Chat Widget - Demo</h1>
+    
+    <p>Este es un ejemplo de cómo se ve el widget embebido en cualquier web. El botón flotante aparece en la esquina inferior derecha.</p>
+    
+    <div class="demo-section">
+      <h2>✨ Características</h2>
+      <ul>
+        <li>✅ Búsqueda inteligente de ofertas de empleo</li>
+        <li>✅ Datos reales de Turijobs.com</li>
+        <li>✅ Conversaciones persistentes</li>
+        <li>✅ Responsive y móvil</li>
+        <li>✅ Embebible en cualquier web</li>
+      </ul>
+    </div>
+    
+    <div class="demo-section">
+      <h2>📦 Cómo embeber en tu web</h2>
+      <p>Solo necesitas agregar estos 2 tags antes del cierre del <code>&lt;/body&gt;</code>:</p>
+      
+      <div class="demo-code">
+        <pre><code>&lt;!-- CSS del widget --&gt;
+&lt;link rel="stylesheet" href="https://job-search-api-psi.vercel.app/widget/turijobs-chat.css"&gt;
+
+&lt;!-- Script del widget --&gt;
+&lt;script src="https://job-search-api-psi.vercel.app/widget/turijobs-chat.js"&gt;&lt;/script&gt;</code></pre>
+      </div>
+    </div>
+    
+    <div class="demo-note">
+      <strong>💡 Nota:</strong> Los archivos CSS y JS aún no están en tu servidor. Los crearemos en el siguiente paso.
+    </div>
+    
+    <div class="demo-section">
+      <h2>🎯 Prueba el widget</h2>
+      <p>Haz clic en el botón flotante azul en la esquina inferior derecha para probar el chat.</p>
+      <p><strong>Pregunta de ejemplo:</strong> "Busco trabajo de chef en Madrid"</p>
+    </div>
+  </div>
+  
+  <!-- Widget embebido (versión local para demo) -->
+  <div id="turijobs-chat-root"></div>
+  
+  <script>
+    // Este script carga el widget de forma dinámica
+    (function() {
+      // Crear contenedor del widget si no existe
+      if (!document.getElementById('turijobs-chat-root')) {
+        const root = document.createElement('div');
+        root.id = 'turijobs-chat-root';
+        document.body.appendChild(root);
+      }
+      
+      // Cargar React y el widget
+      // Por ahora, cargaremos una versión inline para la demo
+      console.log('Turijobs Chat Widget cargado');
+    })();
+  </script>
+  
+  <script type="module">
+    // Aquí iría el código del widget compilado
+    // Por ahora usaremos import directo para desarrollo
+    import ChatWidget from '../widget/ChatWidget.jsx';
+    import { createRoot } from 'react-dom/client';
+    
+    const root = createRoot(document.getElementById('turijobs-chat-root'));
+    root.render(<ChatWidget />);
+  </script>
+</body>
+</html>
+

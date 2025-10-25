@@ -1,22 +1,47 @@
 {
   "name": "job-search-api",
   "version": "1.0.0",
-  "description": "API serverless para búsqueda de ofertas de empleo",
+  "description": "API serverless para búsqueda de ofertas de empleo con demo React",
   "type": "module",
   "bin": {
     "turijobs-mcp": "./mcp-server.js"
   },
   "scripts": {
     "dev": "vercel dev",
-    "mcp": "node mcp-server.js"
+    "mcp": "node mcp-server.js",
+    "start": "react-scripts start",
+    "build:react": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
     "@vercel/kv": "^1.0.1",
     "fast-xml-parser": "^4.3.5",
-    "openai": "^4.72.0"
+    "openai": "^4.72.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "react-scripts": "5.0.1"
   },
   "devDependencies": {
     "vercel": "^33.0.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

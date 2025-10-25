@@ -1,0 +1,422 @@
+/* Turijobs Chat Widget - Estilos inspirados en el sector turístico */
+
+:root {
+  --turijobs-primary: #0066cc;
+  --turijobs-primary-dark: #0052a3;
+  --turijobs-secondary: #ff6b35;
+  --turijobs-success: #28a745;
+  --turijobs-background: #ffffff;
+  --turijobs-surface: #f8f9fa;
+  --turijobs-border: #e1e4e8;
+  --turijobs-text: #24292e;
+  --turijobs-text-secondary: #586069;
+  --turijobs-text-light: #6a737d;
+  --turijobs-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --turijobs-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Container principal */
+.turijobs-chat-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+}
+
+/* Botón flotante */
+.turijobs-chat-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--turijobs-primary) 0%, var(--turijobs-primary-dark) 100%);
+  border: none;
+  color: white;
+  cursor: pointer;
+  box-shadow: var(--turijobs-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.turijobs-chat-button:hover {
+  transform: scale(1.1);
+  box-shadow: var(--turijobs-shadow-lg);
+}
+
+.turijobs-chat-button:active {
+  transform: scale(0.95);
+}
+
+.turijobs-chat-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--turijobs-secondary);
+  color: white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  border: 2px solid white;
+}
+
+/* Ventana del chat */
+.turijobs-chat-window {
+  width: 380px;
+  height: 600px;
+  max-height: calc(100vh - 100px);
+  background: var(--turijobs-background);
+  border-radius: 16px;
+  box-shadow: var(--turijobs-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.turijobs-chat-header {
+  background: linear-gradient(135deg, var(--turijobs-primary) 0%, var(--turijobs-primary-dark) 100%);
+  color: white;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.turijobs-chat-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.turijobs-chat-avatar {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.turijobs-chat-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.turijobs-chat-status {
+  font-size: 13px;
+  margin: 4px 0 0 0;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.turijobs-status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--turijobs-success);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.turijobs-chat-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.turijobs-icon-button {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.turijobs-icon-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Mensajes */
+.turijobs-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--turijobs-surface);
+}
+
+.turijobs-message {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.turijobs-message-assistant {
+  justify-content: flex-start;
+}
+
+.turijobs-message-user {
+  justify-content: flex-end;
+}
+
+.turijobs-message-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--turijobs-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.turijobs-message-content {
+  max-width: 75%;
+}
+
+.turijobs-message-user .turijobs-message-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.turijobs-message-text {
+  background: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: var(--turijobs-text);
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  word-wrap: break-word;
+}
+
+.turijobs-message-user .turijobs-message-text {
+  background: var(--turijobs-primary);
+  color: white;
+}
+
+.turijobs-message-text strong {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.turijobs-message-text a {
+  color: var(--turijobs-primary);
+  text-decoration: underline;
+}
+
+.turijobs-message-user .turijobs-message-text a {
+  color: white;
+}
+
+.turijobs-message-time {
+  font-size: 11px;
+  color: var(--turijobs-text-light);
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+/* Typing indicator */
+.turijobs-typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.turijobs-typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background: var(--turijobs-text-light);
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+
+.turijobs-typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.turijobs-typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
+
+/* Input */
+.turijobs-chat-input {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: white;
+  border-top: 1px solid var(--turijobs-border);
+}
+
+.turijobs-chat-input textarea {
+  flex: 1;
+  border: 1px solid var(--turijobs-border);
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  max-height: 100px;
+  transition: border-color 0.2s;
+}
+
+.turijobs-chat-input textarea:focus {
+  border-color: var(--turijobs-primary);
+}
+
+.turijobs-chat-input textarea:disabled {
+  background: var(--turijobs-surface);
+  cursor: not-allowed;
+}
+
+.turijobs-send-button {
+  width: 40px;
+  height: 40px;
+  background: var(--turijobs-primary);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.turijobs-send-button:hover:not(:disabled) {
+  background: var(--turijobs-primary-dark);
+  transform: scale(1.05);
+}
+
+.turijobs-send-button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.turijobs-send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Footer */
+.turijobs-chat-footer {
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--turijobs-text-secondary);
+  background: white;
+  border-top: 1px solid var(--turijobs-border);
+}
+
+.turijobs-chat-footer strong {
+  color: var(--turijobs-primary);
+  font-weight: 600;
+}
+
+/* Scrollbar personalizado */
+.turijobs-chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.turijobs-chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.turijobs-chat-messages::-webkit-scrollbar-thumb {
+  background: var(--turijobs-border);
+  border-radius: 3px;
+}
+
+.turijobs-chat-messages::-webkit-scrollbar-thumb:hover {
+  background: var(--turijobs-text-light);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .turijobs-chat-widget {
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
+
+  .turijobs-chat-window {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .turijobs-chat-button {
+    bottom: 16px;
+    right: 16px;
+  }
+}
+

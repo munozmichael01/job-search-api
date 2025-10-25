@@ -13,7 +13,8 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
     "@vercel/kv": "^1.0.1",
-    "fast-xml-parser": "^4.3.5"
+    "fast-xml-parser": "^4.3.5",
+    "openai": "^4.72.0"
   },
   "devDependencies": {
     "vercel": "^33.0.0"

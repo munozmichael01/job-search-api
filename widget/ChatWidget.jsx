@@ -145,6 +145,30 @@ export default function ChatWidget() {
     createThread();
   };
 
+  // Función para renderizar líneas con URLs como links
+  const renderMessageLine = (line) => {
+    // Regex para detectar URLs
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = line.split(urlRegex);
+    
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a 
+            key={index} 
+            href={part} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="turijobs-link"
+          >
+            {part.includes('aplicar') ? '✅ Aplicar aquí' : '🔗 Ver oferta'}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
+
   return (
     <div className="turijobs-chat-widget">
       {/* Botón flotante */}
@@ -222,7 +246,7 @@ export default function ChatWidget() {
                   <div className="turijobs-message-text">
                     {msg.content.split('\n').map((line, i) => (
                       <React.Fragment key={i}>
-                        {line}
+                        {renderMessageLine(line)}
                         {i < msg.content.split('\n').length - 1 && <br />}
                       </React.Fragment>
                     ))}

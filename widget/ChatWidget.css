@@ -253,13 +253,36 @@
   margin-bottom: 4px;
 }
 
-.turijobs-message-text a {
+.turijobs-message-text a,
+.turijobs-link {
   color: var(--turijobs-primary);
-  text-decoration: underline;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(0, 102, 204, 0.1);
+  border-radius: 6px;
+  transition: all 0.2s;
+  margin: 2px 0;
 }
 
-.turijobs-message-user .turijobs-message-text a {
+.turijobs-message-text a:hover,
+.turijobs-link:hover {
+  background: rgba(0, 102, 204, 0.2);
+  transform: translateX(2px);
+}
+
+.turijobs-message-user .turijobs-message-text a,
+.turijobs-message-user .turijobs-link {
   color: white;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.turijobs-message-user .turijobs-message-text a:hover,
+.turijobs-message-user .turijobs-link:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .turijobs-message-time {

@@ -165,6 +165,72 @@ https://www.turijobs.com/...&cid=fgtsamples_fgtsamples_alljobs
 
 ---
 
+#### **Test 2.5: Búsquedas Genéricas (Sin Puesto Específico)** 🆕
+
+**Pregunta 1:**
+```
+"restaurantes en la costa dorada"
+```
+
+**Resultado esperado:**
+```
+✅ Debe buscar TODAS las ofertas (query="", no filtrar por puesto)
+✅ Debe filtrar por Costa Dorada: Tarragona, Salou, Cambrils
+✅ Debe mostrar ofertas de: cocina, sala, recepción, etc.
+✅ Debe decir: "Encontré X ofertas en restaurantes de la Costa Dorada"
+```
+
+---
+
+**Pregunta 2:**
+```
+"empleos en Tarragona"
+```
+
+**Resultado esperado:**
+```
+✅ Debe buscar TODAS las ofertas (query="")
+✅ Debe usar location="Tarragona"
+✅ Debe mostrar diversas categorías: cocina, sala, recepción, housekeeping...
+✅ Debe decir: "Hay X ofertas en Tarragona en diferentes áreas"
+```
+
+---
+
+**Pregunta 3:**
+```
+"cuáles son las ciudades con más ofertas?"
+```
+
+**Resultado esperado:**
+```
+✅ Debe buscar TODAS las ofertas (query="", location="", limit=100)
+✅ Debe agrupar y contar por ciudad
+✅ Debe mostrar: "Top 10 ciudades con más ofertas:"
+  1. Madrid (150 ofertas)
+  2. Barcelona (120 ofertas)
+  3. Valencia (80 ofertas)
+  ...
+✅ NO debe decir: "No tengo la capacidad de proporcionar..."
+```
+
+---
+
+**Pregunta 4:**
+```
+"hoteles en Mallorca"
+```
+
+**Resultado esperado:**
+```
+✅ Debe buscar TODAS las ofertas (query="")
+✅ Debe usar location="Mallorca" o "Palma"
+✅ Debe filtrar empresas con "hotel" en el nombre
+✅ Debe mostrar ofertas variadas de hoteles
+```
+
+---
+
 #### **Test 3: Búsqueda Sin Resultados (Debe Sugerir Alternativas)** 💡
 
 **Pregunta:**

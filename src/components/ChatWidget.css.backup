@@ -431,30 +431,7 @@
   background: var(--turijobs-text-light);
 }
 
-
-
-/* === RESPONSIVE MEJORADO === */
-
-/* Tablets y pantallas medianas */
-@media (max-width: 768px) {
-  .turijobs-chat-window {
-    width: 90vw;
-    max-width: 400px;
-    height: 80vh;
-    max-height: 700px;
-  }
-
-  .turijobs-chat-button {
-    width: 56px;
-    height: 56px;
-  }
-
-  .turijobs-message-content {
-    max-width: 80%;
-  }
-}
-
-/* Móviles - Pantalla completa */
+/* Responsive */
 @media (max-width: 480px) {
   .turijobs-chat-widget {
     bottom: 0;
@@ -463,177 +440,15 @@
   }
 
   .turijobs-chat-window {
-    width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    border-radius: 0 !important;
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
   }
 
   .turijobs-chat-button {
-    width: 56px;
-    height: 56px;
     bottom: 16px;
     right: 16px;
   }
-
-  .turijobs-chat-badge {
-    width: 20px;
-    height: 20px;
-    font-size: 11px;
-  }
-
-  /* Header más compacto en móvil */
-  .turijobs-chat-header {
-    padding: 12px 16px;
-  }
-
-  .turijobs-chat-title {
-    font-size: 15px;
-  }
-
-  .turijobs-chat-status {
-    font-size: 12px;
-  }
-
-  .turijobs-chat-avatar {
-    width: 36px;
-    height: 36px;
-  }
-
-  /* Mensajes optimizados para móvil */
-  .turijobs-chat-messages {
-    padding: 12px;
-  }
-
-  .turijobs-message {
-    margin-bottom: 12px;
-  }
-
-  .turijobs-message-content {
-    max-width: 85% !important;
-  }
-
-  .turijobs-message-text {
-    padding: 10px 14px;
-    font-size: 14px;
-    border-radius: 10px;
-  }
-
-  .turijobs-message-avatar {
-    width: 28px;
-    height: 28px;
-  }
-
-  .turijobs-message-avatar svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  /* Links más touch-friendly */
-  .turijobs-message-text a,
-  .turijobs-link {
-    padding: 12px 20px !important;
-    font-size: 14px !important;
-    min-height: 48px;
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .turijobs-message-links {
-    margin: 10px 0;
-  }
-
-  /* Input optimizado para móvil */
-  .turijobs-chat-input {
-    padding: 10px 12px;
-  }
-
-  .turijobs-chat-input textarea {
-    font-size: 16px !important;
-    padding: 12px 16px;
-    border-radius: 20px;
-  }
-
-  .turijobs-send-button {
-    width: 48px;
-    height: 48px;
-  }
-
-  .turijobs-send-button svg {
-    width: 22px;
-    height: 22px;
-  }
-
-  /* Footer más pequeño */
-  .turijobs-chat-footer {
-    padding: 8px 12px;
-    font-size: 11px;
-  }
-
-  /* Icon buttons más grandes para touch */
-  .turijobs-icon-button {
-    width: 36px;
-    height: 36px;
-  }
-
-  .turijobs-icon-button svg {
-    width: 20px;
-    height: 20px;
-  }
 }
 
-/* Móviles muy pequeños */
-@media (max-width: 360px) {
-  .turijobs-chat-header {
-    padding: 10px 12px;
-  }
-
-  .turijobs-chat-title {
-    font-size: 14px;
-  }
-
-  .turijobs-chat-avatar {
-    width: 32px;
-    height: 32px;
-  }
-
-  .turijobs-message-text {
-    padding: 8px 12px;
-    font-size: 13px;
-  }
-
-  .turijobs-chat-input textarea {
-    font-size: 16px;
-    padding: 10px 14px;
-  }
-}
-
-/* Landscape en móviles */
-@media (max-height: 500px) and (orientation: landscape) {
-  .turijobs-chat-window {
-    height: 100vh !important;
-  }
-
-  .turijobs-chat-header {
-    padding: 8px 12px;
-  }
-
-  .turijobs-chat-messages {
-    padding: 8px 12px;
-  }
-
-  .turijobs-message {
-    margin-bottom: 8px;
-  }
-
-  .turijobs-chat-input {
-    padding: 8px 10px;
-  }
-
-  .turijobs-chat-footer {
-    padding: 4px 8px;
-    font-size: 10px;
-  }
-}
-
-/* Eliminar el viejo responsive */

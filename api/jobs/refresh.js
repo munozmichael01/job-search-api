@@ -1,5 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 import { kv } from '@vercel/kv';
+import { enrichOffers } from '../../lib/enrichOffers.js';
 
 const XML_FEED_URL = "https://feed.turijobs.com/partner/files/774E13F3-9D57-4BD6-920D-3A79A70C6AA2/E9753D5A-0F05-4444-9210-9D02EB15C7D5";
 
@@ -98,27 +99,31 @@ export default async function handler(req, res) {
       };
     });
 
+    // ✨ ENRIQUECER OFERTAS con puestos relacionados y ciudades cercanas
+    console.log('✨ Enriqueciendo ofertas con datos inteligentes...');
+    const enrichedJobs = enrichOffers(normalizedJobs);
+
     // Crear estructura de caché
     const cacheData = {
       metadata: {
         last_update: new Date().toISOString(),
-        total_jobs: normalizedJobs.length,
+        total_jobs: enrichedJobs.length,
         status: 'success',
         feed_url: XML_FEED_URL
       },
-      offers: normalizedJobs
+      offers: enrichedJobs
     };
 
     // Guardar en Vercel KV (expira en 48 horas)
     await kv.set('job_offers_cache', cacheData, { ex: 172800 });
 
-    console.log(`✅ ${normalizedJobs.length} ofertas almacenadas en caché`);
+    console.log(`✅ ${enrichedJobs.length} ofertas enriquecidas almacenadas en caché`);
 
     return res.status(200).json({
       success: true,
-      total_jobs: normalizedJobs.length,
+      total_jobs: enrichedJobs.length,
       timestamp: cacheData.metadata.last_update,
-      message: 'Ofertas actualizadas correctamente'
+      message: 'Ofertas actualizadas y enriquecidas correctamente'
     });
 
   } catch (error) {

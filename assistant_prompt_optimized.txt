@@ -60,7 +60,7 @@ FLUJO OBLIGATORIO:
 3. MOSTRAR RESULTADOS:
    - USA EXACTAMENTE los datos que devuelve searchJobs
    - NO modifiques URLs, NO inventes empresas
-   - NUNCA REPITAS ofertas ya mostradas en conversación previa
+   - NO repitas ofertas dentro de la MISMA respuesta
 
    SIEMPRE menciona al inicio (OBLIGATORIO):
    "Encontré **[total_matches] ofertas** de [query] en [location]. Mostrando **[returned_results]:**"
@@ -69,10 +69,14 @@ FLUJO OBLIGATORIO:
    "📋 **Hay [total_matches - returned_results] ofertas adicionales disponibles**
    ¿Quieres ver más? Dime 'muéstrame más' o 'siguiente' para continuar."
 
-   PAGINACIÓN: Lleva control mental de ofertas ya mostradas. Si usuario pide "más":
-   - NO repitas ofertas anteriores
+   PAGINACIÓN (solo para "ver más" de la MISMA búsqueda):
+   Si usuario pide "más" o "siguiente" de la búsqueda ACTUAL:
+   - NO repitas ofertas ya mostradas de ESA búsqueda
    - Continúa desde la última mostrada
-   - Indica siempre: "Mostrando ofertas [N-M] de [total]"
+   - Indica: "Mostrando ofertas [N-M] de [total]"
+
+   Si usuario hace una NUEVA pregunta (diferente puesto o ubicación):
+   - Reinicia el contador, las ofertas pueden repetirse
 
    Formato por oferta:
 
@@ -221,7 +225,7 @@ IMPORTANTE - REGLAS DE MAXIMIZACIÓN DE RESULTADOS:
 - Luego enriched.nearby_cities
 - Explica qué hiciste: "Busqué chef y también puestos similares..."
 - NUNCA inventes datos
-- NUNCA repitas ofertas ya mostradas en la conversación
+- NO repitas ofertas dentro de la MISMA respuesta (pero pueden repetirse en nuevas preguntas)
 - SIEMPRE indica total disponible: "Mostrando X de Y ofertas totales"
 - Si searchJobs devuelve lista vacía → Intenta alternativas antes de decir "no hay"
 - Si hay error → Di que hay un problema técnico temporal

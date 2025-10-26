@@ -1,24 +1,50 @@
 import { kv } from '@vercel/kv';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+let jobSynonyms = null;
+
+function loadSynonyms() {
+  if (!jobSynonyms) {
+    try {
+      const synonymsPath = path.join(__dirname, '../../data/job_id_to_names.json');
+      const jobIdToNames = JSON.parse(fs.readFileSync(synonymsPath, 'utf-8'));
+      jobSynonyms = {};
+      for (const jobId in jobIdToNames) {
+        const names = jobIdToNames[jobId];
+        const normalized = names.map(n => n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+        normalized.forEach(name => { jobSynonyms[name] = normalized; });
+      }
+    } catch (error) { jobSynonyms = {}; }
+  }
+  return jobSynonyms;
+}
+
+function normalizeText(text) {
+  if (!text) return '';
+  return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+}
 
 export default async function handler(req, res) {
-  // Solo permitir GET
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Leer del caché
     const cacheData = await kv.get('job_offers_cache');
 
     if (!cacheData || !cacheData.offers) {
       return res.status(404).json({
         error: 'cache_empty',
-        message: 'No hay datos en caché. Llama primero a /api/jobs/refresh',
+        message: 'No hay datos en caché',
         metadata: cacheData?.metadata || null
       });
     }
 
-    // Verificar si el caché está en estado de error
     if (cacheData.metadata.status === 'error') {
       return res.status(503).json({
         error: 'cache_error',
@@ -27,52 +53,39 @@ export default async function handler(req, res) {
       });
     }
 
-    // Extraer parámetros de búsqueda
-    const {
-      query = '',
-      location = '',
-      category = '',
-      limit = '10'
-    } = req.query;
-
-    const queryLower = query.toLowerCase();
-    const locationLower = location.toLowerCase();
-    const categoryLower = category.toLowerCase();
+    const { query = '', location = '', category = '', limit = '10' } = req.query;
     const maxResults = parseInt(limit) || 10;
 
-    // Filtrar ofertas (soportar campos en español e inglés)
+    const synonyms = loadSynonyms();
+    const normalizedQuery = normalizeText(query);
+    const queryTerms = normalizedQuery ? (synonyms[normalizedQuery] || [normalizedQuery]) : [];
+
+    const locationLower = normalizeText(location);
+    const categoryLower = normalizeText(category);
+
     let results = cacheData.offers.filter(job => {
-      // Filtro por query (busca en título, descripción y empresa)
-      const title = (job.titulo || job.title || '').toLowerCase();
-      const description = (job.descripcion || job.description || '').toLowerCase();
-      const company = (job.empresa || job.company || '').toLowerCase();
+      const title = normalizeText(job.titulo || job.title || '');
+      const description = normalizeText(job.descripcion || job.description || '');
+      const company = normalizeText(job.empresa || job.company || '');
 
-      const queryMatch = !query ||
-        title.includes(queryLower) ||
-        description.includes(queryLower) ||
-        company.includes(queryLower);
+      const queryMatch = !query || queryTerms.some(term =>
+        title.includes(term) || description.includes(term) || company.includes(term)
+      );
 
-      // Filtro por ubicación (busca en ciudad y región)
-      const city = (job.ciudad || job.city || '').toLowerCase();
-      const region = (job.region || '').toLowerCase();
+      const city = normalizeText(job.ciudad || job.city || '');
+      const region = normalizeText(job.region || '');
 
-      const locationMatch = !location ||
-        city.includes(locationLower) ||
-        region.includes(locationLower);
+      const locationMatch = !location || city.includes(locationLower) || region.includes(locationLower);
 
-      // Filtro por categoría
-      const category = (job.categoria || job.category || '').toLowerCase();
-      const categoryMatch = !category ||
-        category.includes(categoryLower);
+      const categoryField = normalizeText(job.categoria || job.category || '');
+      const categoryMatch = !category || categoryField.includes(categoryLower);
 
       return queryMatch && locationMatch && categoryMatch;
     });
 
-    // Limitar resultados
     const totalMatches = results.length;
     results = results.slice(0, maxResults);
 
-    // Calcular edad del caché
     const lastUpdate = new Date(cacheData.metadata.last_updated);
     const now = new Date();
     const ageMinutes = Math.round((now - lastUpdate) / (1000 * 60));
@@ -82,7 +95,7 @@ export default async function handler(req, res) {
       metadata: {
         ...cacheData.metadata,
         cache_age_minutes: ageMinutes,
-        query_params: { query, location, category, limit: maxResults }
+        query_params: { query, location, category, limit: maxResults, expanded_terms: queryTerms.length > 1 ? queryTerms : undefined }
       },
       total_matches: totalMatches,
       returned_results: results.length,
@@ -91,9 +104,6 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('❌ Error en búsqueda:', error);
-    return res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    return res.status(500).json({ success: false, error: error.message });
   }
 }

@@ -1,0 +1,13 @@
+# Archivos grandes que no deben desplegarse
+data/city_distances_full.json
+
+# Archivos de respaldo
+*.backup
+
+# Archivos temporales
+Tablas para cálculo de relaciones/worldcities.csv
+Tablas para cálculo de relaciones/worldcities.xlsx
+Tablas para cálculo de relaciones/license.txt
+
+# Scripts de procesamiento (no necesarios en producción)
+scripts/*.cjs

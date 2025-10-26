@@ -40,22 +40,30 @@ export default async function handler(req, res) {
     const categoryLower = category.toLowerCase();
     const maxResults = parseInt(limit) || 10;
 
-    // Filtrar ofertas
+    // Filtrar ofertas (soportar campos en español e inglés)
     let results = cacheData.offers.filter(job => {
       // Filtro por query (busca en título, descripción y empresa)
+      const title = (job.titulo || job.title || '').toLowerCase();
+      const description = (job.descripcion || job.description || '').toLowerCase();
+      const company = (job.empresa || job.company || '').toLowerCase();
+
       const queryMatch = !query ||
-        job.titulo.toLowerCase().includes(queryLower) ||
-        job.descripcion.toLowerCase().includes(queryLower) ||
-        job.empresa.toLowerCase().includes(queryLower);
+        title.includes(queryLower) ||
+        description.includes(queryLower) ||
+        company.includes(queryLower);
 
       // Filtro por ubicación (busca en ciudad y región)
+      const city = (job.ciudad || job.city || '').toLowerCase();
+      const region = (job.region || '').toLowerCase();
+
       const locationMatch = !location ||
-        job.ciudad.toLowerCase().includes(locationLower) ||
-        job.region.toLowerCase().includes(locationLower);
+        city.includes(locationLower) ||
+        region.includes(locationLower);
 
       // Filtro por categoría
+      const category = (job.categoria || job.category || '').toLowerCase();
       const categoryMatch = !category ||
-        job.categoria.toLowerCase().includes(categoryLower);
+        category.includes(categoryLower);
 
       return queryMatch && locationMatch && categoryMatch;
     });
@@ -64,10 +72,8 @@ export default async function handler(req, res) {
     const totalMatches = results.length;
     results = results.slice(0, maxResults);
 
-    // URLs ya vienen limpias del refresh con UTM params, no necesitamos procesarlas aquí
-
     // Calcular edad del caché
-    const lastUpdate = new Date(cacheData.metadata.last_update);
+    const lastUpdate = new Date(cacheData.metadata.last_updated);
     const now = new Date();
     const ageMinutes = Math.round((now - lastUpdate) / (1000 * 60));
 

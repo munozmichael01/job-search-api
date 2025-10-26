@@ -1,0 +1,1072 @@
+city,city_ascii,lat,lng,country,admin_name,population
+"Madrid","Madrid",40.4169,-3.7033,"Spain","Madrid",6211000
+"Barcelona","Barcelona",41.3833,2.1833,"Spain","Catalonia",4800000
+"Valencia","Valencia",39.47,-0.3764,"Spain","Valencia",1595000
+"Sevilla","Sevilla",37.39,-5.99,"Spain","Andalusia",1100000
+"Málaga","Malaga",36.7194,-4.42,"Spain","Andalusia",967250
+"Bilbao","Bilbao",43.2569,-2.9236,"Spain","Basque Country",775000
+"Zaragoza","Zaragoza",41.65,-0.8833,"Spain","Aragon",686986
+"Murcia","Murcia",37.9861,-1.1303,"Spain","Murcia",672773
+"Las Palmas","Las Palmas",28.1258,-15.4353,"Spain","Canary Islands",635000
+"Palma","Palma",39.5667,2.65,"Spain","Balearic Islands",550000
+"Lisbon","Lisbon",38.7122,-9.134,"Portugal","Lisboa",548703
+"Santa Cruz","Santa Cruz",28.4667,-16.25,"Spain","Canary Islands",538000
+"Aves","Aves",41.3703,-8.4101,"Portugal","Porto",425411
+"Sintra","Sintra",38.7974,-9.3904,"Portugal","Lisboa",385606
+"Alicante","Alicante",38.3453,-0.4831,"Spain","Valencia",358720
+"Córdoba","Cordoba",37.89,-4.78,"Spain","Andalusia",323763
+"Vila Nova de Gaia","Vila Nova de Gaia",41.1333,-8.6167,"Portugal","Porto",303824
+"Valladolid","Valladolid",41.6528,-4.7236,"Spain","Castille-Leon",300618
+"Vigo","Vigo",42.2314,-8.7124,"Spain","Galicia",293977
+"Gijón","Gijon",43.5333,-5.7,"Spain","Asturias",268561
+"Vitoria-Gasteiz","Vitoria-Gasteiz",42.85,-2.6833,"Spain","Basque Country",257968
+"A Coruña","A Coruna",43.365,-8.41,"Spain","Galicia",249261
+"Elche","Elche",38.2669,-0.6983,"Spain","Valencia",243128
+"Granada","Granada",37.1781,-3.6008,"Spain","Andalusia",232717
+"Porto","Porto",41.1495,-8.6108,"Portugal","Porto",231800
+"Tarrasa","Tarrasa",41.57,2.013,"Spain","Catalonia",228708
+"Badalona","Badalona",41.4489,2.2461,"Spain","Catalonia",227083
+"Sabadell","Sabadell",41.5486,2.1075,"Spain","Catalonia",222177
+"Oviedo","Oviedo",43.36,-5.845,"Spain","Asturias",220543
+"Cartagena","Cartagena",37.6019,-0.9842,"Spain","Murcia",219777
+"Cascais","Cascais",38.6972,-9.4217,"Portugal","Lisboa",214158
+"Jerez de la Frontera","Jerez de la Frontera",36.6817,-6.1378,"Spain","Andalusia",213688
+"Móstoles","Mostoles",40.3333,-3.8667,"Spain","Madrid",209639
+"Pamplona","Pamplona",42.8167,-1.65,"Spain","Navarre",207777
+"Almería","Almeria",36.8417,-2.4639,"Spain","Andalusia",202675
+"Loures","Loures",38.8309,-9.1684,"Portugal","Lisboa",201632
+"Alcalá de Henares","Alcala de Henares",40.4667,-3.3667,"Spain","Madrid",196888
+"Leganés","Leganes",40.3281,-3.7644,"Spain","Madrid",194084
+"Fuenlabrada","Fuenlabrada",40.2833,-3.8,"Spain","Madrid",190790
+"Getafe","Getafe",40.3047,-3.7311,"Spain","Madrid",189906
+"Donostia","Donostia",43.3214,-1.9856,"Spain","Basque Country",189093
+"Seixal","Seixal",38.6428,-9.1061,"Portugal","Setúbal",184269
+"Braga","Braga",41.5503,-8.42,"Portugal","Braga",181494
+"Castellón de la Plana","Castellon de la Plana",39.9831,-0.0331,"Spain","Valencia",180379
+"Almada","Almada",38.6803,-9.1583,"Portugal","Setúbal",177238
+"Burgos","Burgos",42.35,-3.7067,"Spain","Castille-Leon",175895
+"Albacete","Albacete",38.9956,-1.8558,"Spain","Castille-La Mancha",174137
+"Santander","Santander",43.4628,-3.805,"Spain","Cantabria",174101
+"Alcorcón","Alcorcon",40.35,-3.8333,"Spain","Madrid",173625
+"Matosinhos","Matosinhos",41.1867,-8.6844,"Portugal","Porto",172557
+"Oeiras","Oeiras",38.697,-9.3017,"Portugal","Lisboa",171658
+"Amadora","Amadora",38.75,-9.2333,"Portugal","Lisboa",171454
+"Gondomar","Gondomar",41.15,-8.5333,"Portugal","Porto",164257
+"Guadalajara","Guadalajara",40.6337,-3.1674,"Spain","Castille-La Mancha",161683
+"La Laguna","La Laguna",28.4853,-16.3167,"Spain","Canary Islands",160258
+"Marbella","Marbella",36.5167,-4.8833,"Spain","Andalusia",159000
+"Guimarães","Guimaraes",41.445,-8.2908,"Portugal","Braga",156830
+"Girona","Girona",41.9844,2.8211,"Spain","Catalonia",156423
+"Logroño","Logrono",42.465,-2.4456,"Spain","La Rioja",151164
+"Badajoz","Badajoz",38.8803,-6.9753,"Spain","Extremadura",150570
+"Odivelas","Odivelas",38.8,-9.1833,"Portugal","Lisboa",148034
+"Salamanca","Salamanca",40.965,-5.6642,"Spain","Castille-Leon",144866
+"Lleida","Lleida",41.6167,0.6333,"Spain","Catalonia",144739
+"Huelva","Huelva",37.25,-6.95,"Spain","Andalusia",143290
+"Tarragona","Tarragona",41.1175,1.2528,"Spain","Catalonia",141151
+"Coimbra","Coimbra",40.2111,-8.4289,"Portugal","Coimbra",140816
+"Dos Hermanas","Dos Hermanas",37.2836,-5.9222,"Spain","Andalusia",140430
+"Vila Franca de Xira","Vila Franca de Xira",38.95,-8.9833,"Portugal","Lisboa",137529
+"Maia","Maia",41.2333,-8.6167,"Portugal","Porto",134977
+"Parla","Parla",40.2372,-3.7742,"Spain","Madrid",134833
+"Famalicão","Famalicao",41.4144,-8.5222,"Portugal","Braga",133832
+"Mataró","Mataro",41.5333,2.45,"Spain","Catalonia",129870
+"Torrejón de Ardoz","Torrejon de Ardoz",40.4614,-3.4978,"Spain","Madrid",127132
+"Leiria","Leiria",39.7431,-8.8069,"Portugal","Leiria",126897
+"Algeciras","Algeciras",36.1275,-5.4539,"Spain","Andalusia",124978
+"León","Leon",42.6056,-5.57,"Spain","Castille-Leon",122051
+"Alcobendas","Alcobendas",40.5333,-3.6333,"Spain","Madrid",117041
+"Barcelos","Barcelos",41.5333,-8.6167,"Portugal","Braga",116752
+"Jaén","Jaen",37.7667,-3.7711,"Spain","Andalusia",112074
+"Cádiz","Cadiz",36.535,-6.2975,"Spain","Andalusia",110914
+"Reus","Reus",41.156,1.108,"Spain","Catalonia",109930
+"Roquetas de Mar","Roquetas de Mar",36.7642,-2.6147,"Spain","Andalusia",109204
+"Funchal","Funchal",32.65,-16.9167,"Portugal","Madeira",105795
+"Ourense","Ourense",42.3364,-7.8633,"Spain","Galicia",104891
+"Telde","Telde",27.9833,-15.4167,"Spain","Canary Islands",102769
+"San Vicente de Baracaldo","San Vicente de Baracaldo",43.2972,-2.9917,"Spain","Basque Country",101984
+"Vaciamadrid","Vaciamadrid",40.3394,-3.5181,"Spain","Madrid",100250
+"Santiago de Compostela","Santiago de Compostela",42.8778,-8.5444,"Spain","Galicia",99536
+"Lugo","Lugo",43.0167,-7.55,"Spain","Galicia",99482
+"Viseu","Viseu",40.6575,-7.9139,"Portugal","Viseu",99274
+"San Cugat del Vallés","San Cugat del Valles",41.4667,2.0833,"Spain","Catalonia",98621
+"Las Rozas de Madrid","Las Rozas de Madrid",40.4917,-3.8733,"Spain","Madrid",98590
+"Lorca","Lorca",37.6798,-1.6944,"Spain","Murcia",98334
+"Cáceres","Caceres",39.4833,-6.3667,"Spain","Extremadura",96441
+"San Sebastián de los Reyes","San Sebastian de los Reyes",40.5469,-3.6258,"Spain","Madrid",94969
+"Torrevieja","Torrevieja",37.9778,-0.6833,"Spain","Valencia",94803
+"Valongo","Valongo",41.1833,-8.5,"Portugal","Porto",93858
+"San Fernando","San Fernando",36.4667,-6.2,"Spain","Andalusia",93645
+"Mijas","Mijas",36.6,-4.6333,"Spain","Andalusia",93302
+"El Ejido","El Ejido",36.7831,-2.8167,"Spain","Andalusia",90135
+"El Puerto de Santa María","El Puerto de Santa Maria",36.6015,-6.2381,"Spain","Andalusia",89960
+"Chiclana de la Frontera","Chiclana de la Frontera",36.4167,-6.15,"Spain","Andalusia",89794
+"Torrente","Torrente",39.4389,-0.4656,"Spain","Valencia",89401
+"Viana do Castelo","Viana do Castelo",41.7,-8.8333,"Portugal","Viana do Castelo",88725
+"Paredes","Paredes",41.2,-8.3333,"Portugal","Porto",86854
+"Arona","Arona",28.1,-16.6667,"Spain","Canary Islands",86624
+"Toledo","Toledo",39.8567,-4.0244,"Spain","Castille-La Mancha",86526
+"Vélez-Málaga","Velez-Malaga",36.7833,-4.1,"Spain","Andalusia",85990
+"Ciudad de Melilla","Ciudad de Melilla",35.2922,-2.9408,"Spain","Melilla",85985
+"Fuengirola","Fuengirola",36.5417,-4.625,"Spain","Andalusia",85859
+"San Baudilio de Llobregat","San Baudilio de Llobregat",41.336,2.043,"Spain","Catalonia",84831
+"Valdemoro","Valdemoro",40.1908,-3.6742,"Spain","Madrid",83507
+"Talavera de la Reina","Talavera de la Reina",39.9583,-4.8328,"Spain","Castille-La Mancha",83477
+"Ciudad de Ceuta","Ciudad de Ceuta",35.8883,-5.3156,"Spain","Ceuta",83229
+"Pontevedra","Pontevedra",42.4333,-8.6333,"Spain","Galicia",83077
+"Rubí","Rubi",41.4933,2.0325,"Spain","Catalonia",81532
+"Orihuela","Orihuela",38.0856,-0.9469,"Spain","Valencia",80784
+"Manresa","Manresa",41.7294,1.8272,"Spain","Catalonia",80201
+"Gandía","Gandia",38.9667,-0.1833,"Spain","Valencia",80095
+"Vila do Conde","Vila do Conde",41.35,-8.75,"Portugal","Porto",79533
+"Torres Vedras","Torres Vedras",39.0833,-9.2667,"Portugal","Lisboa",79465
+"Aveiro","Aveiro",40.6389,-8.6553,"Portugal","Aveiro",78450
+"Estepona","Estepona",36.4264,-5.1472,"Spain","Andalusia",78413
+"Barreiro","Barreiro",38.6631,-9.0725,"Portugal","Setúbal",78345
+"Queluz","Queluz",38.7566,-9.2545,"Portugal","Lisboa",78273
+"Benalmádena","Benalmadena",36.6,-4.5167,"Spain","Andalusia",77654
+"Molina de Segura","Molina de Segura",38.0548,-1.2131,"Spain","Murcia",77493
+"Alcalá de Guadaira","Alcala de Guadaira",37.3333,-5.85,"Spain","Andalusia",76922
+"Palencia","Palencia",42.0167,-4.5333,"Spain","Castille-Leon",76738
+"Mafra","Mafra",38.9333,-9.3333,"Portugal","Lisboa",76685
+"Ciudad Real","Ciudad Real",38.9833,-3.9167,"Spain","Castille-La Mancha",75909
+"Avilés","Aviles",43.5561,-5.9083,"Spain","Asturias",75351
+"Paterna","Paterna",39.5028,-0.4406,"Spain","Valencia",74822
+"Benidorm","Benidorm",38.5342,-0.1314,"Spain","Valencia",74663
+"Majadahonda","Majadahonda",40.4728,-3.8722,"Spain","Madrid",73355
+"Penafiel","Penafiel",41.2,-8.2833,"Portugal","Porto",72265
+"Santo Tirso","Santo Tirso",41.3425,-8.4775,"Portugal","Porto",71530
+"Sagunto","Sagunto",39.68,-0.2783,"Spain","Valencia",71377
+"Torremolinos","Torremolinos",36.6218,-4.5003,"Spain","Andalusia",70933
+"Loulé","Loule",37.144,-8.0235,"Portugal","Faro",70622
+"Sanlúcar de Barrameda","Sanlucar de Barrameda",36.7667,-6.35,"Spain","Andalusia",69876
+"Castelldefels","Castelldefels",41.286,1.982,"Spain","Catalonia",69450
+"Villanueva y Geltrú","Villanueva y Geltru",41.2242,1.7256,"Spain","Catalonia",68854
+"Ponta Delgada","Ponta Delgada",37.74,-25.67,"Portugal","Azores",68809
+"Viladecáns","Viladecans",41.3158,2.0197,"Spain","Catalonia",67348
+"Collado-Villalba","Collado-Villalba",40.6333,-4.0083,"Spain","Madrid",66698
+"El Prat de Llobregat","El Prat de Llobregat",41.3333,2.1,"Spain","Catalonia",66184
+"Moita","Moita",38.65,-8.9833,"Portugal","Setúbal",66029
+"Faro","Faro",37.0161,-7.935,"Portugal","Faro",64560
+"Arrecife","Arrecife",28.9625,-13.5506,"Spain","Canary Islands",64497
+"Póvoa de Varzim","Povoa de Varzim",41.3828,-8.7628,"Portugal","Porto",64320
+"Ferrol","Ferrol",43.4844,-8.2328,"Spain","Galicia",64218
+"Granollers","Granollers",41.608,2.288,"Spain","Catalonia",64181
+"La Línea de la Concepción","La Linea de la Concepcion",36.1681,-5.3486,"Spain","Andalusia",64177
+"Ponferrada","Ponferrada",42.55,-6.5833,"Spain","Castille-Leon",63747
+"Irún","Irun",43.3378,-1.7888,"Spain","Basque Country",63656
+"Palmela","Palmela",38.5675,-8.8991,"Portugal","Setúbal",62831
+"Boadilla del Monte","Boadilla del Monte",40.4069,-3.875,"Spain","Madrid",62627
+"Santarém","Santarem",39.2333,-8.6833,"Portugal","Santarém",62200
+"Figueira da Foz","Figueira da Foz",40.1508,-8.8618,"Portugal","Coimbra",62125
+"Alcoy","Alcoy",38.6983,-0.4736,"Spain","Valencia",60372
+"San Vicente del Raspeig","San Vicente del Raspeig",38.3964,-0.5253,"Spain","Valencia",60269
+"Mérida","Merida",38.9,-6.3333,"Spain","Extremadura",59857
+"Portimão","Portimao",37.1333,-8.5333,"Portugal","Faro",59845
+"Aranjuez","Aranjuez",40.0333,-3.6028,"Spain","Madrid",59833
+"Motril","Motril",36.75,-3.5167,"Spain","Andalusia",59632
+"Zamora","Zamora",41.4989,-5.7556,"Spain","Castille-Leon",59506
+"Ávila","Avila",40.65,-4.6833,"Spain","Castille-Leon",58111
+"Felgueiras","Felgueiras",41.3667,-8.2,"Portugal","Porto",58065
+"Granadilla de Abona","Granadilla de Abona",28.1167,-16.5667,"Spain","Canary Islands",57143
+"Colmenar Viejo","Colmenar Viejo",40.6589,-3.7658,"Spain","Madrid",57029
+"Paços de Ferreira","Pacos de Ferreira",41.2833,-8.3833,"Portugal","Porto",56340
+"Amarante","Amarante",41.2728,-8.0825,"Portugal","Porto",56264
+"Castelo Branco","Castelo Branco",39.8228,-7.4931,"Portugal","Castelo Branco",56109
+"Pinto","Pinto",40.25,-3.7,"Spain","Madrid",56003
+"Ovar","Ovar",40.8597,-8.6253,"Portugal","Aveiro",55398
+"Linares","Linares",38.0833,-3.6333,"Spain","Andalusia",55261
+"Pombal","Pombal",39.9161,-8.6281,"Portugal","Leiria",55217
+"Huesca","Huesca",42.1333,-0.4167,"Spain","Aragon",54704
+"San Bartolomé","San Bartolome",27.9256,-15.5725,"Spain","Canary Islands",54116
+"Elda","Elda",38.4789,-0.7967,"Spain","Valencia",53818
+"Ibiza","Ibiza",38.9089,1.4328,"Spain","Balearic Islands",53717
+"Alcobaça","Alcobaca",39.5522,-8.9775,"Portugal","Leiria",53649
+"Évora","Evora",38.5667,-7.9,"Portugal","Évora",53591
+"Marco de Canavezes","Marco de Canavezes",41.1833,-8.15,"Portugal","Porto",53450
+"Cuenca","Cuenca",40.0667,-2.15,"Spain","Castille-La Mancha",53429
+"Pola de Siero","Pola de Siero",43.3833,-5.65,"Spain","Asturias",52593
+"Villareal","Villareal",39.9378,-0.1014,"Spain","Valencia",52505
+"Mollet","Mollet",41.539,2.213,"Spain","Catalonia",52283
+"Rincón de la Victoria","Rincon de la Victoria",36.7167,-4.2833,"Spain","Andalusia",52230
+"Utrera","Utrera",37.183,-5.767,"Spain","Andalusia",52173
+"Vila Real","Vila Real",41.2953,-7.7461,"Portugal","Vila Real",51850
+"Covilhã","Covilha",40.2833,-7.5,"Portugal","Castelo Branco",51797
+"Caldas da Rainha","Caldas da Rainha",39.4069,-9.1363,"Portugal","Leiria",51729
+"Torrelavega","Torrelavega",43.3531,-4.0458,"Spain","Cantabria",51663
+"Segovia","Segovia",40.9481,-4.1183,"Spain","Castille-Leon",51525
+"Montijo","Montijo",38.7049,-8.9757,"Portugal","Setúbal",51222
+"Rio Tinto","Rio Tinto",41.1833,-8.5667,"Portugal","Porto",50713
+"Fafe","Fafe",41.45,-8.1667,"Portugal","Braga",50633
+"Adeje","Adeje",28.1167,-16.7167,"Spain","Canary Islands",50549
+"Sesimbra","Sesimbra",38.4437,-9.0996,"Portugal","Setúbal",49500
+"Figueras","Figueras",42.2667,2.965,"Spain","Catalonia",48875
+"Amora","Amora",38.6265,-9.1189,"Portugal","Setúbal",48629
+"Vich","Vich",41.9301,2.2549,"Spain","Catalonia",48364
+"Gavá","Gava",41.3072,2.0039,"Spain","Catalonia",48007
+"Mairena del Aljarafe","Mairena del Aljarafe",37.3333,-6.0667,"Spain","Andalusia",47898
+"Vila Verde","Vila Verde",41.6484,-8.4367,"Portugal","Braga",47888
+"Manacor","Manacor",39.5667,3.2,"Spain","Balearic Islands",47777
+"Águeda","Agueda",40.5745,-8.448,"Portugal","Aveiro",47729
+"Vale de Cavalos","Vale de Cavalos",38.65,-9.15,"Portugal","Setúbal",47661
+"Esplugas de Llobregat","Esplugas de Llobregat",41.3767,2.0858,"Spain","Catalonia",47613
+"Lousada","Lousada",41.2833,-8.2833,"Portugal","Porto",47387
+"Alcira","Alcira",39.15,-0.435,"Spain","Valencia",47335
+"Rio de Mouro","Rio de Mouro",38.7689,-9.3327,"Portugal","Lisboa",47311
+"Denia","Denia",38.8444,0.1111,"Spain","Valencia",46942
+"San Felíu de Llobregat","San Feliu de Llobregat",41.3833,2.0439,"Spain","Catalonia",46554
+"Corroios","Corroios",38.6147,-9.1508,"Portugal","Setúbal",46475
+"Santurce-Antiguo","Santurce-Antiguo",43.3303,-3.0314,"Spain","Basque Country",46247
+"Mislata","Mislata",39.475,-0.4156,"Spain","Valencia",46153
+"Ourém","Ourem",39.65,-8.5833,"Portugal","Santarém",45932
+"Olhão","Olhao",37.0278,-7.8389,"Portugal","Faro",45396
+"San Antonio Abad","San Antonio Abad",37.6261,-0.9896,"Spain","Murcia",45335
+"Puertollano","Puertollano",38.6833,-4.1167,"Spain","Castille-La Mancha",45195
+"Portugalete","Portugalete",43.3194,-3.0194,"Spain","Basque Country",44766
+"Puerto del Rosario","Puerto del Rosario",28.5,-13.8667,"Spain","Canary Islands",44638
+"Albufeira","Albufeira",37.0889,-8.2511,"Portugal","Faro",44158
+"Alhaurín de la Torre","Alhaurin de la Torre",36.6667,-4.55,"Spain","Andalusia",44057
+"Alcantarilla","Alcantarilla",37.9722,-1.2094,"Spain","Murcia",43547
+"Ponte de Lima","Ponte de Lima",41.7667,-8.5833,"Portugal","Viana do Castelo",43498
+"Alenquer","Alenquer",39.0531,-9.0092,"Portugal","Lisboa",43267
+"Lucena","Lucena",37.4089,-4.4853,"Spain","Andalusia",43086
+"Santa Cruz","Santa Cruz",32.675,-16.8309,"Portugal","Madeira",43005
+"Lloret de Mar","Lloret de Mar",41.7,2.8333,"Spain","Catalonia",42600
+"La Orotava","La Orotava",28.3906,-16.5247,"Spain","Canary Islands",42585
+"Guarda","Guarda",40.5364,-7.2683,"Portugal","Guarda",42541
+"Blanes","Blanes",41.676,2.793,"Spain","Catalonia",42198
+"Puerto Real","Puerto Real",36.5292,-6.1919,"Spain","Andalusia",42151
+"Santa Eulalia del Río","Santa Eulalia del Rio",38,59,"Spain","Balearic Islands",41706
+"Antequera","Antequera",37.0183,-4.5597,"Spain","Andalusia",41619
+"Villafranca del Panadés","Villafranca del Panades",41,20,"Spain","Catalonia",41504
+"Igualada","Igualada",41.5833,1.6167,"Spain","Catalonia",41466
+"Chaves","Chaves",41.7399,-7.4707,"Portugal","Vila Real",41243
+"Soria","Soria",41.7667,-2.4667,"Spain","Castille-Leon",40750
+"Tomar","Tomar",39.6,-8.4167,"Portugal","Santarém",40677
+"Burjasot","Burjasot",39.5064,-0.4067,"Spain","Valencia",40634
+"La Rinconada","La Rinconada",37.4878,-5.9789,"Spain","Andalusia",40529
+"Vendrell","Vendrell",41.2203,1.5347,"Spain","Catalonia",40440
+"Marratxi","Marratxi",39.6422,2.7528,"Spain","Balearic Islands",40079
+"Torre-Pacheco","Torre-Pacheco",37.7333,-0.95,"Spain","Murcia",40074
+"Lluchmayor","Lluchmayor",39.4833,2.8833,"Spain","Balearic Islands",39912
+"Plasencia","Plasencia",40.0333,-6.1,"Spain","Extremadura",39829
+"Écija","Ecija",37.5333,-5.0833,"Spain","Andalusia",39500
+"Abrantes","Abrantes",39.4667,-8.2,"Portugal","Santarém",39325
+"Narón","Naron",43.55,-8.15,"Spain","Galicia",39285
+"Ripollet","Ripollet",41.4969,2.1574,"Spain","Catalonia",39269
+"Marinha Grande","Marinha Grande",39.7478,-8.9322,"Portugal","Leiria",39032
+"Trofa","Trofa",41.3374,-8.5596,"Portugal","Porto",38999
+"San Fernando de Henares","San Fernando de Henares",40.4256,-3.5353,"Spain","Madrid",38980
+"Mafamude","Mafamude",41.1152,-8.6036,"Portugal","Porto",38940
+"Arucas","Arucas",28.1188,-15.5231,"Spain","Canary Islands",38936
+"Olot","Olot",42.1833,2.4833,"Spain","Catalonia",38822
+"Ermezinde","Ermezinde",41.2133,-8.5472,"Portugal","Porto",38798
+"Los Palacios y Villafranca","Los Palacios y Villafranca",37.1625,-5.9242,"Spain","Andalusia",38757
+"Tudela","Tudela",42.0653,-1.6067,"Spain","Navarre",38685
+"Santa Pola","Santa Pola",38.1897,-0.5556,"Spain","Valencia",38556
+"San Adrián de Besós","San Adrian de Besos",41.4285,2.223,"Spain","Catalonia",38490
+"Oleiros","Oleiros",43.3333,-8.3166,"Spain","Galicia",38333
+"Sama","Sama",43.3,-5.6833,"Spain","Asturias",38282
+"Villagarcía de Arosa","Villagarcia de Arosa",42.5977,-8.7632,"Spain","Galicia",37761
+"Don Benito","Don Benito",38.9545,-5.8617,"Spain","Extremadura",37728
+"Águilas","Aguilas",37.4042,-1.5819,"Spain","Murcia",37417
+"Arroyomolinos","Arroyomolinos",40.2667,-3.9,"Spain","Madrid",37208
+"Moncada","Moncada",41.4872,2.1878,"Spain","Catalonia",37153
+"Silves","Silves",37.1833,-8.4333,"Portugal","Faro",37126
+"Burriana","Burriana",39.8894,-0.0925,"Spain","Valencia",36927
+"Cambrils","Cambrils",41.0667,1.0583,"Spain","Catalonia",36849
+"Torres Novas","Torres Novas",39.4833,-8.5333,"Portugal","Santarém",36717
+"Teruel","Teruel",40.3436,-1.1072,"Spain","Aragon",36713
+"Cantanhede","Cantanhede",40.3464,-8.5942,"Portugal","Coimbra",36595
+"Tomelloso","Tomelloso",39.1578,-3.0208,"Spain","Castille-La Mancha",36523
+"Onteniente","Onteniente",38.8222,-0.6072,"Spain","Valencia",36430
+"Mieres","Mieres",43.2508,-5.7767,"Spain","Asturias",36132
+"El Plan","El Plan",37.6405,-1.0085,"Spain","Murcia",36080
+"Miranda de Ebro","Miranda de Ebro",42.6833,-2.9333,"Spain","Castille-Leon",36018
+"San Javier","San Javier",37.8037,-0.8343,"Spain","Murcia",35872
+"Beja","Beja",38.015,-7.8633,"Portugal","Beja",35854
+"Agualva","Agualva",38.77,-9.2988,"Portugal","Lisboa",35824
+"Câmara de Lobos","Camara de Lobos",32.65,-16.9667,"Portugal","Madeira",35666
+"Inca","Inca",39.7167,2.9167,"Spain","Balearic Islands",35654
+"Andújar","Andujar",38.0392,-4.0506,"Spain","Andalusia",35619
+"Angra do Heroísmo","Angra do Heroismo",38.6558,-27.2153,"Portugal","Azores",35402
+"Cieza","Cieza",38.2392,-1.4189,"Spain","Murcia",35361
+"Bragança","Braganca",41.8,-6.75,"Portugal","Bragança",35341
+"Tortosa","Tortosa",40.8128,0.5233,"Spain","Catalonia",35265
+"Azuqueca de Henares","Azuqueca de Henares",40.5647,-3.2681,"Spain","Castille-La Mancha",35236
+"Yecla","Yecla",38.6136,-1.1147,"Spain","Murcia",35234
+"Mazarrón","Mazarron",37.5983,-1.3139,"Spain","Murcia",35099
+"San Juan Despí","San Juan Despi",41.3681,2.0581,"Spain","Catalonia",35083
+"Galapagar","Galapagar",40.5764,-4.0019,"Spain","Madrid",34834
+"Villajoyosa","Villajoyosa",38.5053,-0.2328,"Spain","Valencia",34828
+"Villena","Villena",38.635,-0.8658,"Spain","Valencia",34385
+"Almendralejo","Almendralejo",38.6833,-6.4167,"Spain","Extremadura",34284
+"Esposende","Esposende",41.5333,-8.7833,"Portugal","Braga",34254
+"Úbeda","Ubeda",38.0133,-3.3705,"Spain","Andalusia",34208
+"San Roque","San Roque",36.2097,-5.3844,"Spain","Andalusia",34190
+"Petrel","Petrel",38.4845,-0.7696,"Spain","Valencia",34076
+"Arteijo","Arteijo",43.3044,-8.5114,"Spain","Galicia",34038
+"Aldaya","Aldaya",39.4639,-0.4628,"Spain","Valencia",34035
+"Salt","Salt",41.9761,2.7881,"Spain","Catalonia",33904
+"Aranda de Duero","Aranda de Duero",41.6833,-3.6833,"Spain","Castille-Leon",33757
+"Totana","Totana",37.7711,-1.5003,"Spain","Murcia",33663
+"Castro-Urdiales","Castro-Urdiales",43.3844,-3.215,"Spain","Cantabria",33482
+"Ronda","Ronda",36.7372,-5.1647,"Spain","Andalusia",33451
+"Agüimes","Aguimes",27.8833,-15.4333,"Spain","Canary Islands",33179
+"Níjar","Nijar",36.9667,-2.2,"Spain","Andalusia",33076
+"Amés","Ames",42.9,-8.6333,"Spain","Galicia",32812
+"Ingenio","Ingenio",27.9214,-15.4325,"Spain","Canary Islands",32747
+"Sitges","Sitges",41.237,1.823,"Spain","Catalonia",32405
+"Manises","Manises",39.4833,-0.45,"Spain","Valencia",32273
+"San Pedro de Ribas","San Pedro de Ribas",41.2597,1.7736,"Spain","Catalonia",32121
+"Ribeira Grande","Ribeira Grande",37.8167,-25.5167,"Portugal","Azores",32112
+"Calafell","Calafell",41.202,1.57,"Spain","Catalonia",31828
+"Carballo","Carballo",43.2167,-8.6833,"Spain","Galicia",31595
+"Ílhavo","Ilhavo",40.6,-8.6667,"Portugal","Aveiro",31383
+"Alcázar de San Juan","Alcazar de San Juan",39.4056,-3.2056,"Spain","Castille-La Mancha",31382
+"Navalcarnero","Navalcarnero",40.2847,-4.0136,"Spain","Madrid",31379
+"Puerto de la Cruz","Puerto de la Cruz",28.4167,-16.5333,"Spain","Canary Islands",31377
+"Coria del Río","Coria del Rio",37.2833,-6.05,"Spain","Andalusia",31095
+"Culleredo","Culleredo",43.2883,-8.3894,"Spain","Galicia",31085
+"Lagos","Lagos",37.1,-8.6667,"Portugal","Faro",31049
+"Arcos de la Frontera","Arcos de la Frontera",36.75,-5.8,"Spain","Andalusia",31046
+"Espinho","Espinho",41.01,-8.64,"Portugal","Aveiro",31027
+"Salou","Salou",41.077,1.144,"Spain","Catalonia",30810
+"Valdepeñas","Valdepenas",38.7617,-3.385,"Spain","Castille-La Mancha",30617
+"Crevillente","Crevillente",38.2486,-0.8089,"Spain","Valencia",30585
+"Illescas","Illescas",40.1167,-3.8333,"Spain","Castille-La Mancha",30553
+"Hellín","Hellin",38.5167,-1.6833,"Spain","Castille-La Mancha",30492
+"Vinaroz","Vinaroz",40.4686,0.4736,"Spain","Valencia",30278
+"Catarroja","Catarroja",39.4028,-0.4044,"Spain","Valencia",30142
+"Alacuás","Alacuas",39.4583,-0.4628,"Spain","Valencia",30022
+"Mahón","Mahon",39.8875,4.2611,"Spain","Balearic Islands",29902
+"Durango","Durango",43.1689,-2.63,"Spain","Basque Country",29887
+"San Andrés del Rabanedo","San Andres del Rabanedo",42.6167,-5.6,"Spain","Castille-Leon",29884
+"Puente-Genil","Puente-Genil",37.3833,-4.7667,"Spain","Andalusia",29844
+"Charneca","Charneca",38.6167,-9.1833,"Portugal","Setúbal",29763
+"Santiago do Cacém","Santiago do Cacem",38.0167,-8.7,"Portugal","Setúbal",29749
+"La Oliva","La Oliva",28.6111,-13.9278,"Spain","Canary Islands",29693
+"Benicarló","Benicarlo",40.4167,0.4167,"Spain","Valencia",29607
+"Rota","Rota",36.6167,-6.35,"Spain","Andalusia",29552
+"Perafita","Perafita",41.2239,-8.6989,"Portugal","Porto",29407
+"Póvoa de Santa Iria","Povoa de Santa Iria",38.8562,-9.0685,"Portugal","Lisboa",29348
+"Carmona","Carmona",37.4667,-5.6333,"Spain","Andalusia",29279
+"Lepe","Lepe",37.2542,-7.2033,"Spain","Andalusia",29241
+"Fundão","Fundao",40.1333,-7.5,"Portugal","Castelo Branco",29213
+"Redondela","Redondela",42.2833,-8.6167,"Spain","Galicia",29192
+"Benavente","Benavente",38.9833,-8.8167,"Portugal","Santarém",29019
+"Senhora da Hora","Senhora da Hora",41.1856,-8.6508,"Portugal","Porto",29000
+"Premiá de Mar","Premia de Mar",41.4919,2.3619,"Spain","Catalonia",28951
+"Tondela","Tondela",40.5164,-8.0808,"Portugal","Viseu",28946
+"Cártama","Cartama",36.7114,-4.6306,"Spain","Andalusia",28934
+"Arrentela","Arrentela",38.6267,-9.1036,"Portugal","Setúbal",28886
+"Vícar","Vicar",36.8317,-2.6431,"Spain","Andalusia",28835
+"Candelaria","Candelaria",28.3547,-16.3711,"Spain","Canary Islands",28795
+"San Pedro del Pinatar","San Pedro del Pinatar",37.8167,-0.75,"Spain","Murcia",28706
+"Camas","Camas",37.4,-6.0333,"Spain","Andalusia",28705
+"Martorell","Martorell",41.477,1.928,"Spain","Catalonia",28507
+"Almazora","Almazora",39.9403,-0.0625,"Spain","Valencia",28497
+"Sueca","Sueca",39.2,-0.3114,"Spain","Valencia",28480
+"San Vicente dels Horts","San Vicente dels Horts",41.3953,2.0108,"Spain","Catalonia",28406
+"Sestao","Sestao",43.3108,-3.0056,"Spain","Basque Country",28228
+"Villaviciosa de Odón","Villaviciosa de Odon",40.3583,-3.9033,"Spain","Madrid",28152
+"Massamá","Massama",38.7568,-9.2748,"Portugal","Lisboa",28112
+"Seseña","Sesena",40.1036,-3.6981,"Spain","Castille-La Mancha",28102
+"Algemesí","Algemesi",39.1897,-0.4378,"Spain","Valencia",27968
+"Muchamiel","Muchamiel",38.4136,-0.4456,"Spain","Valencia",27761
+"Paiporta","Paiporta",39.4278,-0.4183,"Spain","Valencia",27748
+"Lebrija","Lebrija",36.9194,-6.0781,"Spain","Andalusia",27745
+"Alhaurín el Grande","Alhaurin el Grande",36.6331,-4.6831,"Spain","Andalusia",27647
+"Bétera","Betera",39.5933,-0.4628,"Spain","Valencia",27584
+"Anadia","Anadia",40.4333,-8.4333,"Portugal","Aveiro",27532
+"Águas Santas","Aguas Santas",41.2106,-8.5866,"Portugal","Porto",27470
+"Arriaga","Arriaga",42.8667,-2.68,"Spain","Basque Country",27426
+"Almuñécar","Almunecar",36.7333,-3.6833,"Spain","Andalusia",27311
+"Jumilla","Jumilla",38.4792,-1.325,"Spain","Murcia",27263
+"Paracuellos de Jarama","Paracuellos de Jarama",40.55,-3.5167,"Spain","Madrid",27238
+"Morón de la Frontera","Moron de la Frontera",37.1222,-5.4517,"Spain","Andalusia",27228
+"Santa Eugenia","Santa Eugenia",42.5667,-8.9833,"Spain","Galicia",27111
+"San Andrés de la Barca","San Andres de la Barca",41.4478,1.9769,"Spain","Catalonia",27062
+"Estarreja","Estarreja",40.75,-8.5667,"Portugal","Aveiro",26997
+"Molíns de Rey","Molins de Rey",41.4139,2.0158,"Spain","Catalonia",26948
+"Calpe","Calpe",38.6444,0.0461,"Spain","Valencia",26821
+"Cangas","Cangas",42.2642,-8.7819,"Spain","Galicia",26714
+"Lamego","Lamego",41.0975,-7.81,"Portugal","Viseu",26691
+"Peniche","Peniche",39.3633,-9.3792,"Portugal","Leiria",26431
+"Estoril","Estoril",38.7057,-9.3977,"Portugal","Lisboa",26399
+"Alboraya","Alboraya",39.5,-0.3522,"Spain","Valencia",26259
+"Novelda","Novelda",38.385,-0.768,"Spain","Valencia",26213
+"Montemor-o-Velho","Montemor-o-Velho",40.1725,-8.6847,"Portugal","Coimbra",26171
+"Tavira","Tavira",37.1309,-7.6506,"Portugal","Faro",26167
+"Ciempozuelos","Ciempozuelos",40.1592,-3.6183,"Spain","Madrid",26140
+"Oliva","Oliva",38.9194,-0.1211,"Spain","Valencia",26122
+"Odemira","Odemira",37.5833,-8.6333,"Portugal","Beja",26066
+"Santa Perpetua de Moguda","Santa Perpetua de Moguda",41.5375,2.1819,"Spain","Catalonia",25960
+"San Juan de Alicante","San Juan de Alicante",38.4014,-0.4367,"Spain","Valencia",25918
+"Onda","Onda",39.9625,-0.2639,"Spain","Valencia",25817
+"Coín","Coin",36.6667,-4.75,"Spain","Andalusia",25809
+"Villanueva de la Serena","Villanueva de la Serena",38.9667,-5.8,"Spain","Extremadura",25784
+"Lourinhã","Lourinha",39.2425,-9.3122,"Portugal","Lisboa",25735
+"Adra","Adra",36.7478,-3.0161,"Spain","Andalusia",25515
+"Tomares","Tomares",37.3764,-6.0458,"Spain","Andalusia",25488
+"Armilla","Armilla",37.15,-3.6167,"Spain","Andalusia",25405
+"Torrelodones","Torrelodones",40.5756,-3.9292,"Spain","Madrid",25316
+"Villarrobledo","Villarrobledo",39.2667,-2.6,"Spain","Castille-La Mancha",25262
+"Albergaria-a-Velha","Albergaria-a-Velha",40.6936,-8.4806,"Portugal","Aveiro",25252
+"Liria","Liria",39.6258,-0.5942,"Spain","Valencia",25077
+"Calahorra","Calahorra",42.3,-1.9667,"Spain","La Rioja",25064
+"Valls","Valls",41.2883,1.2519,"Spain","Catalonia",25047
+"Pinhal Novo","Pinhal Novo",38.6297,-8.9136,"Portugal","Setúbal",25000
+"Portalegre","Portalegre",39.3167,-7.4167,"Portugal","Portalegre",24930
+"Almonte","Almonte",37.2667,-6.5167,"Spain","Andalusia",24863
+"Gáldar","Galdar",28.1439,-15.6503,"Spain","Canary Islands",24811
+"Cambre","Cambre",43.283,-8.333,"Spain","Galicia",24781
+"Galdácano","Galdacano",43.2306,-2.8458,"Spain","Basque Country",24774
+"Olesa de Montserrat","Olesa de Montserrat",41.545,1.8944,"Spain","Catalonia",24677
+"Erandio","Erandio",43.3047,-2.9731,"Spain","Basque Country",24662
+"Cartaxo","Cartaxo",39.1619,-8.7864,"Portugal","Santarém",24462
+"Los Barrios","Los Barrios",36.1833,-5.4833,"Spain","Andalusia",24404
+"Martos","Martos",37.7167,-3.9667,"Spain","Andalusia",24363
+"Porto de Mós","Porto de Mos",39.6,-8.8167,"Portugal","Leiria",24342
+"Icod de los Vinos","Icod de los Vinos",28.35,-16.7,"Spain","Canary Islands",24285
+"Almansa","Almansa",38,52,"Spain","Castille-La Mancha",24281
+"Mairena del Alcor","Mairena del Alcor",37.3667,-5.7333,"Spain","Andalusia",24238
+"Ibi","Ibi",38.6272,-0.5753,"Spain","Valencia",24210
+"Cullera","Cullera",39.1639,-0.2517,"Spain","Andalusia",24181
+"Marín","Marin",42.3933,-8.7,"Spain","Galicia",24154
+"Pontinha","Pontinha",38.7678,-9.1994,"Portugal","Lisboa",24023
+"Conil de la Frontera","Conil de la Frontera",36.2667,-6.0833,"Spain","Andalusia",23996
+"Altea","Altea",38.5986,-0.0519,"Spain","Valencia",23963
+"Mejorada del Campo","Mejorada del Campo",40.3967,-3.3858,"Spain","Madrid",23897
+"Mirandela","Mirandela",41.4833,-7.1833,"Portugal","Bragança",23850
+"Pilar de la Horadada","Pilar de la Horadada",37.8667,-0.7833,"Spain","Valencia",23844
+"Vilaseca de Solcina","Vilaseca de Solcina",41.1108,1.145,"Spain","Catalonia",23826
+"Vizela","Vizela",41.3833,-8.3,"Portugal","Porto",23736
+"Alhama de Murcia","Alhama de Murcia",37.8514,-1.4264,"Spain","Murcia",23578
+"Moguer","Moguer",37,16,"Spain","Andalusia",23551
+"Teguise","Teguise",29.05,-13.5667,"Spain","Canary Islands",23411
+"Almeirim","Almeirim",39.209,-8.6164,"Portugal","Santarém",23376
+"Zarautz","Zarautz",43.2833,-2.1667,"Spain","Basque Country",23370
+"Caniço","Canico",32.6412,-16.8504,"Portugal","Madeira",23361
+"Puenteareas","Puenteareas",42.1667,-8.5,"Spain","Galicia",23196
+"São Mamede de Infesta","Sao Mamede de Infesta",41.1934,-8.6143,"Portugal","Porto",23122
+"Fânzeres","Fanzeres",41.1667,-8.5333,"Portugal","Porto",23108
+"San Juan de Aznalfarache","San Juan de Aznalfarache",37.3667,-6.0167,"Spain","Andalusia",23090
+"Oliveira do Bairro","Oliveira do Bairro",40.5167,-8.5,"Portugal","Aveiro",23028
+"Lagoa","Lagoa",37.1347,-8.4528,"Portugal","Faro",22975
+"Bormujos","Bormujos",37.3667,-6.0667,"Spain","Andalusia",22970
+"San Felíu de Guixols","San Feliu de Guixols",41.7833,3.0333,"Spain","Catalonia",22934
+"Laguna de Duero","Laguna de Duero",41.5833,-4.7167,"Spain","Castille-Leon",22907
+"El Palmar","El Palmar",37.9422,-1.1614,"Spain","Murcia",22897
+"Vale de Cambra","Vale de Cambra",40.85,-8.4,"Portugal","Aveiro",22864
+"Vagos","Vagos",40.5553,-8.6814,"Portugal","Aveiro",22851
+"Arcos de Valdevez","Arcos de Valdevez",41.85,-8.4167,"Portugal","Viana do Castelo",22847
+"Villanueva de la Cañada","Villanueva de la Canada",40.45,-3.9833,"Spain","Madrid",22845
+"Torre del Mar","Torre del Mar",36.75,-4.0833,"Spain","Andalusia",22819
+"Barbate de Franco","Barbate de Franco",36.1833,-5.9167,"Spain","Andalusia",22709
+"Picasent","Picasent",39.3611,-0.46,"Spain","Valencia",22695
+"Guía de Isora","Guia de Isora",28.211,-16.7784,"Spain","Canary Islands",22642
+"Esparraguera","Esparraguera",41.5381,1.8692,"Spain","Catalonia",22550
+"Aljaraque","Aljaraque",37.2667,-7.0167,"Spain","Andalusia",22489
+"Almoradí","Almoradi",38.1097,-0.7894,"Spain","Valencia",22464
+"Las Torres de Cotillas","Las Torres de Cotillas",38.0264,-1.2436,"Spain","Andalusia",22406
+"Arouca","Arouca",40.9289,-8.2436,"Portugal","Aveiro",22359
+"Montilla","Montilla",37.5833,-4.6333,"Spain","Andalusia",22333
+"Maracena","Maracena",37.2,-3.6333,"Spain","Andalusia",22310
+"Lordelo do Ouro","Lordelo do Ouro",41.1532,-8.6509,"Portugal","Porto",22270
+"Nerja","Nerja",36.7469,-3.8789,"Spain","Andalusia",22187
+"Salvaterra de Magos","Salvaterra de Magos",39.0253,-8.7933,"Portugal","Santarém",22159
+"Alfafar","Alfafar",39.4222,-0.3906,"Spain","Valencia",22131
+"Meixedo","Meixedo",41.8522,-6.7706,"Portugal","Bragança",22016
+"Moncada","Moncada",39.5431,-0.3928,"Spain","Valencia",21993
+"Aspe","Aspe",38.3456,-0.7689,"Spain","Valencia",21969
+"Póvoa de Lanhoso","Povoa de Lanhoso",41.5667,-8.2667,"Portugal","Braga",21886
+"Machico","Machico",32.7,-16.7667,"Portugal","Madeira",21828
+"Priego de Córdoba","Priego de Cordoba",37.4333,-4.1833,"Spain","Andalusia",21826
+"Azambuja","Azambuja",39.0667,-8.8667,"Portugal","Lisboa",21814
+"Seia","Seia",40.4203,-7.7033,"Portugal","Guarda",21755
+"Güimar","Guimar",28.315,-16.41,"Spain","Canary Islands",21716
+"Amposta","Amposta",40.7106,0.5808,"Spain","Catalonia",21715
+"São João da Madeira","Sao Joao da Madeira",40.9,-8.5,"Portugal","Aveiro",21713
+"Isla-Cristina","Isla-Cristina",37.1992,-7.3214,"Spain","Andalusia",21641
+"Ayamonte","Ayamonte",37.2,-7.4,"Spain","Andalusia",21622
+"Pájara","Pajara",28.3511,-14.1075,"Spain","Canary Islands",21614
+"Bougado","Bougado",41.3306,-8.5371,"Portugal","Porto",21585
+"Torrox","Torrox",36.75,-3.95,"Spain","Andalusia",21583
+"Alcalá la Real","Alcala la Real",37.45,-3.9167,"Spain","Andalusia",21581
+"Cartaya","Cartaya",37.2833,-7.15,"Spain","Andalusia",21408
+"Manlleu","Manlleu",42,2.2836,"Spain","Catalonia",21348
+"Alcudia","Alcudia",39.8525,3.1192,"Spain","Balearic Islands",21322
+"Carcagente","Carcagente",39.1222,-0.4489,"Spain","Valencia",21317
+"Puzol","Puzol",39.6167,-0.3011,"Spain","Valencia",21298
+"Cacém","Cacem",38.7704,-9.3081,"Portugal","Lisboa",21289
+"Vialonga","Vialonga",38.874,-9.0834,"Portugal","Lisboa",21261
+"Rio Maior","Rio Maior",39.3333,-8.9333,"Portugal","Santarém",21192
+"Mogán","Mogan",27.8667,-15.7167,"Spain","Canary Islands",21175
+"Belas","Belas",38.7772,-9.2608,"Portugal","Lisboa",21172
+"San Juan de Vilasar","San Juan de Vilasar",41.506,2.391,"Spain","Catalonia",21162
+"La Unión","La Union",37.6192,-0.8756,"Spain","Murcia",21153
+"Palafrugell","Palafrugell",41.9174,3.1631,"Spain","Catalonia",21049
+"Praia da Vitória","Praia da Vitoria",38.7333,-27.0667,"Portugal","Azores",21035
+"Laranjeira","Laranjeira",38.6567,-9.1497,"Portugal","Setúbal",20988
+"Archena","Archena",38.115,-1.2992,"Spain","Murcia",20976
+"Sant Just Desvern","Sant Just Desvern",41.383,2.075,"Spain","Catalonia",20881
+"Oliveira do Hospital","Oliveira do Hospital",40.3667,-7.8667,"Portugal","Coimbra",20855
+"Loja","Loja",37.1667,-4.15,"Spain","Andalusia",20846
+"Algete","Algete",40.5978,-3.5003,"Spain","Madrid",20767
+"Ul","Ul",40.8192,-8.499,"Portugal","Aveiro",20760
+"Oliveira de Azemeis","Oliveira de Azemeis",40.84,-8.4764,"Portugal","Aveiro",20760
+"Requena","Requena",39.4861,-1.1017,"Spain","Valencia",20740
+"Elvas","Elvas",38.88,-7.1628,"Portugal","Portalegre",20706
+"Los Llanos de Aridane","Los Llanos de Aridane",28.65,-17.9,"Spain","Canary Islands",20648
+"Huércal-Overa","Huercal-Overa",37.3833,-1.9333,"Spain","Andalusia",20609
+"Bañolas","Banolas",42.1194,2.7664,"Spain","Catalonia",20599
+"Baza","Baza",37.4833,-2.7667,"Spain","Andalusia",20562
+"Palma del Río","Palma del Rio",37.7,-5.2833,"Spain","Andalusia",20546
+"Baião","Baiao",41.1667,-8.0333,"Portugal","Porto",20522
+"Alza","Alza",43.3139,-1.9347,"Spain","Basque Country",20480
+"Atarfe","Atarfe",37.2229,-3.6899,"Spain","Andalusia",20455
+"Costas de Cão","Costas de Cao",38.664,-9.2,"Portugal","Setúbal",20454
+"Caparica","Caparica",38.6683,-9.19,"Portugal","Setúbal",20454
+"Mealhada","Mealhada",40.3781,-8.4514,"Portugal","Aveiro",20428
+"Cinfães","Cinfaes",41.0667,-8.0833,"Portugal","Viseu",20427
+"Calella","Calella",41.6128,2.6575,"Spain","Catalonia",20369
+"Rosas","Rosas",42.2631,3.1831,"Spain","Catalonia",20362
+"Hernani","Hernani",43.2667,-1.9667,"Spain","Basque Country",20355
+"Benicasim","Benicasim",40.0553,0.0642,"Spain","Valencia",20322
+"Lalín","Lalin",42.65,-8.1167,"Spain","Galicia",20277
+"Entroncamento","Entroncamento",39.4667,-8.4667,"Portugal","Santarém",20206
+"Silla","Silla",39.3611,-0.4114,"Spain","Valencia",20117
+"Celorico de Basto","Celorico de Basto",41.3869,-8.0022,"Portugal","Braga",20098
+"Medina del Campo","Medina del Campo",41.3,-4.9167,"Spain","Castille-Leon",20097
+"Cabra","Cabra",37,28,"Spain","Andalusia",20024
+"Alfena","Alfena",41.2381,-8.5253,"Portugal","Porto",20000
+"Coruche","Coruche",38.9581,-8.5283,"Portugal","Santarém",19944
+"San Martín de la Vega","San Martin de la Vega",40.2094,-3.5722,"Spain","Madrid",19927
+"Chipiona","Chipiona",36.7333,-6.4333,"Spain","Andalusia",19915
+"Piedade","Piedade",38.6703,-9.1595,"Portugal","Setúbal",19904
+"Tolosa","Tolosa",43.1333,-2.0833,"Spain","Basque Country",19886
+"Calatayud","Calatayud",41.35,-1.6333,"Spain","Aragon",19850
+"Humanes de Madrid","Humanes de Madrid",40.2539,-3.8278,"Spain","Madrid",19838
+"Callosa de Segura","Callosa de Segura",38.1225,-0.8797,"Spain","Valencia",19658
+"Barañáin","Baranain",42.8,-1.6667,"Spain","Navarre",19606
+"La Eliana","La Eliana",39.5661,-0.5281,"Spain","Valencia",19597
+"Albolote","Albolote",37.2306,-3.6569,"Spain","Andalusia",19587
+"Amorebieta","Amorebieta",43.2192,-2.7342,"Spain","Basque Country",19570
+"Los Alcázares","Los Alcazares",37.7436,-0.8497,"Spain","Murcia",19506
+"Vera","Vera",37.25,-1.8667,"Spain","Andalusia",19488
+"San Bartolomé","San Bartolome",29.0016,-13.6139,"Spain","Canary Islands",19443
+"El Arahal","El Arahal",37.2667,-5.55,"Spain","Andalusia",19417
+"Marchena","Marchena",37.3333,-5.4167,"Spain","Andalusia",19382
+"Malgrat de Mar","Malgrat de Mar",41.65,2.75,"Spain","Catalonia",19377
+"Moaña","Moana",42.2833,-8.75,"Spain","Galicia",19315
+"El Viso del Alcor","El Viso del Alcor",37.3833,-5.7167,"Spain","Andalusia",19310
+"Soure","Soure",40.0688,-8.6277,"Portugal","Coimbra",19245
+"Monção","Moncao",42.0733,-8.48,"Portugal","Viana do Castelo",19230
+"La Corredoría","La Corredoria",43.3853,-5.8208,"Spain","Asturias",19191
+"Vila Real de Santo António","Vila Real de Santo Antonio",37.2,-7.4167,"Portugal","Faro",19156
+"Cardedeu","Cardedeu",41.6406,2.3594,"Spain","Catalonia",19064
+"Utebo","Utebo",41.7167,-1,"Spain","Aragon",19022
+"Boiro","Boiro",42.65,-8.9,"Spain","Galicia",18976
+"Amares","Amares",41.6333,-8.35,"Portugal","Braga",18889
+"Felanitx","Felanitx",39.4669,3.1483,"Spain","Balearic Islands",18850
+"Camarate","Camarate",38.8062,-9.1412,"Portugal","Lisboa",18822
+"La Nucía","La Nucia",38.6172,-0.1231,"Spain","Valencia",18783
+"San Celoni","San Celoni",41.69,2.49,"Spain","Catalonia",18761
+"San Lorenzo de El Escorial","San Lorenzo de El Escorial",40.5936,-4.1428,"Spain","Madrid",18735
+"Guadix","Guadix",37.3006,-3.135,"Spain","Andalusia",18725
+"Fuente-Álamo de Murcia","Fuente-Alamo de Murcia",37.7394,-1.1881,"Spain","Murcia",18719
+"Tarifa","Tarifa",36.014,-5.606,"Spain","Andalusia",18664
+"Villaquilambre","Villaquilambre",42.6167,-5.6,"Spain","Castille-Leon",18647
+"Huércal de Almería","Huercal de Almeria",36.8833,-2.4333,"Spain","Andalusia",18584
+"Santa Brígida","Santa Brigida",28.0338,-15.4998,"Spain","Canary Islands",18551
+"Tárrega","Tarrega",41.6469,1.1392,"Spain","Catalonia",18542
+"Sacavém","Sacavem",38.7944,-9.1053,"Portugal","Lisboa",18469
+"El Astillero","El Astillero",43.4017,-3.8194,"Spain","Cantabria",18467
+"Baena","Baena",37.6167,-4.3167,"Spain","Andalusia",18436
+"Tordera","Tordera",41.7008,2.72,"Spain","Catalonia",18409
+"Caldas de Montbuy","Caldas de Montbuy",41.6292,2.1694,"Spain","Catalonia",18336
+"Mangualde","Mangualde",40.6058,-7.7658,"Portugal","Viseu",18303
+"Monforte de Lemos","Monforte de Lemos",42.5164,-7.5161,"Spain","Galicia",18242
+"Santa Iria da Azóia","Santa Iria da Azoia",38.8464,-9.0881,"Portugal","Lisboa",18240
+"Nigrán","Nigran",42.1419,-8.8056,"Spain","Galicia",18208
+"Lora del Río","Lora del Rio",37.65,-5.5167,"Spain","Andalusia",18189
+"Yaiza","Yaiza",28.955,-13.7667,"Spain","Canary Islands",18113
+"Guardamar del Segura","Guardamar del Segura",38.0897,-0.655,"Spain","Valencia",18111
+"Manilva","Manilva",36.3833,-5.25,"Spain","Andalusia",18099
+"São Tiago de Custoias","Sao Tiago de Custoias",41.2069,-8.6485,"Portugal","Porto",18065
+"Munguía","Munguia",43.3547,-2.8472,"Spain","Basque Country",17997
+"Torredembarra","Torredembarra",41.15,1.4,"Spain","Catalonia",17984
+"Sangenjo","Sangenjo",42.4017,-8.8067,"Spain","Galicia",17914
+"Parede","Parede",38.6933,-9.3569,"Portugal","Lisboa",17830
+"Lumbreras","Lumbreras",37.5633,-1.8072,"Spain","Murcia",17822
+"Manzanares","Manzanares",38.9964,-3.3731,"Spain","Castille-La Mancha",17745
+"Balaguer","Balaguer",41.79,0.805,"Spain","Catalonia",17705
+"Monzón","Monzon",41.91,0.19,"Spain","Aragon",17650
+"Daimiel","Daimiel",39.0833,-3.6167,"Spain","Castille-La Mancha",17645
+"Tabernes de Valldigna","Tabernes de Valldigna",39.0722,-0.2658,"Spain","Valencia",17631
+"Lousã","Lousa",40.1125,-8.2469,"Portugal","Coimbra",17604
+"Pollensa","Pollensa",39.8772,3.0164,"Spain","Balearic Islands",17594
+"Mula","Mula",38.0419,-1.4906,"Spain","Murcia",17585
+"Alcochete","Alcochete",38.7553,-8.9608,"Portugal","Setúbal",17569
+"Barbastro","Barbastro",42.0361,0.1264,"Spain","Aragon",17558
+"Piera","Piera",41.5222,1.7494,"Spain","Catalonia",17555
+"Montemor-o-Novo","Montemor-o-Novo",38.65,-8.2167,"Portugal","Évora",17437
+"Poyo","Poyo",42.4333,-8.6667,"Spain","Galicia",17425
+"Villanueva del Pardillo","Villanueva del Pardillo",40.4833,-3.9667,"Spain","Madrid",17382
+"Osuna","Osuna",37.2333,-5.1,"Spain","Andalusia",17374
+"Canovellas","Canovellas",41.6203,2.2847,"Spain","Catalonia",17312
+"La Garriga","La Garriga",41.6833,2.2833,"Spain","Catalonia",17305
+"Bailén","Bailen",38.0833,-3.7667,"Spain","Andalusia",17264
+"Benavente","Benavente",42.0031,-5.6742,"Spain","Castille-Leon",17246
+"Chiva","Chiva",39.4714,-0.7197,"Spain","Valencia",17245
+"Cubellas","Cubellas",41,12,"Spain","Catalonia",17243
+"Masamagrell","Masamagrell",39.5703,-0.33,"Spain","Valencia",17216
+"Rojales","Rojales",38.0833,-0.7167,"Spain","Valencia",17162
+"Berga","Berga",42.1011,1.8439,"Spain","Catalonia",17160
+"Castilleja de la Cuesta","Castilleja de la Cuesta",37.3833,-6.05,"Spain","Andalusia",17153
+"Sada","Sada",43.35,-8.25,"Spain","Galicia",17140
+"Peso da Régua","Peso da Regua",41.1632,-7.789,"Portugal","Vila Real",17131
+"Ejea de los Caballeros","Ejea de los Caballeros",42.1292,-1.1372,"Spain","Aragon",17124
+"Montornés del Vallés","Montornes del Valles",41.5333,2.2667,"Spain","Catalonia",17089
+"Condeixa-a-Nova","Condeixa-a-Nova",40.1167,-8.5,"Portugal","Coimbra",17078
+"Guadarrama","Guadarrama",40.6728,-4.0889,"Spain","Madrid",17062
+"Bermeo","Bermeo",43.42,-2.7264,"Spain","Basque Country",17042
+"Albal","Albal",39.3972,-0.4156,"Spain","Valencia",17038
+"Guernica y Luno","Guernica y Luno",43.3167,-2.6667,"Spain","Basque Country",17033
+"Navalmoral de la Mata","Navalmoral de la Mata",39.8983,-5.5403,"Spain","Extremadura",17028
+"Pozoblanco","Pozoblanco",38.3833,-4.85,"Spain","Andalusia",16946
+"São Pedro do Sul","Sao Pedro do Sul",40.75,-8.0667,"Portugal","Viseu",16851
+"Sobrado de Paiva","Sobrado de Paiva",41.0444,-8.2769,"Portugal","Aveiro",16733
+"Ponte de Sôr","Ponte de Sor",39.2478,-8.0097,"Portugal","Portalegre",16722
+"Zafra","Zafra",38.4167,-6.4167,"Spain","Extremadura",16711
+"Cabeceiras de Basto","Cabeceiras de Basto",41.5167,-8,"Portugal","Braga",16710
+"Churriana de la Vega","Churriana de la Vega",37.15,-3.65,"Spain","Andalusia",16693
+"La Algaba","La Algaba",37.45,-6,"Spain","Andalusia",16666
+"Arenys de Mar","Arenys de Mar",41.5819,2.5503,"Spain","Catalonia",16642
+"El Escorial","El Escorial",40.5817,-4.1258,"Spain","Madrid",16618
+"Espartinas","Espartinas",37.3833,-6.1167,"Spain","Andalusia",16482
+"Tuineje","Tuineje",28.325,-14.0486,"Spain","Canary Islands",16454
+"Ubrique","Ubrique",36.6833,-5.45,"Spain","Andalusia",16439
+"Carlet","Carlet",39.2264,-0.5211,"Spain","Valencia",16428
+"Las Cabezas de San Juan","Las Cabezas de San Juan",36.9817,-5.9406,"Spain","Andalusia",16410
+"Benetúser","Benetuser",39.425,-0.3961,"Spain","Valencia",16322
+"Santomera","Santomera",38.0617,-1.0492,"Spain","Murcia",16320
+"Alcañiz","Alcaniz",41.0511,-0.1336,"Spain","Aragon",16247
+"Aguadulce","Aguadulce",36.7642,-2.6147,"Spain","Andalusia",16176
+"Punta Umbría","Punta Umbria",37.1667,-6.95,"Spain","Andalusia",16137
+"Quarteira","Quarteira",37.0695,-8.1006,"Portugal","Faro",16131
+"Vallirana","Vallirana",41.3878,1.9322,"Spain","Catalonia",15985
+"Sertã","Serta",39.8008,-8.1003,"Portugal","Castelo Branco",15880
+"Villalbilla","Villalbilla",40.4339,-3.2989,"Spain","Madrid",15866
+"Miguelturra","Miguelturra",38.9667,-3.95,"Spain","Castille-La Mancha",15834
+"Batalha","Batalha",39.6603,-8.8247,"Portugal","Leiria",15805
+"Cunit","Cunit",41.1983,1.6406,"Spain","Catalonia",15804
+"Tarancón","Tarancon",40.0167,-3,"Spain","Castille-La Mancha",15799
+"Macedo de Cavaleiros","Macedo de Cavaleiros",41.5333,-6.95,"Portugal","Bragança",15776
+"Ramada","Ramada",38.8036,-9.1911,"Portugal","Lisboa",15770
+"Meco","Meco",40.5539,-3.3261,"Spain","Madrid",15732
+"Corbera de Llobregat","Corbera de Llobregat",41.4169,1.9314,"Spain","Catalonia",15726
+"Baeza","Baeza",37.9833,-3.4667,"Spain","Andalusia",15677
+"Ermúa","Ermua",43.1875,-2.5008,"Spain","Basque Country",15627
+"Serpa","Serpa",37.9333,-7.5833,"Portugal","Beja",15623
+"La Roda","La Roda",39.207,-2.1604,"Spain","Castille-La Mancha",15610
+"Santa Cruz de la Palma","Santa Cruz de la Palma",28.6825,-17.765,"Spain","Canary Islands",15565
+"Mollerusa","Mollerusa",41.6319,0.8961,"Spain","Catalonia",15544
+"Montijo","Montijo",38.91,-6.6175,"Spain","Extremadura",15483
+"Fraga","Fraga",41.52,0.35,"Spain","Aragon",15390
+"Santa Úrsula","Santa Ursula",28.425,-16.4917,"Spain","Canary Islands",15386
+"Villaviciosa","Villaviciosa",43.4833,-5.4333,"Spain","Asturias",15342
+"Castro Daire","Castro Daire",40.9,-7.9333,"Portugal","Viseu",15339
+"Santafé","Santafe",37.1894,-3.7181,"Spain","Andalusia",15269
+"Penacova","Penacova",40.2667,-8.2667,"Portugal","Coimbra",15251
+"Cuevas del Almanzora","Cuevas del Almanzora",37.3,-1.8667,"Spain","Andalusia",15246
+"La Solana","La Solana",38.65,-3.0667,"Spain","Castille-La Mancha",15225
+"Arnedo","Arnedo",42.2167,-2.1,"Spain","La Rioja",15219
+"Vieiro","Vieiro",43.6481,-7.59,"Spain","Galicia",15217
+"Azpeitia","Azpeitia",43.1819,-2.2653,"Spain","Basque Country",15208
+"Moura","Moura",38.1397,-7.4505,"Portugal","Beja",15167
+"Sobreda","Sobreda",38.6496,-9.1898,"Portugal","Setúbal",15166
+"Nazaré","Nazare",39.6,-9.0667,"Portugal","Leiria",15158
+"Canet de Mar","Canet de Mar",41.5833,2.5833,"Spain","Catalonia",15140
+"Cuarte de Huerva","Cuarte de Huerva",41.5833,-0.9167,"Spain","Aragon",15112
+"Gondomar","Gondomar",42.1111,-8.7611,"Spain","Galicia",15103
+"Torelló","Torello",42.0495,2.265,"Spain","Catalonia",15093
+"Ogíjares","Ogijares",37.1167,-3.6,"Spain","Andalusia",15063
+"Alpedrete","Alpedrete",40.6583,-4.0322,"Spain","Madrid",15006
+"Sopelana","Sopelana",43.3814,-2.9792,"Spain","Basque Country",14940
+"Grândola","Grandola",38.1768,-8.5689,"Portugal","Setúbal",14826
+"Anta","Anta",41.0073,-8.625,"Portugal","Aveiro",14800
+"La Carolina","La Carolina",38.2667,-3.6167,"Spain","Andalusia",14681
+"Santa Marta de Tormes","Santa Marta de Tormes",40.9494,-5.6325,"Spain","Castille-Leon",14661
+"Alginet","Alginet",39.2625,-0.4683,"Spain","Valencia",14652
+"Andoain","Andoain",43.2167,-2.0167,"Spain","Basque Country",14563
+"Falagueira","Falagueira",38.7589,-9.2261,"Portugal","Lisboa",14530
+"Cadaval","Cadaval",39.25,-9.1,"Portugal","Lisboa",14525
+"Cehegín","Cehegin",38.0925,-1.7989,"Spain","Murcia",14476
+"Ocaña","Ocana",39.9569,-3.4967,"Spain","Castille-La Mancha",14469
+"Lagoa","Lagoa",37.75,-25.5833,"Portugal","Azores",14442
+"Valbom","Valbom",41.1333,-8.5667,"Portugal","Porto",14407
+"La Carlota","La Carlota",37.6667,-4.9333,"Spain","Andalusia",14381
+"Sanlúcar la Mayor","Sanlucar la Mayor",37.3831,-6.2,"Spain","Andalusia",14375
+"Bollullos par del Condado","Bollullos par del Condado",37.3358,-6.5364,"Spain","Andalusia",14359
+"Horta","Horta",38.5333,-28.6333,"Portugal","Azores",14331
+"Estremoz","Estremoz",38.8422,-7.5881,"Portugal","Évora",14318
+"Sines","Sines",37.9547,-8.8642,"Portugal","Setúbal",14238
+"São Martinho do Bispo","Sao Martinho do Bispo",40.2092,-8.4765,"Portugal","Coimbra",14147
+"Valença","Valenca",42.0282,-8.6339,"Portugal","Viana do Castelo",14127
+"Pilas","Pilas",37.3017,-6.2986,"Spain","Andalusia",14105
+"Torrijos","Torrijos",39.9833,-4.2814,"Spain","Castille-La Mancha",14099
+"Noya","Noya",42.7833,-8.8833,"Spain","Galicia",14092
+"Nules","Nules",39.8525,-0.1506,"Spain","Valencia",14062
+"Gouveia","Gouveia",40.5,-7.6,"Portugal","Guarda",14046
+"Nelas","Nelas",40.5167,-7.85,"Portugal","Viseu",14037
+"Gafanha da Nazaré","Gafanha da Nazare",40.6333,-8.7167,"Portugal","Aveiro",14021
+"Beasain","Beasain",43.0458,-2.1894,"Spain","Basque Country",13961
+"Torre del Campo","Torre del Campo",37.7667,-3.8833,"Spain","Andalusia",13944
+"Llanera","Llanera",43.4667,-5.9333,"Spain","Asturias",13938
+"Moralzarzal","Moralzarzal",40.675,-3.9694,"Spain","Madrid",13905
+"Jaca","Jaca",42.55,-0.55,"Spain","Aragon",13883
+"Alcanena","Alcanena",39.4589,-8.6689,"Portugal","Santarém",13868
+"Santa Cruz de Bezana","Santa Cruz de Bezana",43.4442,-3.9031,"Spain","Cantabria",13832
+"Antigua","Antigua",28.4186,-14.0111,"Spain","Canary Islands",13832
+"Verín","Verin",41.9408,-7.4358,"Spain","Galicia",13798
+"Villalba","Villalba",43.3,-7.6833,"Spain","Galicia",13787
+"Tomiño","Tomino",41.9833,-8.7167,"Spain","Galicia",13782
+"San Agustín de Guadalix","San Agustin de Guadalix",40.6781,-3.615,"Spain","Madrid",13762
+"Santa Margarita","Santa Margarita",39.7033,3.1036,"Spain","Balearic Islands",13757
+"Cambados","Cambados",42.5,-8.8,"Spain","Galicia",13752
+"Sóller","Soller",39.7675,2.714,"Spain","Balearic Islands",13744
+"Santa Coloma de Farnés","Santa Coloma de Farnes",41.8647,2.6642,"Spain","Catalonia",13657
+"Llanes","Llanes",43.4214,-4.7564,"Spain","Asturias",13549
+"Gines","Gines",37.3875,-6.0781,"Spain","Andalusia",13524
+"Sarria","Sarria",42.7833,-7.4167,"Spain","Galicia",13459
+"Valdemorillo","Valdemorillo",40.5017,-4.0667,"Spain","Madrid",13453
+"Canals","Canals",38.9611,-0.585,"Spain","Valencia",13415
+"Godella","Godella",39.52,-0.4114,"Spain","Valencia",13414
+"Arruda dos Vinhos","Arruda dos Vinhos",38.9833,-9.0667,"Portugal","Lisboa",13391
+"Ribeira Brava","Ribeira Brava",32.6722,-17.0639,"Portugal","Madeira",13375
+"Albatera","Albatera",38.1786,-0.8681,"Spain","Valencia",13296
+"Guillena","Guillena",37.5333,-6.05,"Spain","Andalusia",13279
+"Torredonjimeno","Torredonjimeno",37.7667,-3.95,"Spain","Andalusia",13261
+"Betanzos","Betanzos",43.2792,-8.2106,"Spain","Galicia",13261
+"Aldeia de Paio Pires","Aldeia de Paio Pires",38.6272,-9.0761,"Portugal","Setúbal",13258
+"Muriedas","Muriedas",43.4303,-3.8603,"Spain","Cantabria",13216
+"Fátima","Fatima",39.6256,-8.6658,"Portugal","Santarém",13212
+"Aguilar","Aguilar",37.5167,-4.65,"Spain","Andalusia",13210
+"Bombarral","Bombarral",39.2672,-9.1581,"Portugal","Leiria",13193
+"Vila Pouca de Aguiar","Vila Pouca de Aguiar",41.4833,-7.6333,"Portugal","Vila Real",13187
+"Gibraleón","Gibraleon",37.3753,-6.9694,"Spain","Andalusia",13144
+"Alovera","Alovera",40.5967,-3.2481,"Spain","Castille-La Mancha",13142
+"Miranda do Corvo","Miranda do Corvo",40.1,-8.3333,"Portugal","Coimbra",13098
+"La Llagosta","La Llagosta",41.5156,2.1928,"Spain","Catalonia",13085
+"Lamaçães","Lamacaes",41.5444,-8.3947,"Portugal","Braga",13054
+"Alcácer do Sal","Alcacer do Sal",38.3725,-8.5133,"Portugal","Setúbal",13046
+"Abrera","Abrera",41.5167,1.9,"Spain","Catalonia",13014
+"Abarán","Abaran",38.2031,-1.4003,"Spain","Murcia",13000
+"Vieira do Minho","Vieira do Minho",41.6333,-8.1333,"Portugal","Braga",12997
+"Castellbisbal","Castellbisbal",41.476,1.983,"Spain","Catalonia",12972
+"Berja","Berja",36.8453,-2.9469,"Spain","Andalusia",12939
+"Campo de Criptana","Campo de Criptana",39.4,-3.1167,"Spain","Castille-La Mancha",12932
+"Vejer de la Frontera","Vejer de la Frontera",36.25,-5.9667,"Spain","Andalusia",12915
+"Sant Sadurní d’Anoia","Sant Sadurni d'Anoia",41.4261,1.785,"Spain","Catalonia",12915
+"Moreira","Moreira",41.2486,-8.6497,"Portugal","Porto",12890
+"Santañy","Santany",39.3542,3.1283,"Spain","Balearic Islands",12887
+"Brenes","Brenes",37.55,-5.8667,"Spain","Andalusia",12883
+"Teror","Teror",28.0589,-15.5475,"Spain","Canary Islands",12878
+"Capdepera","Capdepera",39.7,3.4167,"Spain","Balearic Islands",12860
+"Argentona","Argentona",41.55,2.4,"Spain","Catalonia",12844
+"Aldoar","Aldoar",41.1695,-8.6671,"Portugal","Porto",12843
+"Ceuti","Ceuti",38.0789,-1.2722,"Spain","Murcia",12842
+"Teulada","Teulada",38.7292,0.1019,"Spain","Valencia",12834
+"Velilla de San Antonio","Velilla de San Antonio",40.3667,-3.4833,"Spain","Madrid",12770
+"Monóvar","Monovar",38.4369,-0.8381,"Spain","Valencia",12764
+"Vilanova del Camí","Vilanova del Cami",41.5667,1.6333,"Spain","Catalonia",12758
+"São Félix da Marinha","Sao Felix da Marinha",41.0339,-8.6233,"Portugal","Porto",12706
+"Palos de la Frontera","Palos de la Frontera",37.2283,-6.8944,"Spain","Andalusia",12663
+"Salobreña","Salobrena",36.7467,-3.5869,"Spain","Andalusia",12660
+"Mongat","Mongat",41.469,2.2805,"Spain","Catalonia",12625
+"Valverde del Camino","Valverde del Camino",37.5667,-6.75,"Spain","Andalusia",12611
+"Sabugal","Sabugal",40.3519,-7.0894,"Portugal","Guarda",12544
+"Fene","Fene",43.4667,-8.1667,"Spain","Galicia",12530
+"Torroella de Montgrí","Torroella de Montgri",42.0439,3.1286,"Spain","Catalonia",12521
+"Mira","Mira",40.4285,-8.7363,"Portugal","Coimbra",12465
+"Sátão","Satao",40.7333,-7.7167,"Portugal","Viseu",12444
+"Albox","Albox",37.3833,-2.1333,"Spain","Andalusia",12408
+"Estepa","Estepa",37.2917,-4.8792,"Spain","Andalusia",12394
+"Arcozelo","Arcozelo",41.0555,-8.6395,"Portugal","Porto",12393
+"Bayona","Bayona",42.1178,-8.8506,"Spain","Galicia",12380
+"Santiago del Teide","Santiago del Teide",28.2972,-16.8139,"Spain","Canary Islands",12373
+"Villafranca de los Barros","Villafranca de los Barros",38.5667,-6.3333,"Spain","Extremadura",12362
+"Sever do Vouga","Sever do Vouga",40.7167,-8.3667,"Portugal","Aveiro",12356
+"Benaguacil","Benaguacil",39.5933,-0.5864,"Spain","Valencia",12336
+"Benisa","Benisa",38.715,0.05,"Spain","Valencia",12317
+"Huétor Vega","Huetor Vega",37.15,-3.5667,"Spain","Andalusia",12294
+"Pola de Laviana","Pola de Laviana",43.2358,-5.5563,"Spain","Asturias",12284
+"Béjar","Bejar",40.3833,-5.7667,"Spain","Castille-Leon",12269
+"Son Servera","Son Servera",39.6208,3.36,"Spain","Balearic Islands",12261
+"Acalá del Río","Acala del Rio",37.5167,-5.9667,"Spain","Andalusia",12250
+"Villamartín","Villamartin",36.8667,-5.65,"Spain","Andalusia",12169
+"Campos del Puerto","Campos del Puerto",39.4306,3.0194,"Spain","Balearic Islands",12163
+"Castelló de Ampurias","Castello de Ampurias",42.2583,3.075,"Spain","Catalonia",12163
+"Socuéllamos","Socuellamos",39.2933,-2.7942,"Spain","Castille-La Mancha",12157
+"Arganil","Arganil",40.2183,-8.0542,"Portugal","Coimbra",12145
+"Benifayó","Benifayo",39.2847,-0.4281,"Spain","Valencia",12130
+"Coria","Coria",39.9819,-6.5372,"Spain","Extremadura",12114
+"Tábua","Tabua",40.3667,-8.0333,"Portugal","Coimbra",12071
+"Bolaños de Calatrava","Bolanos de Calatrava",38.8831,-3.7167,"Spain","Castille-La Mancha",12067
+"Andraitx","Andraitx",39.5833,2.4167,"Spain","Balearic Islands",12062
+"Ponte da Barca","Ponte da Barca",41.8078,-8.4194,"Portugal","Viana do Castelo",12061
+"Eiras","Eiras",40.2421,-8.424,"Portugal","Coimbra",12053
+"Fuensalida","Fuensalida",40.05,-4.2,"Spain","Castille-La Mancha",12004
+"Haro","Haro",42.5833,-2.85,"Spain","La Rioja",11979
+"Arrigorriaga","Arrigorriaga",43.2078,-2.8861,"Spain","Basque Country",11952
+"Alijó","Alijo",41.2764,-7.4749,"Portugal","Vila Real",11942
+"San Andrés de Llevaneras","San Andres de Llevaneras",41.5733,2.4828,"Spain","Catalonia",11933
+"Pulpí","Pulpi",37.4019,-1.7508,"Spain","Andalusia",11906
+"Picaña","Picana",39.4361,-0.435,"Spain","Valencia",11876
+"La Puebla del Río","La Puebla del Rio",37.2667,-6.05,"Spain","Andalusia",11871
+"Ciudad-Rodrigo","Ciudad-Rodrigo",40.5969,-6.5392,"Spain","Castille-Leon",11846
+"Vendas Novas","Vendas Novas",38.678,-8.4555,"Portugal","Évora",11846
+"Bueu","Bueu",42.3167,-8.7833,"Spain","Galicia",11837
+"Pallejá","Palleja",41.4242,1.9978,"Spain","Catalonia",11825
+"Portela","Portela",38.7828,-9.1111,"Portugal","Lisboa",11809
+"Bullas","Bullas",38.0497,-1.6706,"Spain","Murcia",11793
+"Oropesa","Oropesa",40.0922,0.1339,"Spain","Valencia",11785
+"Medina Sidonia","Medina Sidonia",36.4667,-5.9167,"Spain","Andalusia",11764
+"Olivenza","Olivenza",38.6858,-7.1008,"Spain","Extremadura",11742
+"Costa de Caparica","Costa de Caparica",38.6446,-9.2356,"Portugal","Setúbal",11707
+"Utiel","Utiel",39.5672,-1.2067,"Spain","Valencia",11703
+"Azcoitia","Azcoitia",43.1792,-2.3106,"Spain","Basque Country",11697
+"Óbidos","Obidos",39.362,-9.1571,"Portugal","Leiria",11689
+"Peligros","Peligros",37.2333,-3.6333,"Spain","Andalusia",11674
+"Lardero","Lardero",42.4333,-2.4667,"Spain","La Rioja",11658
+"Ansião","Ansiao",39.9167,-8.4333,"Portugal","Leiria",11642
+"Castalla","Castalla",38.5967,-0.6708,"Spain","Valencia",11622
+"Santa Comba Dão","Santa Comba Dao",40.3981,-8.1303,"Portugal","Viseu",11597
+"Elgóibar","Elgoibar",43.2142,-2.4169,"Spain","Basque Country",11585
+"Oñate","Onate",43.0333,-2.4167,"Spain","Basque Country",11537
+"Beniel","Beniel",38.0464,-1.0014,"Spain","Murcia",11535
+"Calheta","Calheta",32.7333,-17.1667,"Portugal","Madeira",11521
+"Cocentaina","Cocentaina",38.745,-0.4406,"Spain","Valencia",11451
+"Esmoriz","Esmoriz",40.962,-8.6295,"Portugal","Aveiro",11448
+"Cangas de Narcea","Cangas de Narcea",43.1714,-6.5389,"Spain","Asturias",11421
+"Tegueste","Tegueste",28.5167,-16.3333,"Spain","Canary Islands",11405
+"São João das Lampas","Sao Joao das Lampas",38.87,-9.4211,"Portugal","Lisboa",11392
+"Mancha Real","Mancha Real",37.7864,-3.6125,"Spain","Andalusia",11385
+"Jódar","Jodar",37.8333,-3.35,"Spain","Andalusia",11366
+"Resende","Resende",41.1,-7.95,"Portugal","Viseu",11364
+"Sonseca","Sonseca",39.7,-3.95,"Spain","Castille-La Mancha",11328
+"Bollullos de la Mitación","Bollullos de la Mitacion",37.3333,-6.1333,"Spain","Andalusia",11251
+"Beniaján","Beniajan",37.9833,-1.0667,"Spain","Murcia",11233
+"Berriozar","Berriozar",42.8361,-1.6714,"Spain","Navarre",11201
+"Fortuna","Fortuna",38.1789,-1.1233,"Spain","Murcia",11183
+"Barbadanes","Barbadanes",42.3003,-7.9064,"Spain","Galicia",11176
+"Quintanar de la Orden","Quintanar de la Orden",39.5906,-3.0428,"Spain","Castille-La Mancha",11129
+"Vila Frescainha","Vila Frescainha",41.5385,-8.6397,"Portugal","Braga",11108
+"Bargas","Bargas",39.94,-4.0194,"Spain","Castille-La Mancha",11099
+"Villamarchante","Villamarchante",39.5689,-0.6206,"Spain","Valencia",11041
+"Feira","Feira",40.9254,-8.5428,"Portugal","Aveiro",11040
+"Sant Joan de Vilatorrada","Sant Joan de Vilatorrada",41.75,1.8,"Spain","Catalonia",11017
+"Meliana","Meliana",39.5272,-0.3492,"Spain","Valencia",10990
+"Cabanillas del Campo","Cabanillas del Campo",40.6383,-3.2353,"Spain","Castille-La Mancha",10968
+"Alberique","Alberique",39.1167,-0.5211,"Spain","Valencia",10945
+"Cassá de la Selva","Cassa de la Selva",41.8892,2.8772,"Spain","Catalonia",10943
+"Santoña","Santona",43.4414,-3.4575,"Spain","Cantabria",10916
+"Sedaví","Sedavi",39.425,-0.385,"Spain","Valencia",10908
+"Brunete","Brunete",40.4,-3.9936,"Spain","Madrid",10845
+"Avintes","Avintes",41.1066,-8.5515,"Portugal","Porto",10838
+"Reguengos de Monsaraz","Reguengos de Monsaraz",38.4167,-7.5333,"Portugal","Évora",10828
+"Oliveirinha","Oliveirinha",40.6078,-8.5914,"Portugal","Aveiro",10817
+"Los Corrales de Buelna","Los Corrales de Buelna",43.2617,-4.0653,"Spain","Cantabria",10813
+"Yuncos","Yuncos",40.0833,-3.8667,"Spain","Castille-La Mancha",10813
+"La Puebla de Cazalla","La Puebla de Cazalla",37.2222,-5.3125,"Spain","Andalusia",10799
+"Tafalla","Tafalla",42.5277,-1.6745,"Spain","Navarre",10778
+"Laredo","Laredo",43.4144,-3.41,"Spain","Cantabria",10752
+"Rianxo","Rianxo",42.65,-8.8167,"Spain","Galicia",10748
+"Cantillana","Cantillana",37.6,-5.8167,"Spain","Andalusia",10728
+"La Palma del Condado","La Palma del Condado",37.3842,-6.5517,"Spain","Andalusia",10709
+"Valadares","Valadares",41.0937,-8.6392,"Portugal","Porto",10678
+"São Brás de Alportel","Sao Bras de Alportel",37.15,-7.8833,"Portugal","Faro",10662
+"Huétor-Tájar","Huetor-Tajar",37.1947,-4.0464,"Spain","Andalusia",10653
+"Daganzo de Arriba","Daganzo de Arriba",40.5433,-3.4572,"Spain","Madrid",10650
+"Santo André","Santo Andre",38.0667,-8.7833,"Portugal","Setúbal",10647
+"Garrucha","Garrucha",37.1842,-1.8214,"Spain","Andalusia",10603
+"Murtosa","Murtosa",40.7369,-8.6386,"Portugal","Aveiro",10585
+"Alcora","Alcora",40.0667,-0.2,"Spain","Valencia",10581
+"São João de Ver","Sao Joao de Ver",40.9536,-8.5508,"Portugal","Aveiro",10579
+"Grijó","Grijo",41.0306,-8.5815,"Portugal","Porto",10578
+"Tarazona de Aragón","Tarazona de Aragon",41.9044,-1.7242,"Spain","Aragon",10565
+"Vouzela","Vouzela",40.7231,-8.1122,"Portugal","Viseu",10564
+"Santa Margarita de Mombúy","Santa Margarita de Mombuy",41.5756,1.6092,"Spain","Catalonia",10549
+"Montalegre","Montalegre",41.8239,-7.79,"Portugal","Vila Real",10537
+"Griñón","Grinon",40.2167,-3.85,"Spain","Madrid",10491
+"Gelves","Gelves",37.3333,-6.0167,"Spain","Andalusia",10473
+"Salvatierra de Miño","Salvatierra de Mino",42.0833,-8.5,"Spain","Galicia",10471
+"Caspe","Caspe",41.2333,-0.0333,"Spain","Aragon",10432
+"El Álamo","El Alamo",40.2306,-3.9944,"Spain","Madrid",10430
+"Cunha Alta","Cunha Alta",40.6017,-7.6936,"Portugal","Viseu",10407
+"Luanco","Luanco",43.61,-5.79,"Spain","Asturias",10405
+"Alhendín","Alhendin",37.1167,-3.65,"Spain","Andalusia",10399
+"Masanasa","Masanasa",39.4083,-0.3989,"Spain","Valencia",10345
+"Amurrio","Amurrio",43.0528,-3.0014,"Spain","Basque Country",10330
+"Melres","Melres",41.0686,-8.3983,"Portugal","Porto",10328
+"Vila Franca do Campo","Vila Franca do Campo",37.7167,-25.4333,"Portugal","Azores",10323
+"Villacarrillo","Villacarrillo",38.1,-3.0833,"Spain","Andalusia",10320
+"Astorga","Astorga",42.4589,-6.0633,"Spain","Castille-Leon",10308
+"Peñarroya-Pueblonuevo","Penarroya-Pueblonuevo",38.3,-5.2667,"Spain","Andalusia",10289
+"Calasparra","Calasparra",38.2306,-1.7,"Spain","Murcia",10286
+"Estreito de Câmara de Lobos","Estreito de Camara de Lobos",32.6667,-16.9833,"Portugal","Madeira",10269
+"Oliveira de Frades","Oliveira de Frades",40.7314,-8.1767,"Portugal","Viseu",10261
+"Ericeira","Ericeira",38.9628,-9.4153,"Portugal","Lisboa",10260
+"Pola de Lena","Pola de Lena",43.1583,-5.8292,"Spain","Asturias",10259
+"Zumaia","Zumaia",43.2972,-2.2569,"Spain","Basque Country",10251
+"Caudete","Caudete",38.7044,-0.9881,"Spain","Castille-La Mancha",10249
+"Alcaudete","Alcaudete",37.5833,-4.1,"Spain","Andalusia",10243
+"Villanueva de Arosa","Villanueva de Arosa",42.5628,-8.8278,"Spain","Galicia",10225
+"Alella","Alella",41.495,2.296,"Spain","Catalonia",10217
+"Moimenta da Beira","Moimenta da Beira",40.9819,-7.6158,"Portugal","Viseu",10212
+"Alguazas","Alguazas",38.0514,-1.2414,"Spain","Murcia",10204
+"Foz","Foz",43.5694,-7.2583,"Spain","Galicia",10198
+"Pizarra","Pizarra",36.7667,-4.7,"Spain","Andalusia",10177
+"Sax","Sax",38.5394,-0.8161,"Spain","Valencia",10172
+"Canteras","Canteras",37.6122,-1.0438,"Spain","Murcia",10167
+"Sobral de Monte Agraço","Sobral de Monte Agraco",39.0167,-9.15,"Portugal","Lisboa",10156
+"El Espinar","El Espinar",40.7186,-4.2478,"Spain","Castille-Leon",10145
+"San Vicente de Castellet","San Vicente de Castellet",41.6678,1.8633,"Spain","Catalonia",10131
+"Binéfar","Binefar",41.85,0.3,"Spain","Aragon",10118
+"Madridejos","Madridejos",39.4667,-3.5333,"Spain","Castille-La Mancha",10102
+"El Molar","El Molar",40.7336,-3.5814,"Spain","Madrid",10052
+"Alayor","Alayor",39.9339,4.1403,"Spain","Balearic Islands",10042
+"Masquefa","Masquefa",41.5036,1.8136,"Spain","Catalonia",10038
+"La Bañeza","La Baneza",42.2975,-5.9017,"Spain","Castille-Leon",10023
+"Alcarraz","Alcarraz",41.5661,0.5261,"Spain","Catalonia",10018
+"Cabañaquinta","Cabanaquinta",43.1,-5.5833,"Spain","Asturias",10012
+"Mengibar","Mengibar",37.9683,-3.8089,"Spain","Andalusia",10011
+"Santa María de Palautordera","Santa Maria de Palautordera",41.6953,2.4458,"Spain","Catalonia",10008
+"Morayra","Morayra",38.688,0.1345,"Spain","",10000
+"Setúbal","Setubal",38.5243,-8.8926,"Portugal","Setúbal",10000
+"Praia do Carvoeiro","Praia do Carvoeiro",37.1,-8.4667,"Portugal","Faro",9987
+"Ribadeo","Ribadeo",43.5336,-7.0403,"Spain","Galicia",9978
+"Torrejón de la Calzada","Torrejon de la Calzada",40.2,-3.8,"Spain","Madrid",9947
+"Consuegra","Consuegra",39.4619,-3.6064,"Spain","Castille-La Mancha",9942
+"Mora","Mora",39.684,-3.777,"Spain","Castille-La Mancha",9930
+"Santa Clara","Santa Clara",40.1908,-8.4383,"Portugal","Coimbra",9929
+"Fuente Palmera","Fuente Palmera",37.7032,-5.1041,"Spain","Andalusia",9907
+"La Escala","La Escala",42.114,3.139,"Spain","Catalonia",9901
+"Maceira","Maceira",39.6897,-8.9,"Portugal","Leiria",9901
+"Trancoso","Trancoso",40.7833,-7.35,"Portugal","Guarda",9878
+"Alfaro","Alfaro",42.1783,-1.7492,"Spain","La Rioja",9874
+"Carregal do Sal","Carregal do Sal",40.4333,-8,"Portugal","Viseu",9835
+"Matadepera","Matadepera",41.6036,2.0244,"Spain","Catalonia",9815
+"San Juan del Puerto","San Juan del Puerto",37.3167,-6.8333,"Spain","Andalusia",9811
+"Valsequillo de Gran Canaria","Valsequillo de Gran Canaria",28,-15.4667,"Spain","Canary Islands",9768
+"Buñol","Bunol",39.4194,-0.7906,"Spain","Valencia",9765
+"Rute","Rute",37.3167,-4.3667,"Spain","Andalusia",9765
+"Idanha-a-Nova","Idanha-a-Nova",39.9197,-7.2367,"Portugal","Castelo Branco",9716
+"Rafelbuñol","Rafelbunol",39.5922,-0.3342,"Spain","Valencia",9710
+"Pinos Puente","Pinos Puente",37.25,-3.75,"Spain","Andalusia",9708
+"Grado","Grado",43.3881,-6.0736,"Spain","Asturias",9688
+"Guifões","Guifoes",41.2011,-8.665,"Portugal","Porto",9686
+"Zumárraga","Zumarraga",43.0831,-2.3167,"Spain","Basque Country",9668
+"Sevilla La Nueva","Sevilla La Nueva",40.3475,-4.0286,"Spain","Madrid",9657
+"Monserrat","Monserrat",39.3575,-0.6031,"Spain","Valencia",9656
+"Sangonera la Verde","Sangonera la Verde",37.9333,-1.2,"Spain","Murcia",9648
+"Cervelló","Cervello",41.3978,1.9578,"Spain","Catalonia",9647
+"Segorbe","Segorbe",39.85,-0.4833,"Spain","Valencia",9640
+"Fernán-Núñez","Fernan-Nunez",37.6667,-4.7167,"Spain","Andalusia",9638
+"Tabernes Blanques","Tabernes Blanques",39.5083,-0.3656,"Spain","Valencia",9635
+"Corró de Vall","Corro de Vall",41.6278,2.2972,"Spain","Catalonia",9629
+"Pinhel","Pinhel",40.7833,-7.0667,"Portugal","Guarda",9627
+"Colmenarejo","Colmenarejo",40.5608,-4.0169,"Spain","Madrid",9623
+"Villarrubia de los Ojos","Villarrubia de los Ojos",39.2167,-3.6,"Spain","Castille-La Mancha",9620
+"Caldas de Reyes","Caldas de Reyes",42.6028,-8.6383,"Spain","Galicia",9614
+"Mortágua","Mortagua",40.3947,-8.2328,"Portugal","Viseu",9607
+"Sabiñánigo","Sabinanigo",42.5144,-0.3744,"Spain","Aragon",9592
+"Maliaño","Maliano",43.4186,-3.835,"Spain","Cantabria",9563
+"San Sebastián de la Gomera","San Sebastian de la Gomera",28.0922,-17.11,"Spain","Canary Islands",9562
+"Senmanat","Senmanat",41.6092,2.1369,"Spain","Catalonia",9553
+"Burela de Cabo","Burela de Cabo",43.65,-7.4,"Spain","Galicia",9547
+"Padul","Padul",37.0244,-3.6267,"Spain","Andalusia",9536
+"Piedras Blancas","Piedras Blancas",43.56,-5.976,"Spain","Asturias",9533
+"Cervera","Cervera",41.6656,1.2714,"Spain","Catalonia",9533
+"Cuéllar","Cuellar",41.4009,-4.3136,"Spain","Castille-Leon",9530
+"Llagostera","Llagostera",41.8292,2.8933,"Spain","Catalonia",9508
+"Olivares","Olivares",37.4167,-6.15,"Spain","Andalusia",9504
+"Solsona","Solsona",41.9978,1.5208,"Spain","Catalonia",9480
+"Palamós","Palamos",41.85,3.1292,"Spain","Catalonia",9475
+"Arenys de Munt","Arenys de Munt",41.61,2.54,"Spain","Catalonia",9458
+"Tavarede","Tavarede",40.1664,-8.8444,"Portugal","Coimbra",9441
+"Villacañas","Villacanas",39.6333,-3.3333,"Spain","Castille-La Mancha",9434
+"Catral","Catral",38.1594,-0.805,"Spain","Valencia",9423
+"Umbrete","Umbrete",37.3667,-6.15,"Spain","Andalusia",9394
+"Tocina","Tocina",37.6,-5.7333,"Spain","Andalusia",9373
+"Ripoll","Ripoll",42.2006,2.1928,"Spain","Catalonia",9372
+"Puig","Puig",39.5896,-0.3031,"Spain","Valencia",9367
+"Santa María de Cayón","Santa Maria de Cayon",43.3114,-3.8525,"Spain","Cantabria",9367
+"Miajadas","Miajadas",39.15,-6.0667,"Spain","Extremadura",9359
+"Finestrat","Finestrat",38.5669,-0.2125,"Spain","Valencia",9352
+"Muro del Alcoy","Muro del Alcoy",38.7797,-0.4361,"Spain","Valencia",9345
+"San Lorenzo de Descardazar","San Lorenzo de Descardazar",39.6097,3.2839,"Spain","Balearic Islands",9331
+"Santa Comba","Santa Comba",43.0383,-8.8142,"Spain","Galicia",9319
+"La Victoria de Acentejo","La Victoria de Acentejo",28.4333,-16.4667,"Spain","Canary Islands",9313
+"Tiana","Tiana",41.4831,2.2697,"Spain","Catalonia",9305
+"Binisalem","Binisalem",39.6886,2.8422,"Spain","Balearic Islands",9281
+"Cistérniga","Cisterniga",41.6167,-4.6833,"Spain","Castille-Leon",9281
+"Sauzal","Sauzal",28.4778,-16.4361,"Spain","Canary Islands",9278
+"Palomares del Río","Palomares del Rio",37.3167,-6.05,"Spain","Andalusia",9277
+"Aljustrel","Aljustrel",37.8775,-8.1653,"Portugal","Beja",9257
+"San Fructuoso de Bagés","San Fructuoso de Bages",41.752,1.8745,"Spain","Catalonia",9248
+"Manzanares el Real","Manzanares el Real",40.7272,-3.8611,"Spain","Madrid",9247
+"San Fausto de Campcentellas","San Fausto de Campcentellas",41.5061,2.24,"Spain","Catalonia",9227
+"Melgaço","Melgaco",42.1167,-8.2667,"Portugal","Viana do Castelo",9213
+"Villamediana de Iregua","Villamediana de Iregua",42.4333,-2.4167,"Spain","La Rioja",9207
+"Loeches","Loeches",40.3833,-3.4,"Spain","Madrid",9200
+"Paredes de Coura","Paredes de Coura",41.9111,-8.5597,"Portugal","Viana do Castelo",9198
+"Jerez de los Caballeros","Jerez de los Caballeros",38.3203,-6.7714,"Spain","Extremadura",9171
+"La Matanza de Acentejo","La Matanza de Acentejo",28.4528,-16.4556,"Spain","Canary Islands",9160
+"Gondizalves","Gondizalves",41.5426,-8.4553,"Portugal","Braga",9148
+"Arico el Nuevo","Arico el Nuevo",28.1667,-16.4667,"Spain","Canary Islands",9120
+"Rebordosa","Rebordosa",41.2167,-8.4167,"Portugal","Porto",9106
+"Tineo","Tineo",43.3333,-6.4167,"Spain","Asturias",9096
+"Suances","Suances",43.4333,-4.05,"Spain","Cantabria",9092
+"Benahavís","Benahavis",36.519,-5.0454,"Spain","Andalusia",9077
+"Vinhais","Vinhais",41.8167,-7,"Portugal","Bragança",9066
+"Carregado","Carregado",39.0167,-8.9667,"Portugal","Lisboa",9066
+"Almusafes","Almusafes",39.2903,-0.4147,"Spain","Valencia",9057
+"Montoro","Montoro",38.0167,-4.3833,"Spain","Andalusia",9049
+"Cheste","Cheste",39.4797,-0.6844,"Spain","Valencia",9022
+"Caxias","Caxias",38.7,-9.2833,"Portugal","Lisboa",9007
+"Almargem","Almargem",38.8475,-9.2714,"Portugal","Lisboa",8983
+"Monforte del Cid","Monforte del Cid",38.3833,-0.7167,"Spain","Valencia",8967
+"Aver-o-Mar","Aver-o-Mar",41.4039,-8.769,"Portugal","Porto",8961
+"Vila Nova de Cerveira","Vila Nova de Cerveira",41.94,-8.7444,"Portugal","Viana do Castelo",8923
+"Almagro","Almagro",38.8878,-3.7122,"Spain","Castille-La Mancha",8907
+"Montmeló","Montmelo",41.5547,2.25,"Spain","Catalonia",8906
+"Silleda","Silleda",42.7,-8.2333,"Spain","Galicia",8870
+"Ponta do Sol","Ponta do Sol",32.6811,-17.1042,"Portugal","Madeira",8862
+"San Martín de Valdeiglesias","San Martin de Valdeiglesias",40.364,-4.401,"Spain","Madrid",8812
+"Hoyo de Manzanares","Hoyo de Manzanares",40.6333,-3.8833,"Spain","Madrid",8811
+"Playa de Aro","Playa de Aro",41.8176,3.0683,"Spain","Catalonia",8803
+"Rabo de Peixe","Rabo de Peixe",37.81,-25.5856,"Portugal","Azores",8801
+"Corella","Corella",42.1147,-1.7867,"Spain","Navarre",8712
+"Pedreguer","Pedreguer",38.7933,0.0342,"Spain","Valencia",8687
+"La Mujer","La Mujer",36.7522,-2.6839,"Spain","Andalusia",8677
+"Tudela de Duero","Tudela de Duero",41.5842,-4.58,"Spain","Castille-Leon",8648
+"Tordesillas","Tordesillas",41.5,-5,"Spain","Castille-Leon",8638
+"Lourosa","Lourosa",40.9833,-8.55,"Portugal","Aveiro",8636
+"Zuera","Zuera",41.8667,-0.7833,"Spain","Aragon",8632
+"Ortuella","Ortuella",43.3103,-3.0569,"Spain","Basque Country",8629
+"Santiponce","Santiponce",37.4353,-6.0433,"Spain","Andalusia",8625
+"Trujillo","Trujillo",39.4653,-5.8789,"Spain","Extremadura",8619
+"Ferreira do Zêzere","Ferreira do Zezere",39.7,-8.2833,"Portugal","Santarém",8619
+"Monachil","Monachil",37.1319,-3.5389,"Spain","Andalusia",8608
+"San Juan de Palamós","San Juan de Palamos",41.8565,3.1294,"Spain","Catalonia",8603
+"Torre de Moncorvo","Torre de Moncorvo",41.2,-7.1333,"Portugal","Bragança",8572
+"Reinosa","Reinosa",43.0019,-4.1378,"Spain","Cantabria",8566
+"Polinyá","Polinya",41.558,2.158,"Spain","Catalonia",8555
+"Colindres","Colindres",43.3967,-3.4483,"Spain","Cantabria",8540
+"Vidreras","Vidreras",41.7903,2.775,"Spain","Catalonia",8538
+"Chamusca","Chamusca",39.3594,-8.4808,"Portugal","Santarém",8530
+"Tona","Tona",41.85,2.2333,"Spain","Catalonia",8511
+"Caldas de Malavella","Caldas de Malavella",41.8394,2.8106,"Spain","Catalonia",8509

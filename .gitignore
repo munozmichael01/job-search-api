@@ -25,3 +25,4 @@ yarn-error.log*
 
 # Vercel
 .vercel
+data/city_distances_full.json

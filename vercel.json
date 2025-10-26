@@ -3,22 +3,10 @@
   "outputDirectory": "build",
   "installCommand": "npm install",
   "framework": null,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
-    {
-      "src": "/(.*\\.(js|css|json|ico|png|jpg|jpeg|svg|woff|woff2))",
-      "dest": "/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     }
   ],
   "functions": {
@@ -30,7 +18,7 @@
   "crons": [
     {
       "path": "/api/jobs/refresh",
-      "schedule": "0 6,18 * * *"
+      "schedule": "0 6 * * *"
     }
   ],
   "headers": [

@@ -17,7 +17,7 @@ fs.createReadStream(path.join(__dirname, '../Tablas para cálculo de relaciones/
     rowCount++;
 
     // Solo español (lang=7)
-    if (lang === '7') {
+    if (lang === '7' || lang === '14' || lang === '17') {
       if (!jobNames[jobId]) {
         jobNames[jobId] = [];
       }

@@ -1,0 +1,53 @@
+IDArea,IDSite,IDSLanguage,BaseName
+1,6,7,Sala
+1,6,14,Waiting staff
+2,6,7,Cocina
+2,6,14,Kitchen
+3,6,7,Mantenimiento
+3,6,14,Maintenance
+6,6,7,Comercial
+6,6,14,Sales
+7,6,7,Administración y Finanzas
+7,6,14,Administration and finance
+8,6,7,Marketing y RRPP
+8,6,14,Marketing & Public Relations
+9,6,7,RRHH
+9,6,14,Human Resources
+10,6,7,Dirección
+10,6,14,Management
+11,6,7,Recepción
+11,6,14,Reception
+12,6,7,"Animación, Entretenimiento y Ocio"
+12,6,14,"Animation, Entertainment and Leisure"
+13,6,7,Calidad y Medio Ambiente
+13,6,14,Quality
+14,6,7,Pisos y Limpieza
+14,6,14,Housekeeping
+15,6,7,Agencia de viajes
+15,6,14,Travel agency
+16,6,7,Otra
+16,6,14,Other
+17,6,7,Reservas
+17,6,14,Reservations
+19,6,7,Consultoría y Formación
+19,6,14,Consultancy
+20,6,7,Seguridad
+20,6,14,Security
+21,6,7,Tecnología
+21,6,14,Technology
+22,6,7,Transporte
+22,6,14,Transportation
+24,6,7,"Compras, Logística y Operaciones"
+24,6,14,"Purchasing, Logistics and Operations"
+25,6,7,Atención al cliente
+25,6,14,Customer Service
+27,6,7,Eventos
+27,6,14,Events
+28,6,7,Cruceros
+28,6,14,Cruises
+29,6,7,Salud y Bienestar
+29,6,14,Health and Wellness
+30,6,7,Aeropuerto
+30,6,14,Airport
+32,6,7,Guía turístico
+32,6,14,Tour guide

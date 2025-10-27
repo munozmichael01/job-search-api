@@ -18,7 +18,7 @@
   "crons": [
     {
       "path": "/api/jobs/refresh",
-      "schedule": "0 */6 * * *"
+      "schedule": "0 8 * * *"
     }
   ],
   "headers": [

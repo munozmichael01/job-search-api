@@ -87,7 +87,7 @@ FLUJO OBLIGATORIO:
 💰 [SALARIO EXACTO]
 ⏰ [TIPO_JORNADA EXACTO]
 📅 Publicada: [FECHA EXACTA]
-🔗 [URL EXACTA]
+🔗 [Ver oferta](URL) | [➡️ Aplicar ahora](URL_APPLY)
 
 ---
 

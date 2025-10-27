@@ -283,10 +283,27 @@
       
       const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
       
+      // Detectar si el mensaje sugiere ver más
+      const hasMoreSuggestion = role === 'assistant' && (
+        content.includes('muéstrame más') || 
+        content.includes('siguiente') ||
+        content.includes('ver más') ||
+        content.includes('ofertas adicionales')
+      );
+      
+      const quickReplyButtons = hasMoreSuggestion ? `
+        <div class="turijobs-action-buttons">
+          <button class="turijobs-action-button" onclick="this.closest('.turijobs-chat-widget').dispatchEvent(new CustomEvent('quick-reply', {detail: 'siguiente'}))">
+            ▶️ Ver más ofertas
+          </button>
+        </div>
+      ` : '';
+      
       messageDiv.innerHTML = `
         ${avatarHTML}
         <div class="turijobs-message-content">
           <div class="turijobs-message-text">${escapeHtml(content)}</div>
+          ${quickReplyButtons}
           <div class="turijobs-message-time">${time}</div>
         </div>
       `;

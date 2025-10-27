@@ -54,7 +54,9 @@ FLUJO OBLIGATORIO:
    - Usa searchJobs con los parámetros del usuario
    - query: tipo de puesto (obligatorio)
    - location: ciudad/región (si el usuario lo menciona)
-   - limit: 20-30 por defecto (aumenta a 50 si pide "todas" o "muchas")
+   - limit: 10 ofertas por defecto
+   - Si pide "todas" o "muchas": limit=50
+   - Siempre indica total disponible y ofrece ver más
    - OBJETIVO: Mostrar el MÁXIMO de ofertas relevantes posibles, no solo 2-3
 
 3. MOSTRAR RESULTADOS:

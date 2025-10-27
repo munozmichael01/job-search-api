@@ -147,6 +147,55 @@ export default function ChatWidget() {
     createThread();
   };
 
+  const handleQuickReply = (text) => {
+    setInputMessage(text);
+    // Simular el envío inmediato
+    setTimeout(() => {
+      const userMessage = {
+        role: 'user',
+        content: text,
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, userMessage]);
+      setInputMessage('');
+      setIsLoading(true);
+
+      fetch(`${API_BASE_URL}/api/chat/send-message`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          thread_id: threadId,
+          message: text
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const assistantMessage = {
+            role: 'assistant',
+            content: data.message,
+            timestamp: new Date().toISOString()
+          };
+          setMessages(prev => [...prev, assistantMessage]);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+    }, 100);
+  };
+
+  const hasMoreResultsSuggestion = (content) => {
+    return content.includes('muéstrame más') ||
+           content.includes('siguiente') ||
+           content.includes('ver más') ||
+           content.includes('ofertas adicionales') ||
+           content.includes('Hay ') && content.includes('ofertas adicionales disponibles');
+  };
+
   // Función para renderizar líneas con URLs como links y formato Markdown
   const renderMessageLine = (line) => {
     // Si la línea contiene una URL, procesarla
@@ -321,10 +370,24 @@ export default function ChatWidget() {
                       );
                     })}
                   </div>
+
+                  {/* Botón "Ver más" si el mensaje sugiere más resultados */}
+                  {msg.role === 'assistant' && hasMoreResultsSuggestion(msg.content) && (
+                    <div className="turijobs-action-buttons">
+                      <button
+                        className="turijobs-action-button"
+                        onClick={() => handleQuickReply('siguiente')}
+                        disabled={isLoading}
+                      >
+                        ▶️ Ver más ofertas
+                      </button>
+                    </div>
+                  )}
+
                   <div className="turijobs-message-time">
-                    {new Date(msg.timestamp).toLocaleTimeString('es-ES', { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
+                    {new Date(msg.timestamp).toLocaleTimeString('es-ES', {
+                      hour: '2-digit',
+                      minute: '2-digit'
                     })}
                   </div>
                 </div>

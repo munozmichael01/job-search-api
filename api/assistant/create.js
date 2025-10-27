@@ -686,6 +686,10 @@ SOLO muestra datos REALES que obtengas de searchJobs.
                   limit: {
                     type: "number",
                     description: "Número máximo de resultados a devolver (default: 10, max: 50)"
+                  },
+                  offset: {
+                    type: "number",
+                    description: "Desplazamiento para paginación (default: 0). Usa pagination.next_offset del resultado anterior."
                   }
                 },
                 required: ["query"]
@@ -1358,6 +1362,10 @@ SOLO muestra datos REALES que obtengas de searchJobs.
                   limit: {
                     type: "number",
                     description: "Número máximo de resultados a devolver (default: 10, max: 50)"
+                  },
+                  offset: {
+                    type: "number",
+                    description: "Desplazamiento para paginación (default: 0). Usa pagination.next_offset del resultado anterior."
                   }
                 },
                 required: ["query"]

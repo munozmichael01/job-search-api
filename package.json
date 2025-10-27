@@ -10,10 +10,11 @@
     "dev": "vercel dev",
     "mcp": "node mcp-server.js",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run copy-widget",
     "build:react": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "copy-widget": "node -e \"const fs=require('fs');const path=require('path');const src='widget';const dest='build/widget';if(!fs.existsSync(dest))fs.mkdirSync(dest,{recursive:true});fs.readdirSync(src).forEach(file=>{if(file.endsWith('.js')||file.endsWith('.css'))fs.copyFileSync(path.join(src,file),path.join(dest,file));});console.log('✅ Widget files copied');\""
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",

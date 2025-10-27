@@ -58,9 +58,9 @@
     .turijobs-chat-footer{padding:8px 16px;text-align:center;font-size:12px;color:#586069;background:#fff;border-top:1px solid #e1e4e8}
     .turijobs-chat-footer strong{color:#0066cc;font-weight:600}
     @media (max-width:480px){
-      .turijobs-chat-widget{bottom:0;right:0;left:0}
-      .turijobs-chat-window{width:100vw;height:100vh;max-height:100vh;border-radius:0}
-      .turijobs-chat-button{bottom:16px;right:16px}
+      .turijobs-chat-widget{bottom:16px;right:16px;left:auto}
+      .turijobs-chat-window{position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;border-radius:0!important}
+      .turijobs-chat-button{width:56px;height:56px}
     }
   `;
   

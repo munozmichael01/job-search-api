@@ -100,8 +100,8 @@ export default async function handler(req, res) {
     // 3. Esperar a que termine, manejando function calls
     let runStatus = await openai.beta.threads.runs.retrieve(thread_id, run.id);
     
-    // Timeout de 60 segundos
-    const maxAttempts = 60;
+    // Timeout de 120 segundos (Plan Pro soporta hasta 300s)
+    const maxAttempts = 120;
     let attempts = 0;
 
     while (runStatus.status !== 'completed' && attempts < maxAttempts) {

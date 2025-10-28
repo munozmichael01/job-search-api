@@ -16,17 +16,7 @@ async function executeFunctionCall(functionName, functionArgs) {
   console.log(`🌐 Base URL: ${baseUrl}`);
 
   try {
-    if (functionName === 'checkCacheStatus') {
-      const response = await fetch(`${baseUrl}/api/jobs/status`);
-      const data = await response.json();
-      return JSON.stringify(data);
-    }
 
-    if (functionName === 'refreshJobs') {
-      const response = await fetch(`${baseUrl}/api/jobs/refresh`);
-      const data = await response.json();
-      return JSON.stringify(data);
-    }
 
     if (functionName === 'searchJobs') {
       const params = new URLSearchParams();

@@ -1,4 +1,6 @@
-import { kv } from '@vercel/kv';
+import fs from 'fs';
+
+const searchJsContent = `import { kv } from '@vercel/kv';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -18,7 +20,7 @@ function loadSynonyms() {
       jobSynonyms = {};
       for (const jobId in jobIdToNames) {
         const names = jobIdToNames[jobId];
-        const normalized = names.map(n => n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+        const normalized = names.map(n => n.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, ''));
         normalized.forEach(name => { jobSynonyms[name] = normalized; });
       }
     } catch (error) { jobSynonyms = {}; }
@@ -41,11 +43,11 @@ function loadCityCoordinates() {
 
 function normalizeText(text) {
   if (!text) return '';
-  return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+  return text.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').trim();
 }
 
 function generateSearchHash(query, location, category) {
-  const searchKey = `${query}|${location}|${category}`.toLowerCase();
+  const searchKey = \`\${query}|\${location}|\${category}\`.toLowerCase();
   return crypto.createHash('md5').update(searchKey).digest('hex').substring(0, 12);
 }
 
@@ -97,7 +99,7 @@ export default async function handler(req, res) {
     const categoryLower = normalizeText(category);
 
     const searchHash = generateSearchHash(query, location, category);
-    const cacheKey = `search_results:${searchHash}`;
+    const cacheKey = \`search_results:\${searchHash}\`;
 
     let matchedIds = await kv.get(cacheKey);
 
@@ -129,9 +131,9 @@ export default async function handler(req, res) {
       await kv.set(cacheKey, matchedIds, { ex: 300 });
 
       const filterTime = Date.now() - startTime;
-      console.log(`🔍 Cache miss - Filtrado en ${filterTime}ms - ${matchedIds.length} resultados`);
+      console.log(\`🔍 Cache miss - Filtrado en \${filterTime}ms - \${matchedIds.length} resultados\`);
     } else {
-      console.log(`⚡ Cache hit - ${matchedIds.length} resultados`);
+      console.log(\`⚡ Cache hit - \${matchedIds.length} resultados\`);
     }
 
     const totalMatches = matchedIds.length;
@@ -156,7 +158,7 @@ export default async function handler(req, res) {
         const originCoords = coords[locationLower];
 
         if (!originCoords) {
-          console.log(`⚠️  No hay coordenadas para: ${location}`);
+          console.log(\`⚠️  No hay coordenadas para: \${location}\`);
         } else {
           const citiesWithDistance = new Map();
 
@@ -198,13 +200,13 @@ export default async function handler(req, res) {
             .slice(0, 3)
             .map(([city, data]) => ({
               city_name: city.charAt(0).toUpperCase() + city.slice(1),
-              distance: `${Math.round(data.distance)} km`,
+              distance: \`\${Math.round(data.distance)} km\`,
               results_count: data.jobs.length,
               results: data.jobs.slice(0, 5)
             }));
 
           if (nearbyCities.length > 0) {
-            console.log(`🌆 Nearby cities: ${nearbyCities.map(c => `${c.city_name} (${c.distance})`).join(', ')}`);
+            console.log(\`🌆 Nearby cities: \${nearbyCities.map(c => \`\${c.city_name} (\${c.distance})\`).join(', ')}\`);
           }
         }
       } catch (error) {
@@ -244,3 +246,10 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, error: error.message });
   }
 }
+`;
+
+fs.writeFileSync('./api/jobs/search.js', searchJsContent);
+console.log('✅ search.js actualizado con cálculo de distancia REAL');
+console.log('   - Usa fórmula de Haversine para calcular km reales');
+console.log('   - Filtra solo ciudades dentro de 50km');
+console.log('   - Ordena por distancia, NO por número de ofertas');

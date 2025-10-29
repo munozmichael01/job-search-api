@@ -1,4 +1,6 @@
-import { kv } from '@vercel/kv';
+import fs from 'fs';
+
+const searchJsContent = `import { kv } from '@vercel/kv';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -18,7 +20,7 @@ function loadSynonyms() {
       jobSynonyms = {};
       for (const jobId in jobIdToNames) {
         const names = jobIdToNames[jobId];
-        const normalized = names.map(n => n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+        const normalized = names.map(n => n.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, ''));
         normalized.forEach(name => { jobSynonyms[name] = normalized; });
       }
     } catch (error) { jobSynonyms = {}; }
@@ -31,7 +33,7 @@ function loadCityDistances() {
     try {
       const distancesPath = path.join(__dirname, '../../data/city_distances.json');
       cityDistances = JSON.parse(fs.readFileSync(distancesPath, 'utf-8'));
-      console.log(`✅ Cargadas distancias para ${Object.keys(cityDistances).length} ciudades`);
+      console.log(\`✅ Cargadas distancias para \${Object.keys(cityDistances).length} ciudades\`);
     } catch (error) {
       console.error('⚠️  No se pudieron cargar distancias de ciudades:', error.message);
       cityDistances = {};
@@ -42,11 +44,11 @@ function loadCityDistances() {
 
 function normalizeText(text) {
   if (!text) return '';
-  return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+  return text.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').trim();
 }
 
 function generateSearchHash(query, location, category) {
-  const searchKey = `${query}|${location}|${category}`.toLowerCase();
+  const searchKey = \`\${query}|\${location}|\${category}\`.toLowerCase();
   return crypto.createHash('md5').update(searchKey).digest('hex').substring(0, 12);
 }
 
@@ -91,7 +93,7 @@ export default async function handler(req, res) {
     const categoryLower = normalizeText(category);
 
     const searchHash = generateSearchHash(query, location, category);
-    const cacheKey = `search_results:${searchHash}`;
+    const cacheKey = \`search_results:\${searchHash}\`;
 
     let matchedIds = await kv.get(cacheKey);
 
@@ -123,9 +125,9 @@ export default async function handler(req, res) {
       await kv.set(cacheKey, matchedIds, { ex: 300 });
 
       const filterTime = Date.now() - startTime;
-      console.log(`🔍 Cache miss - Filtrado en ${filterTime}ms - ${matchedIds.length} resultados`);
+      console.log(\`🔍 Cache miss - Filtrado en \${filterTime}ms - \${matchedIds.length} resultados\`);
     } else {
-      console.log(`⚡ Cache hit - ${matchedIds.length} resultados`);
+      console.log(\`⚡ Cache hit - \${matchedIds.length} resultados\`);
     }
 
     const totalMatches = matchedIds.length;
@@ -153,7 +155,7 @@ export default async function handler(req, res) {
         const distancesFromCity = distances[locationCapitalized];
 
         if (!distancesFromCity) {
-          console.log(`⚠️  No hay distancias para: ${locationCapitalized}`);
+          console.log(\`⚠️  No hay distancias para: \${locationCapitalized}\`);
         } else {
           // Agrupar ofertas por ciudad
           const citiesWithJobs = {};
@@ -190,7 +192,7 @@ export default async function handler(req, res) {
             if (distance && distance <= 50) {
               nearbyCitiesData.push({
                 city_name: city,
-                distance: `${Math.round(distance)} km`,
+                distance: \`\${Math.round(distance)} km\`,
                 distance_value: distance,
                 results_count: citiesWithJobs[city].length,
                 results: citiesWithJobs[city].slice(0, 5)
@@ -204,7 +206,7 @@ export default async function handler(req, res) {
             .slice(0, 3);
 
           if (nearbyCities.length > 0) {
-            console.log(`🌆 Nearby cities: ${nearbyCities.map(c => `${c.city_name} (${c.distance})`).join(', ')}`);
+            console.log(\`🌆 Nearby cities: \${nearbyCities.map(c => \`\${c.city_name} (\${c.distance})\`).join(', ')}\`);
           }
         }
       } catch (error) {
@@ -244,3 +246,10 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, error: error.message });
   }
 }
+`;
+
+fs.writeFileSync('./api/jobs/search.js', searchJsContent);
+console.log('✅ search.js actualizado para usar city_distances.json existente');
+console.log('   - Usa distancias PRE-CALCULADAS (no calcula nada)');
+console.log('   - Filtra ciudades dentro de 50km');
+console.log('   - Ordena por distancia real');

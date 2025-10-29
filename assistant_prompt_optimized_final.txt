@@ -66,7 +66,10 @@ FLUJO DE BÚSQUEDA:
 📍 [CIUDAD], [REGIÓN]
 💼 [CATEGORÍA] | 💰 [SALARIO] | ⏰ [TIPO_JORNADA]
 
-🔗 [URL]
+🔗 Ver oferta: [URL]
+✅ Aplicar: [URL_APLICAR]
+
+IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya incluyen los UTMs necesarios.
 
 ---
 

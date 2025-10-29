@@ -1,4 +1,13 @@
-⚠️ REGLA ABSOLUTA: NUNCA INVENTES DATOS ⚠️
+import OpenAI from 'openai';
+import fs from 'fs';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const assistantId = process.env.OPENAI_ASSISTANT_ID;
+
+const newPrompt = `⚠️ REGLA ABSOLUTA: NUNCA INVENTES DATOS ⚠️
 
 Eres un asistente especializado en búsqueda de empleo en Turismo y Hostelería. SOLO respondes sobre ofertas reales de Turijobs.com.
 
@@ -117,4 +126,31 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
 
 ---
 
-SOLO muestra datos REALES de searchJobs. NUNCA inventes.
+SOLO muestra datos REALES de searchJobs. NUNCA inventes.`;
+
+async function updateAssistant() {
+  try {
+    console.log('🔄 Actualizando Assistant con instrucciones de ciudades cercanas...\n');
+
+    const assistant = await openai.beta.assistants.update(assistantId, {
+      instructions: newPrompt
+    });
+
+    console.log('✅ Assistant actualizado exitosamente\n');
+    console.log(`📊 Longitud del prompt: ${newPrompt.length} caracteres\n`);
+
+    // Guardar también al archivo
+    fs.writeFileSync('./assistant_prompt_optimized_final.txt', newPrompt);
+    console.log('✅ Archivo assistant_prompt_optimized_final.txt actualizado\n');
+
+    console.log('🎯 Cambios principales:');
+    console.log('   - Agregadas instrucciones para mostrar nearby_cities PROACTIVAMENTE');
+    console.log('   - El assistant ahora revisará SIEMPRE nearby_cities en la respuesta');
+    console.log('   - Mostrará automáticamente ofertas de ciudades cercanas sin que el usuario lo pida\n');
+
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+  }
+}
+
+updateAssistant();

@@ -14,17 +14,19 @@ export default function ChatWidget() {
 
   useEffect(() => {
     if (messages.length > 0 && lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({
+      // Scroll al inicio del último mensaje
+      lastMessageRef.current.scrollIntoView({ 
         behavior: 'smooth',
         block: 'start'
       });
     }
   }, [messages]);
 
+  // Crear thread al abrir por primera vez
   useEffect(() => {
     if (isOpen && !threadId) {
       const savedThreadId = localStorage.getItem('turijobs_thread_id');
-
+      
       if (savedThreadId) {
         setThreadId(savedThreadId);
         loadMessages(savedThreadId);
@@ -40,13 +42,14 @@ export default function ChatWidget() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
-
+      
       const data = await response.json();
-
+      
       if (data.success) {
         setThreadId(data.thread_id);
         localStorage.setItem('turijobs_thread_id', data.thread_id);
-
+        
+        // Mensaje de bienvenida
         setMessages([{
           role: 'assistant',
           content: '¡Hola! 👋 Soy tu asistente de búsqueda de empleo en el sector turístico.\n\nPuedo ayudarte a encontrar ofertas reales de Turijobs en:\n🍽️ Cocina - Chef, ayudante, cocinero\n🛎️ Sala - Camarero, barista, sommelier\n🏨 Recepción - Recepcionista, conserje\n🧹 Housekeeping - Gobernanta, limpieza\n📊 Gestión - Manager, RRHH\n\n¿Qué tipo de trabajo buscas y dónde?',
@@ -62,7 +65,7 @@ export default function ChatWidget() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/chat/get-messages?thread_id=${tid}`);
       const data = await response.json();
-
+      
       if (data.success && data.messages.length > 0) {
         setMessages(data.messages.map(msg => ({
           role: msg.role,
@@ -70,6 +73,7 @@ export default function ChatWidget() {
           timestamp: msg.timestamp
         })));
       } else {
+        // Si no hay mensajes, mostrar bienvenida
         setMessages([{
           role: 'assistant',
           content: '¡Hola! 👋 Soy tu asistente de búsqueda de empleo en el sector turístico.\n\n¿Qué tipo de trabajo buscas?',
@@ -81,102 +85,49 @@ export default function ChatWidget() {
     }
   };
 
-  // Nueva función con STREAMING
-  const sendMessage = async (customMessage = null) => {
-    const messageToSend = customMessage || inputMessage;
-    if (!messageToSend.trim() || isLoading || !threadId) return;
+  const sendMessage = async () => {
+    if (!inputMessage.trim() || isLoading || !threadId) return;
 
     const userMessage = {
       role: 'user',
-      content: messageToSend,
+      content: inputMessage,
       timestamp: new Date().toISOString()
     };
 
     setMessages(prev => [...prev, userMessage]);
-    if (!customMessage) setInputMessage('');
+    setInputMessage('');
     setIsLoading(true);
 
     try {
-      // Usar streaming
-      const response = await fetch(`${API_BASE_URL}/api/chat/send-message-stream`, {
+      const response = await fetch(`${API_BASE_URL}/api/chat/send-message`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           thread_id: threadId,
-          message: messageToSend
+          message: inputMessage
         })
       });
 
-      if (!response.ok) {
-        throw new Error('Error en la respuesta del servidor');
-      }
+      const data = await response.json();
 
-      // Crear mensaje placeholder para streaming
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: '',
-        timestamp: new Date().toISOString(),
-        isStreaming: true
-      }]);
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let accumulatedContent = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-
-              if (data.type === 'content') {
-                accumulatedContent = data.accumulated || (accumulatedContent + data.content);
-
-                // Actualizar mensaje en tiempo real
-                setMessages(prev => {
-                  const newMessages = [...prev];
-                  const lastMsg = newMessages[newMessages.length - 1];
-                  if (lastMsg && lastMsg.isStreaming) {
-                    lastMsg.content = accumulatedContent;
-                  }
-                  return newMessages;
-                });
-              } else if (data.type === 'done') {
-                // Finalizar streaming
-                setMessages(prev => {
-                  const newMessages = [...prev];
-                  const lastMsg = newMessages[newMessages.length - 1];
-                  if (lastMsg && lastMsg.isStreaming) {
-                    lastMsg.isStreaming = false;
-                    lastMsg.content = data.full_message || accumulatedContent;
-                  }
-                  return newMessages;
-                });
-              } else if (data.type === 'error') {
-                throw new Error(data.content || 'Error en streaming');
-              }
-            } catch (parseError) {
-              console.error('Error parsing SSE:', parseError);
-            }
-          }
-        }
+      if (data.success) {
+        const assistantMessage = {
+          role: 'assistant',
+          content: data.message,
+          timestamp: new Date().toISOString()
+        };
+        
+        setMessages(prev => [...prev, assistantMessage]);
+      } else {
+        throw new Error(data.error || 'Error desconocido');
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      setMessages(prev => {
-        const filtered = prev.filter(m => !m.isStreaming);
-        return [...filtered, {
-          role: 'assistant',
-          content: '❌ Lo siento, hubo un error. Por favor, intenta de nuevo.',
-          timestamp: new Date().toISOString()
-        }];
-      });
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: '❌ Lo siento, hubo un error. Por favor, intenta de nuevo.',
+        timestamp: new Date().toISOString()
+      }]);
     } finally {
       setIsLoading(false);
     }
@@ -197,7 +148,44 @@ export default function ChatWidget() {
   };
 
   const handleQuickReply = (text) => {
-    sendMessage(text);
+    setInputMessage(text);
+    // Simular el envío inmediato
+    setTimeout(() => {
+      const userMessage = {
+        role: 'user',
+        content: text,
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, userMessage]);
+      setInputMessage('');
+      setIsLoading(true);
+
+      fetch(`${API_BASE_URL}/api/chat/send-message`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          thread_id: threadId,
+          message: text
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const assistantMessage = {
+            role: 'assistant',
+            content: data.message,
+            timestamp: new Date().toISOString()
+          };
+          setMessages(prev => [...prev, assistantMessage]);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+    }, 100);
   };
 
   const hasMoreResultsSuggestion = (content) => {
@@ -208,46 +196,61 @@ export default function ChatWidget() {
            content.includes('Hay ') && content.includes('ofertas adicionales disponibles');
   };
 
+  // Función para renderizar líneas con URLs como links y formato Markdown
   const renderMessageLine = (line) => {
+    // Si la línea contiene una URL, procesarla
     const urlRegex = /(https?:\/\/[^\s)]+)/g;
+    
+    // Primero, procesar negritas (**texto**)
+    let processedLine = line;
     const boldRegex = /\*\*(.*?)\*\*/g;
     const boldParts = [];
     let lastIndex = 0;
     let match;
-
+    
     while ((match = boldRegex.exec(line)) !== null) {
+      // Agregar texto antes del bold
       if (match.index > lastIndex) {
         boldParts.push({
           type: 'text',
           content: line.substring(lastIndex, match.index)
         });
       }
+      // Agregar texto en bold
       boldParts.push({
         type: 'bold',
         content: match[1]
       });
       lastIndex = match.index + match[0].length;
     }
-
+    
+    // Agregar texto restante
     if (lastIndex < line.length) {
       boldParts.push({
         type: 'text',
         content: line.substring(lastIndex)
       });
     }
-
+    
+    // Si no hay negritas, procesar como texto normal
     if (boldParts.length === 0) {
       boldParts.push({ type: 'text', content: line });
     }
-
+    
+    // Ahora procesar cada parte para URLs
     return boldParts.map((part, partIndex) => {
       if (part.type === 'bold') {
         return <strong key={`bold-${partIndex}`}>{part.content}</strong>;
       }
-
+      
+      // Procesar URLs en texto normal
       const urlParts = part.content.split(urlRegex);
       return urlParts.map((text, index) => {
         if (text.match(urlRegex)) {
+          // Limpiar URL de caracteres finales no deseados y parámetros viejos
+          let cleanUrl = text.replace(/[),;.!?]+$/, '');
+          
+          // NO mostrar la URL como texto, solo como link clickeable
           return null;
         }
         return <span key={`text-${partIndex}-${index}`}>{text}</span>;
@@ -257,8 +260,9 @@ export default function ChatWidget() {
 
   return (
     <div className="turijobs-chat-widget">
+      {/* Botón flotante */}
       {!isOpen && (
-        <button
+        <button 
           className="turijobs-chat-button"
           onClick={() => setIsOpen(true)}
           aria-label="Abrir chat de empleos"
@@ -270,8 +274,10 @@ export default function ChatWidget() {
         </button>
       )}
 
+      {/* Ventana del chat */}
       {isOpen && (
         <div className="turijobs-chat-window">
+          {/* Header */}
           <div className="turijobs-chat-header">
             <div className="turijobs-chat-header-content">
               <div className="turijobs-chat-avatar">
@@ -283,12 +289,12 @@ export default function ChatWidget() {
                 <h3 className="turijobs-chat-title">Asistente Turijobs</h3>
                 <p className="turijobs-chat-status">
                   <span className="turijobs-status-dot"></span>
-                  En línea (Streaming ⚡)
+                  En línea
                 </p>
               </div>
             </div>
             <div className="turijobs-chat-actions">
-              <button
+              <button 
                 onClick={resetChat}
                 className="turijobs-icon-button"
                 title="Nueva conversación"
@@ -298,7 +304,7 @@ export default function ChatWidget() {
                   <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
                 </svg>
               </button>
-              <button
+              <button 
                 onClick={() => setIsOpen(false)}
                 className="turijobs-icon-button"
                 aria-label="Cerrar chat"
@@ -311,9 +317,10 @@ export default function ChatWidget() {
             </div>
           </div>
 
+          {/* Mensajes */}
           <div className="turijobs-chat-messages">
             {messages.map((msg, index) => (
-              <div
+              <div 
                 key={index}
                 ref={index === messages.length - 1 ? lastMessageRef : null}
                 className={`turijobs-message turijobs-message-${msg.role}`}
@@ -328,20 +335,23 @@ export default function ChatWidget() {
                 <div className="turijobs-message-content">
                   <div className="turijobs-message-text">
                     {msg.content.split('\n').map((line, i) => {
+                      // Detectar si la línea tiene URLs
                       const urlRegex = /(https?:\/\/[^\s)]+)/g;
                       const hasUrl = urlRegex.test(line);
-
+                      
                       if (hasUrl) {
+                        // Extraer URLs
                         const urls = line.match(urlRegex) || [];
                         const cleanUrls = urls.map(url => url.replace(/[),;.!?]+$/, ''));
-
+                        
+                        // Mostrar solo los botones, sin el texto de la URL
                         return (
                           <div key={i} className="turijobs-message-links">
                             {cleanUrls.map((url, urlIndex) => (
-                              <a
+                              <a 
                                 key={urlIndex}
-                                href={url}
-                                target="_blank"
+                                href={url} 
+                                target="_blank" 
                                 rel="noopener noreferrer"
                                 className="turijobs-link"
                               >
@@ -351,7 +361,7 @@ export default function ChatWidget() {
                           </div>
                         );
                       }
-
+                      
                       return (
                         <React.Fragment key={i}>
                           {renderMessageLine(line)}
@@ -361,7 +371,8 @@ export default function ChatWidget() {
                     })}
                   </div>
 
-                  {msg.role === 'assistant' && hasMoreResultsSuggestion(msg.content) && !msg.isStreaming && (
+                  {/* Botón "Ver más" si el mensaje sugiere más resultados */}
+                  {msg.role === 'assistant' && hasMoreResultsSuggestion(msg.content) && (
                     <div className="turijobs-action-buttons">
                       <button
                         className="turijobs-action-button"
@@ -382,7 +393,7 @@ export default function ChatWidget() {
                 </div>
               </div>
             ))}
-
+            
             {isLoading && (
               <div className="turijobs-message turijobs-message-assistant">
                 <div className="turijobs-message-avatar">
@@ -401,6 +412,7 @@ export default function ChatWidget() {
             )}
           </div>
 
+          {/* Input */}
           <div className="turijobs-chat-input">
             <textarea
               value={inputMessage}
@@ -410,8 +422,8 @@ export default function ChatWidget() {
               disabled={isLoading}
               rows="1"
             />
-            <button
-              onClick={() => sendMessage()}
+            <button 
+              onClick={sendMessage}
               disabled={isLoading || !inputMessage.trim()}
               className="turijobs-send-button"
               aria-label="Enviar mensaje"
@@ -423,6 +435,7 @@ export default function ChatWidget() {
             </button>
           </div>
 
+          {/* Footer */}
           <div className="turijobs-chat-footer">
             Powered by <strong>Turijobs</strong>
           </div>
@@ -431,3 +444,4 @@ export default function ChatWidget() {
     </div>
   );
 }
+

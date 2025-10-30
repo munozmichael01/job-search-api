@@ -263,9 +263,10 @@ export default async function handler(req, res) {
           ) || location;
 
           const nearbyCitiesData = cityDistances[locationKey] || [];
+          // Analizar TODAS las ciudades dentro de 50km (no solo las primeras 5)
+          // Barcelona puede estar en posición 31+ en cities pequeñas como Sitges
           const nearbyCitiesWithin50km = nearbyCitiesData
-            .filter(c => c.distance && c.distance <= 50)
-            .slice(0, 5); // Top 5 ciudades cercanas
+            .filter(c => c.distance && c.distance <= 50);
 
           if (nearbyCitiesWithin50km.length > 0) {
             console.log(`   Analizando ${nearbyCitiesWithin50km.length} ciudades cercanas...`);

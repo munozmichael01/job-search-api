@@ -256,7 +256,13 @@ export default async function handler(req, res) {
 
           // Cargar nearby cities
           loadCityDistances();
-          const nearbyCitiesData = cityDistances[location] || [];
+
+          // Buscar la key correcta (case-insensitive match)
+          const locationKey = Object.keys(cityDistances).find(key =>
+            normalizeText(key) === normalizeText(location)
+          ) || location;
+
+          const nearbyCitiesData = cityDistances[locationKey] || [];
           const nearbyCitiesWithin50km = nearbyCitiesData
             .filter(c => c.distance && c.distance <= 50)
             .slice(0, 5); // Top 5 ciudades cercanas

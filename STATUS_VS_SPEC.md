@@ -208,13 +208,17 @@ Si no hay "Chef Ejecutivo" en Madrid:
 
 ## ✅ ACTUALIZACIONES IMPLEMENTADAS (30 octubre 2025)
 
-### NIVEL 1.5 y NIVEL 2 - COMPLETAMENTE IMPLEMENTADO
+### NIVEL 1.5 y NIVEL 2 - COMPLETAMENTE IMPLEMENTADO Y FUNCIONANDO
 
 **Backend (api/jobs/search.js):**
 - ✅ NIVEL 1.5: Cuando hay 1-9 resultados, amplía automáticamente con puestos relacionados (weight > 0.85)
 - ✅ NIVEL 2: Cuando hay 0 resultados, busca automáticamente en puestos similares (weight > 0.80)
 - ✅ Retorna `related_jobs_results` y `amplification_used` en la respuesta
 - ✅ Todo en 1 sola llamada al API (experiencia más rápida para el usuario)
+- ✅ **FIX CRÍTICO (30 oct):** NIVEL 2 ahora retorna las ofertas correctas
+  - **Antes:** Buscaba ofertas con el nombre del related_job en el título → 0 resultados ❌
+  - **Ahora:** Retorna directamente las ofertas que tienen el query en related_jobs ✅
+  - **Ejemplo:** "sommelier" (0 results) → Retorna Bartender offer (tiene Sommelier en related_jobs)
 
 **Enriquecimiento (lib/enrichOffers.js):**
 - ✅ Bug fix: Algoritmo de matching ahora retorna puestos correctos
@@ -226,6 +230,11 @@ Si no hay "Chef Ejecutivo" en Madrid:
 - ✅ Prompt simplificado (4.8 KB, optimizado para eficiencia)
 - ✅ Assistant muestra lo que recibe del backend (no hace búsquedas iterativas)
 - ✅ Instrucciones claras para mostrar amplification_used.type
+
+**Tests de Producción (30 oct):**
+- ✅ NIVEL 2: "sommelier" en Valencia → Retorna 1 Bartender offer ✅
+- ✅ NIVEL 1.5: Logic correct (no activa con >=10 resultados) ✅
+- ✅ Búsqueda normal: "camarero" en Valencia → 12 resultados, no amplification needed ✅
 
 ---
 

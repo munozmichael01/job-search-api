@@ -229,68 +229,48 @@ export default async function handler(req, res) {
           .slice(0, 100);
 
         // Buscar ofertas que tengan el query en sus related_jobs
-        const relatedJobsMap = new Map();
+        // Y colectar esas ofertas directamente (no el nombre del related_job)
+        const offersWithRelatedJobs = [];
 
         offersToAnalyze.forEach(job => {
           if (job.enriched && job.enriched.related_jobs) {
-            job.enriched.related_jobs.forEach(rel => {
+            // Buscar si algún related_job coincide con el query
+            const matchingRelatedJob = job.enriched.related_jobs.find(rel => {
               const relNormalized = normalizeText(rel.job);
-              if (relNormalized.includes(normalizedQuery) || queryTerms.some(term => relNormalized.includes(term))) {
-                if (!relatedJobsMap.has(rel.job)) {
-                  relatedJobsMap.set(rel.job, { job: rel.job, weight: rel.weight, count: 0 });
-                }
-                relatedJobsMap.get(rel.job).count++;
-              }
+              return (relNormalized.includes(normalizedQuery) || queryTerms.some(term => relNormalized.includes(term))) && rel.weight > 0.80;
             });
+
+            if (matchingRelatedJob) {
+              offersWithRelatedJobs.push({
+                offer: job,
+                relatedJobName: matchingRelatedJob.job,
+                weight: matchingRelatedJob.weight
+              });
+            }
           }
         });
 
-        // Ordenar por relevancia (weight * count)
-        const candidateJobs = Array.from(relatedJobsMap.values())
-          .map(item => ({ ...item, score: item.weight * item.count }))
-          .filter(item => item.weight > 0.80) // Solo alta similitud
-          .sort((a, b) => b.score - a.score)
-          .slice(0, 3);
+        if (offersWithRelatedJobs.length > 0) {
+          console.log(`   Encontradas ${offersWithRelatedJobs.length} ofertas que sugieren "${query}" como related_job`);
 
-        if (candidateJobs.length > 0) {
-          console.log(`   Encontrados ${candidateJobs.length} puestos relacionados con high weight`);
+          // Ordenar por weight de la relación
+          offersWithRelatedJobs.sort((a, b) => b.weight - a.weight);
 
-          // Buscar ofertas del puesto relacionado con mayor score
-          const topRelatedJob = candidateJobs[0].job;
-          const topRelatedNormalized = normalizeText(topRelatedJob);
+          // Tomar hasta 10 ofertas
+          relatedJobsResults = offersWithRelatedJobs.slice(0, Math.min(10, maxResults)).map(item => item.offer);
 
-          const relatedOffers = cacheData.offers.filter(job => {
-            const title = normalizeText(job.titulo || job.title || '');
-            const titleMatch = title.includes(topRelatedNormalized) || topRelatedNormalized.includes(title);
+          // Determinar qué tipo de puesto se está sugiriendo
+          const suggestedJobType = relatedJobsResults[0].titulo || relatedJobsResults[0].title;
 
-            if (!titleMatch) return false;
-
-            // Aplicar filtros de location y category
-            if (location) {
-              const city = normalizeText(job.ciudad || job.city || '');
-              const region = normalizeText(job.region || '');
-              if (!city.includes(locationLower) && !region.includes(locationLower)) return false;
-            }
-
-            if (category) {
-              const categoryField = normalizeText(job.categoria || job.category || '');
-              if (!categoryField.includes(categoryLower)) return false;
-            }
-
-            return true;
-          });
-
-          if (relatedOffers.length > 0) {
-            relatedJobsResults = relatedOffers.slice(0, Math.min(10, maxResults));
-            amplificationUsed = {
-              type: 'nivel_2',
-              original_query: query,
-              related_job_used: topRelatedJob,
-              weight: candidateJobs[0].weight,
-              total_related_found: relatedOffers.length
-            };
-            console.log(`   ✅ NIVEL 2: Agregando ${relatedJobsResults.length} ofertas de "${topRelatedJob}"`);
-          }
+          amplificationUsed = {
+            type: 'nivel_2',
+            original_query: query,
+            related_job_used: offersWithRelatedJobs[0].relatedJobName,
+            suggested_job_type: suggestedJobType,
+            weight: offersWithRelatedJobs[0].weight,
+            total_related_found: offersWithRelatedJobs.length
+          };
+          console.log(`   ✅ NIVEL 2: Retornando ${relatedJobsResults.length} ofertas (puestos relacionados con "${query}")`);
         }
       } catch (error) {
         console.error('⚠️  Error en NIVEL 2:', error.message);

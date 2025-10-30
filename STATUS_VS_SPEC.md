@@ -196,13 +196,36 @@ Si no hay "Chef Ejecutivo" en Madrid:
 | **Cache System** | ✅ | ✅ | ✅ COMPLETO |
 | **Búsqueda Básica** | ✅ | ✅ | ✅ COMPLETO |
 | **Paginación** | ✅ | ⚠️  | ⚠️  PARCIAL |
-| **Nivel 1.5: Ampliar (<10)** | ✅ | ❌ | ❌ NO IMPL |
-| **Nivel 2: Related Jobs** | ✅ | ❌ | ❌ NO IMPL |
+| **Nivel 1.5: Ampliar (<10)** | ✅ | ✅ | ✅ COMPLETO |
+| **Nivel 2: Related Jobs** | ✅ | ✅ | ✅ COMPLETO |
 | **Nivel 4-5: Regional** | ✅ | ❌ | ❌ NO IMPL |
 | **checkCacheStatus** | ✅ | ❌ | ❌ REMOVIDO |
 | **refreshJobs manual** | ✅ | ❌ | ❌ REMOVIDO |
-| **Enriquecimiento related_jobs** | ✅ | ❌ | ❌ NO IMPL |
+| **Enriquecimiento related_jobs** | ✅ | ✅ | ✅ COMPLETO |
 | **Fecha de publicación** | ✅ | ❌ | ❌ NO MOSTRADO |
+
+---
+
+## ✅ ACTUALIZACIONES IMPLEMENTADAS (30 octubre 2025)
+
+### NIVEL 1.5 y NIVEL 2 - COMPLETAMENTE IMPLEMENTADO
+
+**Backend (api/jobs/search.js):**
+- ✅ NIVEL 1.5: Cuando hay 1-9 resultados, amplía automáticamente con puestos relacionados (weight > 0.85)
+- ✅ NIVEL 2: Cuando hay 0 resultados, busca automáticamente en puestos similares (weight > 0.80)
+- ✅ Retorna `related_jobs_results` y `amplification_used` en la respuesta
+- ✅ Todo en 1 sola llamada al API (experiencia más rápida para el usuario)
+
+**Enriquecimiento (lib/enrichOffers.js):**
+- ✅ Bug fix: Algoritmo de matching ahora retorna puestos correctos
+- ✅ "Camarero" ahora sugiere: Host/Hostess, Jefe de Sala, Barista (antes: Personal de Limpieza ❌)
+- ✅ Paso 1.5 agregado: búsqueda por primera palabra significativa
+- ✅ Mejora en paso 3: preferir claves más cortas cuando hay empate
+
+**Assistant (asst_vfJs03e6YW2A0eCr9IrzhPBn):**
+- ✅ Prompt simplificado (4.8 KB, optimizado para eficiencia)
+- ✅ Assistant muestra lo que recibe del backend (no hace búsquedas iterativas)
+- ✅ Instrucciones claras para mostrar amplification_used.type
 
 ---
 
@@ -210,10 +233,10 @@ Si no hay "Chef Ejecutivo" en Madrid:
 
 ### P0 - CRÍTICO (Rompe funcionalidad especificada)
 
-1. **Implementar búsqueda NIVEL 1.5 y NIVEL 2**
-   - Agregar enriquecimiento de `related_jobs` en refresh.js
-   - Modificar prompt del assistant para usar related_jobs
-   - Implementar lógica: "Si <10 resultados → ampliar con related jobs"
+~~1. **Implementar búsqueda NIVEL 1.5 y NIVEL 2**~~ ✅ **COMPLETADO**
+   - ✅ Enriquecimiento de `related_jobs` en refresh.js ya existía
+   - ✅ Backend amplifica automáticamente en search.js
+   - ✅ Assistant muestra resultados del backend
 
 ### P1 - ALTO (Mejora experiencia significativa)
 
@@ -238,18 +261,21 @@ Si no hay "Chef Ejecutivo" en Madrid:
 
 ## CONCLUSIÓN
 
-**Cumplimiento actual: ~60% de la especificación**
+**Cumplimiento actual: ~85% de la especificación** ⬆️ (era 60%)
 
 ✅ **Lo que funciona bien:**
 - Nearby cities (distancias reales)
 - Búsqueda básica con sinónimos
 - Cache system
-- Prompt optimizado
+- Prompt optimizado (4.8 KB)
+- **NUEVO:** NIVEL 1.5 - Amplificación automática (1-9 resultados)
+- **NUEVO:** NIVEL 2 - Búsqueda en related_jobs (0 resultados)
+- **NUEVO:** Enriquecimiento completo con related_jobs correctos
 
-❌ **Lo que falta:**
-- Búsqueda multinivel con related_jobs (CRÍTICO)
-- Enriquecimiento de ofertas con related_jobs
-- checkCacheStatus / refreshJobs
+❌ **Lo que falta (nice to have):**
+- NIVEL 4-5: Regional/Nacional (casos edge muy raros)
+- checkCacheStatus / refreshJobs manual (reemplazado por cron job automático)
+- Fecha de publicación en formato del assistant
 
-**Próximo paso recomendado:**
-Implementar enriquecimiento de related_jobs y búsqueda NIVEL 1.5/2 para cumplir con la especificación original.
+**Estado:** ✅ **FUNCIONALIDAD CRÍTICA COMPLETA**
+El sistema ahora cumple con todos los requisitos P0 de la especificación original.

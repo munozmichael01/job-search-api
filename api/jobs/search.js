@@ -207,6 +207,170 @@ export default async function handler(req, res) {
       }
     }
 
+    // ENRIQUECIMIENTO: Related Jobs (NIVEL 1.5 y NIVEL 2)
+    let relatedJobsResults = null;
+    let amplificationUsed = null;
+
+    // NIVEL 2: Si NO hay resultados, buscar en related_jobs
+    if (query && totalMatches === 0 && startOffset === 0) {
+      try {
+        console.log(`🔍 NIVEL 2: Búsqueda de "${query}" retornó 0 resultados, buscando related_jobs...`);
+
+        // Analizar las primeras 100 ofertas de la location (o todas si no hay location)
+        const offersToAnalyze = cacheData.offers
+          .filter(job => {
+            if (location) {
+              const city = normalizeText(job.ciudad || job.city || '');
+              const region = normalizeText(job.region || '');
+              return city.includes(locationLower) || region.includes(locationLower);
+            }
+            return true;
+          })
+          .slice(0, 100);
+
+        // Buscar ofertas que tengan el query en sus related_jobs
+        const relatedJobsMap = new Map();
+
+        offersToAnalyze.forEach(job => {
+          if (job.enriched && job.enriched.related_jobs) {
+            job.enriched.related_jobs.forEach(rel => {
+              const relNormalized = normalizeText(rel.job);
+              if (relNormalized.includes(normalizedQuery) || queryTerms.some(term => relNormalized.includes(term))) {
+                if (!relatedJobsMap.has(rel.job)) {
+                  relatedJobsMap.set(rel.job, { job: rel.job, weight: rel.weight, count: 0 });
+                }
+                relatedJobsMap.get(rel.job).count++;
+              }
+            });
+          }
+        });
+
+        // Ordenar por relevancia (weight * count)
+        const candidateJobs = Array.from(relatedJobsMap.values())
+          .map(item => ({ ...item, score: item.weight * item.count }))
+          .filter(item => item.weight > 0.80) // Solo alta similitud
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 3);
+
+        if (candidateJobs.length > 0) {
+          console.log(`   Encontrados ${candidateJobs.length} puestos relacionados con high weight`);
+
+          // Buscar ofertas del puesto relacionado con mayor score
+          const topRelatedJob = candidateJobs[0].job;
+          const topRelatedNormalized = normalizeText(topRelatedJob);
+
+          const relatedOffers = cacheData.offers.filter(job => {
+            const title = normalizeText(job.titulo || job.title || '');
+            const titleMatch = title.includes(topRelatedNormalized) || topRelatedNormalized.includes(title);
+
+            if (!titleMatch) return false;
+
+            // Aplicar filtros de location y category
+            if (location) {
+              const city = normalizeText(job.ciudad || job.city || '');
+              const region = normalizeText(job.region || '');
+              if (!city.includes(locationLower) && !region.includes(locationLower)) return false;
+            }
+
+            if (category) {
+              const categoryField = normalizeText(job.categoria || job.category || '');
+              if (!categoryField.includes(categoryLower)) return false;
+            }
+
+            return true;
+          });
+
+          if (relatedOffers.length > 0) {
+            relatedJobsResults = relatedOffers.slice(0, Math.min(10, maxResults));
+            amplificationUsed = {
+              type: 'nivel_2',
+              original_query: query,
+              related_job_used: topRelatedJob,
+              weight: candidateJobs[0].weight,
+              total_related_found: relatedOffers.length
+            };
+            console.log(`   ✅ NIVEL 2: Agregando ${relatedJobsResults.length} ofertas de "${topRelatedJob}"`);
+          }
+        }
+      } catch (error) {
+        console.error('⚠️  Error en NIVEL 2:', error.message);
+      }
+    }
+
+    // NIVEL 1.5: Si hay pocos resultados (<10), ampliar con related_jobs
+    if (query && totalMatches > 0 && totalMatches < 10 && startOffset === 0 && !relatedJobsResults) {
+      try {
+        console.log(`🔍 NIVEL 1.5: Solo ${totalMatches} resultados, ampliando con related_jobs...`);
+
+        // Analizar related_jobs de los primeros 5 resultados
+        const relatedJobsMap = new Map();
+
+        results.slice(0, 5).forEach(job => {
+          if (job.enriched && job.enriched.related_jobs) {
+            job.enriched.related_jobs.forEach(rel => {
+              if (rel.weight > 0.85 && rel.available_offers > 0) {
+                const key = rel.job;
+                if (!relatedJobsMap.has(key)) {
+                  relatedJobsMap.set(key, { job: rel.job, weight: rel.weight, mentions: 0 });
+                }
+                relatedJobsMap.get(key).mentions++;
+              }
+            });
+          }
+        });
+
+        // Ordenar por relevancia (weight * mentions)
+        const candidateJobs = Array.from(relatedJobsMap.values())
+          .map(item => ({ ...item, score: item.weight * item.mentions }))
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 2);
+
+        if (candidateJobs.length > 0) {
+          console.log(`   Encontrados ${candidateJobs.length} puestos relacionados`);
+
+          // Buscar ofertas del puesto relacionado top
+          const topRelatedJob = candidateJobs[0].job;
+          const topRelatedNormalized = normalizeText(topRelatedJob);
+
+          const relatedOffers = cacheData.offers.filter(job => {
+            const title = normalizeText(job.titulo || job.title || '');
+            const titleMatch = title.includes(topRelatedNormalized) || topRelatedNormalized.includes(title);
+
+            if (!titleMatch) return false;
+
+            // Aplicar filtros de location y category
+            if (location) {
+              const city = normalizeText(job.ciudad || job.city || '');
+              const region = normalizeText(job.region || '');
+              if (!city.includes(locationLower) && !region.includes(locationLower)) return false;
+            }
+
+            if (category) {
+              const categoryField = normalizeText(job.categoria || job.category || '');
+              if (!categoryField.includes(categoryLower)) return false;
+            }
+
+            return true;
+          });
+
+          if (relatedOffers.length > 0) {
+            const neededToReach10 = 10 - totalMatches;
+            relatedJobsResults = relatedOffers.slice(0, Math.min(neededToReach10, 7));
+            amplificationUsed = {
+              type: 'nivel_1_5',
+              original_count: totalMatches,
+              related_job_used: topRelatedJob,
+              weight: candidateJobs[0].weight,
+              added_count: relatedJobsResults.length
+            };
+            console.log(`   ✅ NIVEL 1.5: Agregando ${relatedJobsResults.length} ofertas de "${topRelatedJob}"`);
+          }
+        }
+      } catch (error) {
+        console.error('⚠️  Error en NIVEL 1.5:', error.message);
+      }
+    }
+
     return res.status(200).json({
       success: true,
       metadata: {
@@ -231,7 +395,11 @@ export default async function handler(req, res) {
         next_offset: hasMore ? startOffset + maxResults : null
       },
       results: results,
-      ...(nearbyCities && nearbyCities.length > 0 && { nearby_cities: nearbyCities })
+      ...(nearbyCities && nearbyCities.length > 0 && { nearby_cities: nearbyCities }),
+      ...(relatedJobsResults && relatedJobsResults.length > 0 && {
+        related_jobs_results: relatedJobsResults,
+        amplification_used: amplificationUsed
+      })
     });
 
   } catch (error) {

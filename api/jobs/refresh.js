@@ -103,21 +103,31 @@ export default async function handler(req, res) {
     console.log('✨ Enriqueciendo ofertas con datos inteligentes...');
     const enrichedJobs = enrichOffers(normalizedJobs);
 
+    // Reducir tamaño del JSON para caber en Vercel KV (10MB limit)
+    // Eliminar descripcion que ocupa ~70% del tamaño y no se usa en búsquedas
+    console.log('📦 Optimizando tamaño del cache (eliminando descripciones)...');
+    const compactOffers = enrichedJobs.map(job => {
+      const { descripcion, ...rest } = job;
+      return rest; // Mantiene todos los campos excepto descripcion
+    });
+
     // Crear estructura de caché
     const cacheData = {
       metadata: {
         last_update: new Date().toISOString(),
-        total_jobs: enrichedJobs.length,
+        total_jobs: compactOffers.length,
         status: 'success',
         feed_url: XML_FEED_URL
       },
-      offers: enrichedJobs
+      offers: compactOffers
     };
+
+    console.log(`📏 Tamaño estimado: ~${Math.round(JSON.stringify(cacheData).length / 1024 / 1024 * 10) / 10}MB`);
 
     // Guardar en Vercel KV (expira en 48 horas)
     await kv.set('job_offers_cache', cacheData, { ex: 172800 });
 
-    console.log(`✅ ${enrichedJobs.length} ofertas enriquecidas almacenadas en caché`);
+    console.log(`✅ ${compactOffers.length} ofertas enriquecidas almacenadas en caché`);
 
     return res.status(200).json({
       success: true,

@@ -118,18 +118,26 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
    **CÓMO MANEJAR related_jobs_results:**
 
    A) Si hay amplification_used.type === "nivel_2":
-      "No encontré ofertas de [original_query] en [original_location], pero encontré **[X] ofertas de [related_job_used]** (puesto relacionado):
+      "No encontré ofertas de [original_query] en [original_location], pero encontré **[X] ofertas relacionadas**:
+
+      ⚡ MUESTRA TODAS LAS OFERTAS de related_jobs_results (NO pagines)
+
+      
 
       [Mostrar ofertas de related_jobs_results con formato normal]
 
-      Este puesto suele incluir responsabilidades similares."
+      Estas ofertas pueden incluir responsabilidades de [original_query]."
 
    A2) Si hay amplification_used.type === "nivel_2_nearby":
-      "No encontré ofertas de [original_query] en [original_location], pero encontré **[X] ofertas de [related_job_used] en [nearby_city]** ([distance_km] km, puesto relacionado):
+      "No encontré ofertas de [original_query] en [original_location], pero encontré **[X] ofertas relacionadas en [nearby_city]** ([distance_km] km):
+
+      ⚡ MUESTRA TODAS LAS OFERTAS de related_jobs_results (NO pagines, NO limites a 3 o 5)
+
+      
 
       [Mostrar ofertas de related_jobs_results con formato normal]
 
-      Este puesto suele incluir responsabilidades similares a lo que buscas."
+      Estas ofertas pueden incluir responsabilidades de [original_query] aunque el título del puesto sea diferente."
 
    B) Si hay amplification_used.type === "nivel_1_5":
       "Encontré **[original_count] ofertas de [query]**:

@@ -57,9 +57,13 @@
     .turijobs-send-button svg{width:20px;height:20px}
     .turijobs-chat-footer{padding:8px 16px;text-align:center;font-size:12px;color:#586069;background:#fff;border-top:1px solid #e1e4e8}
     .turijobs-chat-footer strong{color:#0066cc;font-weight:600}
+    .turijobs-action-buttons{margin-top:8px;display:flex;gap:8px}
+    .turijobs-action-button{background:#0066cc;color:#fff;border:none;padding:8px 16px;border-radius:20px;font-size:14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+    .turijobs-action-button:hover{background:#0052a3;transform:scale(1.02)}
     @media (max-width:480px){
       .turijobs-chat-widget{bottom:16px;right:16px;left:auto}
       .turijobs-chat-window{position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;border-radius:0!important}
+      .turijobs-chat-messages{overflow-y:auto!important;-webkit-overflow-scrolling:touch;height:auto!important}
       .turijobs-chat-button{width:56px;height:56px}
     }
   `;
@@ -284,16 +288,86 @@
       const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
       
       // Detectar si el mensaje sugiere ver más
+      // Buscar en versión sin formatear (case insensitive)
+      const lowerContent = content.toLowerCase();
       const hasMoreSuggestion = role === 'assistant' && (
-        content.includes('muéstrame más') || 
-        content.includes('siguiente') ||
-        content.includes('ver más') ||
-        content.includes('ofertas adicionales')
+        lowerContent.includes('muéstrame más') ||
+        lowerContent.includes('siguiente') ||
+        lowerContent.includes('ver más') ||
+        lowerContent.includes('ofertas adicionales') ||
+        lowerContent.includes('hay más') ||
+        lowerContent.includes('continuar')
+      );
+      // Detectar si el mensaje sugiere ver más
+      // Buscar en versión sin formatear (case insensitive)
+      const lowerContent = content.toLowerCase();
+      const hasMoreSuggestion = role === 'assistant' && (
+        lowerContent.includes('muéstrame más') ||
+        lowerContent.includes('siguiente') ||
+        lowerContent.includes('ver más') ||
+        lowerContent.includes('ofertas adicionales') ||
+        lowerContent.includes('hay más') ||
+        lowerContent.includes('continuar')
+      );
+      // Detectar si el mensaje sugiere ver más
+      // Buscar en versión sin formatear (case insensitive)
+      const lowerContent = content.toLowerCase();
+      const hasMoreSuggestion = role === 'assistant' && (
+        lowerContent.includes('muéstrame más') ||
+        lowerContent.includes('siguiente') ||
+        lowerContent.includes('ver más') ||
+        lowerContent.includes('ofertas adicionales') ||
+        lowerContent.includes('hay más') ||
+        lowerContent.includes('continuar')
+      );
+      // Detectar si el mensaje sugiere ver más
+      // Buscar en versión sin formatear (case insensitive)
+      const lowerContent = content.toLowerCase();
+      const hasMoreSuggestion = role === 'assistant' && (
+        lowerContent.includes('muéstrame más') ||
+        lowerContent.includes('siguiente') ||
+        lowerContent.includes('ver más') ||
+        lowerContent.includes('ofertas adicionales') ||
+        lowerContent.includes('hay más') ||
+        lowerContent.includes('continuar')
+      );
+      // Detectar si el mensaje sugiere ver más
+      // Buscar en versión sin formatear (case insensitive)
+      const lowerContent = content.toLowerCase();
+      const hasMoreSuggestion = role === 'assistant' && (
+        lowerContent.includes('muéstrame más') ||
+        lowerContent.includes('siguiente') ||
+        lowerContent.includes('ver más') ||
+        lowerContent.includes('ofertas adicionales') ||
+        lowerContent.includes('hay más') ||
+        lowerContent.includes('continuar')
+      );
+      // Detectar si el mensaje sugiere ver más
+      // Buscar en versión sin formatear (case insensitive)
+      const lowerContent = content.toLowerCase();
+      const hasMoreSuggestion = role === 'assistant' && (
+        lowerContent.includes('muéstrame más') ||
+        lowerContent.includes('siguiente') ||
+        lowerContent.includes('ver más') ||
+        lowerContent.includes('ofertas adicionales') ||
+        lowerContent.includes('hay más') ||
+        lowerContent.includes('continuar')
+      );
+      // Detectar si el mensaje sugiere ver más
+      // Buscar en versión sin formatear (case insensitive)
+      const lowerContent = content.toLowerCase();
+      const hasMoreSuggestion = role === 'assistant' && (
+        lowerContent.includes('muéstrame más') ||
+        lowerContent.includes('siguiente') ||
+        lowerContent.includes('ver más') ||
+        lowerContent.includes('ofertas adicionales') ||
+        lowerContent.includes('hay más') ||
+        lowerContent.includes('continuar')
       );
       
       const quickReplyButtons = hasMoreSuggestion ? `
         <div class="turijobs-action-buttons">
-          <button class="turijobs-action-button" onclick="this.closest('.turijobs-chat-widget').dispatchEvent(new CustomEvent('quick-reply', {detail: 'siguiente'}))">
+          <button class="turijobs-action-button" data-quick-reply="siguiente">
             ▶️ Ver más ofertas
           </button>
         </div>
@@ -310,6 +384,20 @@
       
       messagesContainer.appendChild(messageDiv);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      // Event delegation para botones quick reply
+      messagesContainer.querySelectorAll('[data-quick-reply]').forEach(btn => {
+        if (!btn.hasAttribute('data-listener-added')) {
+          btn.addEventListener('click', (e) => {
+            const input = document.getElementById('turijobs-input');
+            if (input) {
+              input.value = e.target.getAttribute('data-quick-reply');
+              document.getElementById('turijobs-send-btn')?.click();
+            }
+          });
+          btn.setAttribute('data-listener-added', 'true');
+        }
+      });
     }
     
     function showTypingIndicator() {

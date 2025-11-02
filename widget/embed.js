@@ -142,9 +142,13 @@
       const chatWindow = createChatWindow();
       widget.appendChild(chatWindow);
 
+      console.log('[Turijobs] Opening chat - threadId:', threadId, 'isCreatingThread:', isCreatingThread);
+
       if (!threadId && !isCreatingThread) {
+        console.log('[Turijobs] No thread ID, creating new thread');
         createThread();
       } else if (threadId) {
+        console.log('[Turijobs] Loading messages for thread:', threadId);
         loadMessages();
       }
     }

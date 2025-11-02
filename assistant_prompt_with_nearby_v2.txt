@@ -97,9 +97,14 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
    A) Si estás mostrando resultados normales (results[]):
       → Incrementa offset: searchJobs(query="chef", location="Madrid", offset=10)
 
-   B) Si estás mostrando related_jobs_results (NIVEL 2 o NIVEL 1.5):
+   B) Si estás mostrando related_jobs_results (NIVEL 2):
       → Incrementa related_offset: searchJobs(query="chef", location="Madrid", related_offset=10)
       ⚡ IMPORTANTE: NO uses offset, usa related_offset para paginar related_jobs
+
+   C) Si estás mostrando NIVEL 1.5 nearby (ofertas originales + cercanas):
+      → Incrementa related_offset: searchJobs(query="chef", location="viladecans", related_offset=8)
+      ⚡ IMPORTANTE: Esto solo paginará las ofertas de ciudades cercanas, NO las originales
+      ⚡ Las ofertas originales siempre se muestran todas
 
    Si pagination.has_more === true (después de mostrar todas las ofertas):
    "📋 Hay [pagination.remaining] ofertas más. Dime 'siguiente' para continuar."
@@ -167,6 +172,9 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
       También agregué **[added_count] ofertas de [nearby_city]** ([distance_km] km):
 
       [Mostrar TODAS las ofertas de related_jobs_results con formato normal]"
+
+      Si amplification_used.nearby_pagination.has_more === true:
+      "📋 Hay [nearby_pagination.remaining] ofertas más de ciudades cercanas. Dime 'siguiente' para continuar."
 
    C) Si NO hay related_jobs_results:
       Simplemente muestra los resultados normales

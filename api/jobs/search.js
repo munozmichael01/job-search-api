@@ -504,8 +504,15 @@ export default async function handler(req, res) {
           });
 
           if (offersInNearbyCities.length > 0) {
+            // PAGINACIÓN para NIVEL 1.5
+            const totalNearbyMatches = offersInNearbyCities.length;
             const neededToReach10 = 10 - totalMatches;
-            relatedJobsResults = offersInNearbyCities.slice(0, neededToReach10);
+            const nearbyHasMore = relatedOffset + neededToReach10 < totalNearbyMatches;
+            const nearbyRemaining = nearbyHasMore ? totalNearbyMatches - (relatedOffset + neededToReach10) : 0;
+
+            // Aplicar offset y limit
+            relatedJobsResults = offersInNearbyCities
+              .slice(relatedOffset, relatedOffset + neededToReach10);
 
             // Detectar ciudad más común
             const cityCount = {};
@@ -526,10 +533,19 @@ export default async function handler(req, res) {
               nearby_city: mostCommonCity,
               distance_km: mostCommonDistance,
               added_count: relatedJobsResults.length,
-              total_with_additions: totalMatches + relatedJobsResults.length
+              total_with_additions: totalMatches + relatedJobsResults.length,
+              nearby_pagination: {
+                total_matches: totalNearbyMatches,
+                returned_results: relatedJobsResults.length,
+                offset: relatedOffset,
+                limit: neededToReach10,
+                has_more: nearbyHasMore,
+                remaining: nearbyRemaining,
+                next_offset: nearbyHasMore ? relatedOffset + neededToReach10 : null
+              }
             };
 
-            console.log(`   ✅ NIVEL 1.5: Agregando ${relatedJobsResults.length} ofertas de ciudades cercanas (${mostCommonCity} a ${mostCommonDistance}km)`);
+            console.log(`   ✅ NIVEL 1.5: Agregando ${relatedJobsResults.length} de ${totalNearbyMatches} ofertas de ciudades cercanas (${mostCommonCity} a ${mostCommonDistance}km, has_more: ${nearbyHasMore})`);
           } else {
             console.log(`   ℹ️  No se encontraron ofertas de "${query}" en ciudades cercanas`);
           }

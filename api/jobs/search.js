@@ -74,9 +74,10 @@ export default async function handler(req, res) {
       });
     }
 
-    const { query = '', location = '', category = '', limit = '10', offset = '0' } = req.query;
+    const { query = '', location = '', category = '', limit = '10', offset = '0', related_offset = '0' } = req.query;
     const maxResults = parseInt(limit) || 10;
     const startOffset = parseInt(offset) || 0;
+    const relatedOffset = parseInt(related_offset) || 0;
 
     const synonyms = loadSynonyms();
     const normalizedQuery = normalizeText(query);
@@ -311,11 +312,18 @@ export default async function handler(req, res) {
           // Ordenar por weight de la relación
           offersWithRelatedJobs.sort((a, b) => b.weight - a.weight);
 
-          // Tomar hasta 10 ofertas
-          relatedJobsResults = offersWithRelatedJobs.slice(0, Math.min(10, maxResults)).map(item => item.offer);
+          // Aplicar paginación para related_jobs
+          const totalRelatedMatches = offersWithRelatedJobs.length;
+          const relatedHasMore = relatedOffset + maxResults < totalRelatedMatches;
+          const relatedRemaining = relatedHasMore ? totalRelatedMatches - (relatedOffset + maxResults) : 0;
+
+          // Tomar ofertas con offset y limit
+          relatedJobsResults = offersWithRelatedJobs
+            .slice(relatedOffset, relatedOffset + maxResults)
+            .map(item => item.offer);
 
           // Determinar qué tipo de puesto se está sugiriendo
-          const suggestedJobType = relatedJobsResults[0].titulo || relatedJobsResults[0].title;
+          const suggestedJobType = offersWithRelatedJobs[0].titulo || offersWithRelatedJobs[0].title;
 
           amplificationUsed = {
             type: offersWithRelatedJobs[0].nearbyCity ? 'nivel_2_nearby' : 'nivel_2',
@@ -324,13 +332,22 @@ export default async function handler(req, res) {
             related_job_used: offersWithRelatedJobs[0].relatedJobName,
             suggested_job_type: suggestedJobType,
             weight: offersWithRelatedJobs[0].weight,
-            total_related_found: offersWithRelatedJobs.length,
+            total_related_found: totalRelatedMatches,
+            related_pagination: {
+              total_matches: totalRelatedMatches,
+              returned_results: relatedJobsResults.length,
+              offset: relatedOffset,
+              limit: maxResults,
+              has_more: relatedHasMore,
+              remaining: relatedRemaining,
+              next_offset: relatedHasMore ? relatedOffset + maxResults : null
+            },
             ...(offersWithRelatedJobs[0].nearbyCity && {
               nearby_city: offersWithRelatedJobs[0].nearbyCity,
               distance_km: offersWithRelatedJobs[0].distance
             })
           };
-          console.log(`   ✅ NIVEL 2: Retornando ${relatedJobsResults.length} ofertas (puestos relacionados con "${query}")`);
+          console.log(`   ✅ NIVEL 2: Retornando ${relatedJobsResults.length} de ${totalRelatedMatches} ofertas (offset: ${relatedOffset}, has_more: ${relatedHasMore})`);
         }
       } catch (error) {
         console.error('⚠️  Error en NIVEL 2:', error.message);

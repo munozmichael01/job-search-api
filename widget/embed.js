@@ -7,7 +7,14 @@
 
 (function() {
   'use strict';
-  
+
+  // Prevenir múltiples inicializaciones
+  if (window.TURIJOBS_WIDGET_LOADED) {
+    console.warn('⚠️ Turijobs widget already loaded, skipping initialization');
+    return;
+  }
+  window.TURIJOBS_WIDGET_LOADED = true;
+
   const API_BASE_URL = 'https://job-search-api-psi.vercel.app';
   
   // Crear estilos

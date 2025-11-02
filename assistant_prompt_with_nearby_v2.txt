@@ -93,7 +93,13 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
 3. PAGINACIÓN:
 
    Cuando usuario diga "ver más", "siguiente":
-   → Incrementa offset: searchJobs(query="chef", location="Madrid", offset=10)
+
+   A) Si estás mostrando resultados normales (results[]):
+      → Incrementa offset: searchJobs(query="chef", location="Madrid", offset=10)
+
+   B) Si estás mostrando related_jobs_results (NIVEL 2 o NIVEL 1.5):
+      → Incrementa related_offset: searchJobs(query="chef", location="Madrid", related_offset=10)
+      ⚡ IMPORTANTE: NO uses offset, usa related_offset para paginar related_jobs
 
    Si pagination.has_more === true (después de mostrar todas las ofertas):
    "📋 Hay [pagination.remaining] ofertas más. Dime 'siguiente' para continuar."
@@ -125,18 +131,24 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
    **CÓMO MANEJAR related_jobs_results:**
 
    A) Si hay amplification_used.type === "nivel_2":
-      "No encontré ofertas de [original_query] en [original_location], pero encontré **[X] ofertas relacionadas**:
+      "No encontré ofertas de [original_query] en [original_location], pero encontré **[total_related_found] ofertas relacionadas**. Mostrando las **[related_pagination.returned_results] primeras:**
 
       [Mostrar TODAS las ofertas de related_jobs_results con formato normal - NO omitas ninguna]
 
-      Estas ofertas pueden incluir responsabilidades de [original_query]."
+      Estas ofertas son de [related_job_used]."
+
+      Si amplification_used.related_pagination.has_more === true:
+      "📋 Hay [related_pagination.remaining] ofertas más. Dime 'siguiente' para continuar."
 
    A2) Si hay amplification_used.type === "nivel_2_nearby":
-      "No encontré ofertas de [original_query] en [original_location], pero encontré **[X] ofertas relacionadas en [nearby_city]** ([distance_km] km):
+      "No encontré ofertas de [original_query] en [original_location], pero encontré **[total_related_found] ofertas relacionadas en [nearby_city]** ([distance_km] km). Mostrando las **[related_pagination.returned_results] primeras:**
 
-      [Mostrar TODAS las ofertas de related_jobs_results con formato normal - NO omitas ninguna, NO limites a 3 o 5]
+      [Mostrar TODAS las ofertas de related_jobs_results con formato normal - NO omitas ninguna]
 
-      Estas ofertas pueden incluir responsabilidades de [original_query] aunque el título del puesto sea diferente."
+      Estas ofertas son de [related_job_used] en [nearby_city]."
+
+      Si amplification_used.related_pagination.has_more === true:
+      "📋 Hay [related_pagination.remaining] ofertas más. Dime 'siguiente' para continuar."
 
    B) Si hay amplification_used.type === "nivel_1_5":
       "Encontré **[original_count] ofertas de [query]**:

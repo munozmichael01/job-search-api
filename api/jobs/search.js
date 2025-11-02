@@ -251,9 +251,10 @@ export default async function handler(req, res) {
           }
         });
 
-        // Si no encontró nada en la ubicación exacta, buscar en ciudades cercanas
-        if (offersWithRelatedJobs.length === 0 && location) {
-          console.log(`   No se encontraron related_jobs en "${location}", buscando en ciudades cercanas...`);
+        // SIEMPRE buscar en ciudades cercanas para ampliar resultados
+        if (location) {
+          const foundInOriginalCity = offersWithRelatedJobs.length;
+          console.log(`   Encontradas ${foundInOriginalCity} ofertas en "${location}", buscando en ciudades cercanas para ampliar...`);
 
           // Cargar nearby cities
           loadCityDistances();
@@ -325,8 +326,24 @@ export default async function handler(req, res) {
           // Determinar qué tipo de puesto se está sugiriendo
           const suggestedJobType = offersWithRelatedJobs[0].titulo || offersWithRelatedJobs[0].title;
 
+          // Detectar si hay ofertas de ciudades cercanas
+          const offersFromNearbyCities = offersWithRelatedJobs.filter(o => o.nearbyCity);
+          const hasNearbyCities = offersFromNearbyCities.length > 0;
+
+          // Encontrar la ciudad cercana más común (la que tiene más ofertas)
+          let mostCommonNearbyCity = null;
+          let mostCommonDistance = null;
+          if (hasNearbyCities) {
+            const cityCount = {};
+            offersFromNearbyCities.forEach(o => {
+              cityCount[o.nearbyCity] = (cityCount[o.nearbyCity] || 0) + 1;
+            });
+            mostCommonNearbyCity = Object.keys(cityCount).reduce((a, b) => cityCount[a] > cityCount[b] ? a : b);
+            mostCommonDistance = offersFromNearbyCities.find(o => o.nearbyCity === mostCommonNearbyCity)?.distance;
+          }
+
           amplificationUsed = {
-            type: offersWithRelatedJobs[0].nearbyCity ? 'nivel_2_nearby' : 'nivel_2',
+            type: hasNearbyCities ? 'nivel_2_nearby' : 'nivel_2',
             original_query: query,
             original_location: location,
             related_job_used: offersWithRelatedJobs[0].relatedJobName,
@@ -342,9 +359,9 @@ export default async function handler(req, res) {
               remaining: relatedRemaining,
               next_offset: relatedHasMore ? relatedOffset + maxResults : null
             },
-            ...(offersWithRelatedJobs[0].nearbyCity && {
-              nearby_city: offersWithRelatedJobs[0].nearbyCity,
-              distance_km: offersWithRelatedJobs[0].distance
+            ...(hasNearbyCities && {
+              nearby_city: mostCommonNearbyCity,
+              distance_km: mostCommonDistance
             })
           };
           console.log(`   ✅ NIVEL 2: Retornando ${relatedJobsResults.length} de ${totalRelatedMatches} ofertas (offset: ${relatedOffset}, has_more: ${relatedHasMore})`);

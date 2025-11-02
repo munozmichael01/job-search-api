@@ -543,13 +543,21 @@ export default async function handler(req, res) {
             // Buscar MISMO puesto (query) en ciudades cercanas
             const offersInNearbyCities = [];
 
+            // Usar queryTerms con synonyms (igual que el search regular)
+            const queryTerms = queryNormalized ? [queryNormalized] : [];
+
             nearbyCitiesWithOffers.slice(0, 10).forEach(nearbyCity => {
               const nearbyCityNormalized = normalizeText(nearbyCity.city);
 
               cacheData.offers.forEach(job => {
-                // Match del título (mismo query)
+                // Match del query (mismo método que el search regular)
                 const title = normalizeText(job.titulo || job.title || '');
-                const titleMatch = title.includes(queryNormalized) || queryNormalized.includes(title);
+                const description = normalizeText(job.descripcion || job.description || '');
+                const company = normalizeText(job.empresa || job.company || '');
+
+                const titleMatch = queryTerms.some(term =>
+                  title.includes(term) || description.includes(term) || company.includes(term)
+                );
                 if (!titleMatch) return;
 
                 // Match de ciudad cercana

@@ -100,27 +100,17 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
 
 ---
 
-4. CIUDADES CERCANAS - SÉ PROACTIVO:
+4. CIUDADES CERCANAS:
 
-   ⚡ IMPORTANTE: El API devuelve nearby_cities automáticamente con ofertas en ciudades cercanas.
+   ⚡ IMPORTANTE: El backend YA maneja ciudades cercanas automáticamente.
 
-   A) SIEMPRE revisa si hay nearby_cities en la respuesta del API
+   Las ofertas de ciudades cercanas ya vienen incluidas en results[] o related_jobs_results[].
 
-   B) Si hay nearby_cities, muéstralas AUTOMÁTICAMENTE sin que el usuario lo pida:
+   NO necesitas hacer búsquedas adicionales - solo muestra TODAS las ofertas recibidas siguiendo las reglas de la sección 2.
 
-      "En [ciudad] encontré [X] ofertas. También busqué en ciudades cercanas:
-
-      🌆 **[Ciudad cercana] ([distancia]):**
-
-      [Mostrar 2-3 ofertas de esa ciudad con el formato normal]
-
-      🌆 **[Otra ciudad cercana] ([distancia]):**
-
-      [Mostrar 2-3 ofertas...]"
-
-   C) Si NO hay resultados ni nearby_cities:
-      - Di: "No encontré ofertas de [query] en [location]"
-      - Sugiere sinónimos: Chef → cocinero, Camarero → mesero
+   Si NO hay resultados:
+   - Di: "No encontré ofertas de [query] en [location]"
+   - El backend automáticamente buscará en ciudades cercanas y puestos relacionados
 
    ❌ NUNCA inventes ofertas, empresas o ciudades que no estén en la respuesta del API
 
@@ -137,22 +127,14 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
    A) Si hay amplification_used.type === "nivel_2":
       "No encontré ofertas de [original_query] en [original_location], pero encontré **[X] ofertas relacionadas**:
 
-      ⚡ MUESTRA TODAS LAS OFERTAS de related_jobs_results (NO pagines)
-
-      
-
-      [Mostrar ofertas de related_jobs_results con formato normal]
+      [Mostrar TODAS las ofertas de related_jobs_results con formato normal - NO omitas ninguna]
 
       Estas ofertas pueden incluir responsabilidades de [original_query]."
 
    A2) Si hay amplification_used.type === "nivel_2_nearby":
       "No encontré ofertas de [original_query] en [original_location], pero encontré **[X] ofertas relacionadas en [nearby_city]** ([distance_km] km):
 
-      ⚡ MUESTRA TODAS LAS OFERTAS de related_jobs_results (NO pagines, NO limites a 3 o 5)
-
-      
-
-      [Mostrar ofertas de related_jobs_results con formato normal]
+      [Mostrar TODAS las ofertas de related_jobs_results con formato normal - NO omitas ninguna, NO limites a 3 o 5]
 
       Estas ofertas pueden incluir responsabilidades de [original_query] aunque el título del puesto sea diferente."
 

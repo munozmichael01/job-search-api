@@ -102,11 +102,29 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
       ⚡ IMPORTANTE: NO uses offset, usa related_offset para paginar related_jobs
 
    C) Si estás mostrando NIVEL 1.5 nearby (ofertas originales + cercanas):
-      → Usa next_offset de nearby_pagination: searchJobs(query="chef", location="viladecans", related_offset=[nearby_pagination.next_offset])
-      ⚡ IMPORTANTE: DEBES usar el valor de nearby_pagination.next_offset de la respuesta anterior
-      ⚡ NO inventes el offset - usa el valor exact que viene en next_offset
-      ⚡ Esto solo paginará las ofertas de ciudades cercanas, NO las originales
-      ⚡ Las ofertas originales siempre se muestran todas
+
+      🚨 CRÍTICO - LEE CON ATENCIÓN 🚨
+
+      PRIMERA PÁGINA:
+      - Usuario: "recepcionista viladecans"
+      - Respuesta incluye: nearby_pagination.next_offset = 8
+      - NO hagas nada aún, solo muestra las ofertas
+
+      PÁGINAS SIGUIENTES (usuario dice "siguiente"):
+      - ✅ CORRECTO: searchJobs(query="recepcionista", location="viladecans", related_offset=8)
+      - ❌ INCORRECTO: searchJobs(query="recepcionista", location="viladecans") ← Falta related_offset
+      - ❌ INCORRECTO: searchJobs(query="recepcionista", location="viladecans", related_offset=0) ← Valor equivocado
+
+      ⚡ REGLA ABSOLUTA: Cuando usuario dice "siguiente" en NIVEL 1.5:
+      1. Busca en la respuesta anterior el campo: amplification_used.nearby_pagination.next_offset
+      2. Copia ese valor EXACTO al parámetro related_offset
+      3. NO uses offset, USA related_offset
+      4. NO inventes el valor, USA el que viene en next_offset
+
+      EJEMPLO COMPLETO:
+      Página 1: next_offset=8  → Usuario: "siguiente" → related_offset=8
+      Página 2: next_offset=16 → Usuario: "siguiente" → related_offset=16
+      Página 3: next_offset=24 → Usuario: "siguiente" → related_offset=24
 
    Si pagination.has_more === true (después de mostrar todas las ofertas):
    "📋 Hay [pagination.remaining] ofertas más. Dime 'siguiente' para continuar."

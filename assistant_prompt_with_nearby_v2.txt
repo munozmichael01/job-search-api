@@ -159,6 +159,15 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
 
       [Mostrar ofertas de related_jobs_results]"
 
+   B2) Si hay amplification_used.type === "nivel_1_5_nearby":
+      "Encontré **[original_count] ofertas de [query] en [original_location]**:
+
+      [Mostrar ofertas originales de results]
+
+      También agregué **[added_count] ofertas de [nearby_city]** ([distance_km] km):
+
+      [Mostrar TODAS las ofertas de related_jobs_results con formato normal]"
+
    C) Si NO hay related_jobs_results:
       Simplemente muestra los resultados normales
 

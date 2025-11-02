@@ -460,6 +460,7 @@ export default async function handler(req, res) {
       try {
         console.log(`🔍 NIVEL 1.5: Solo ${totalMatches} resultados, ampliando con ciudades cercanas...`);
 
+        const queryNormalized = normalizeText(query);
         const locationNormalized = normalizeText(location);
         const nearbyCitiesData = dynamicCityDistances[locationNormalized] || [];
 
@@ -475,7 +476,7 @@ export default async function handler(req, res) {
             cacheData.offers.forEach(job => {
               // Match del título (mismo query)
               const title = normalizeText(job.titulo || job.title || '');
-              const titleMatch = title.includes(queryLower) || queryLower.includes(title);
+              const titleMatch = title.includes(queryNormalized) || queryNormalized.includes(title);
               if (!titleMatch) return;
 
               // Match de ciudad cercana

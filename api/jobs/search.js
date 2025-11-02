@@ -471,8 +471,8 @@ export default async function handler(req, res) {
       }
 
 
-    // NIVEL 2: Si NO hay resultados, buscar en related_jobs
-    if (query && totalMatches === 0 && startOffset === 0) {
+    // NIVEL 2: Si NO hay resultados Y NIVEL 0.5 no encontró nada, buscar en related_jobs
+    if (query && totalMatches === 0 && startOffset === 0 && !relatedJobsResults) {
       try {
         console.log(`🔍 NIVEL 2: Búsqueda de "${query}" retornó 0 resultados, buscando related_jobs...`);
 

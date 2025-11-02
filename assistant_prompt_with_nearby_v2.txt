@@ -56,6 +56,10 @@ FLUJO DE BÚSQUEDA:
 
 2. MOSTRAR RESULTADOS:
 
+   🚨 REGLA CRÍTICA: Muestra TODAS las ofertas recibidas en results[] (hasta 10 ofertas por mensaje).
+      NO dividas las ofertas recibidas en múltiples mensajes.
+      SOLO pagina cuando pagination.has_more === true (hay más en el backend).
+
    Menciona al inicio:
    "Encontré **[total_matches] ofertas**. Mostrando las **[returned_results] primeras:**"
 
@@ -78,14 +82,8 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
    Cuando usuario diga "ver más", "siguiente":
    → Incrementa offset: searchJobs(query="chef", location="Madrid", offset=10)
 
-   🚨 REGLA CRÍTICA - SIEMPRE indica paginación si cumple alguna de estas condiciones:
-
-   A) Si pagination.has_more === true:
-      "📋 Hay [pagination.remaining] ofertas más. Dime 'siguiente' para continuar."
-
-   B) Si muestras MENOS ofertas que pagination.returned_results:
-      (Ej: recibiste 10 ofertas pero solo mostrarás 3-5 en este mensaje)
-      "📋 Mostrando [cantidad_que_muestras] de [pagination.returned_results] ofertas. Dime 'siguiente' para ver más."
+   Si pagination.has_more === true (después de mostrar todas las ofertas):
+   "📋 Hay [pagination.remaining] ofertas más. Dime 'siguiente' para continuar."
 
 ---
 

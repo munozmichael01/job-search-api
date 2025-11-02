@@ -288,29 +288,14 @@
       const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
       
       // Detectar si el mensaje sugiere ver más
-      // Buscar en versión sin formatear (case insensitive)
       const lowerContent = content.toLowerCase();
       const hasMoreSuggestion = role === 'assistant' && (
-        lowerContent.includes('muéstrame más') ||
+        content.includes('📋') ||  // Emoji de paginación
         lowerContent.includes('siguiente') ||
         lowerContent.includes('ver más') ||
-        lowerContent.includes('ofertas adicionales') ||
         lowerContent.includes('hay más') ||
-        lowerContent.includes('continuar') ||
-        content.includes('📋') ||  // Emoji de paginación del prompt
-        (lowerContent.includes('dime') && lowerContent.includes('siguiente')) ||  // "Dime 'siguiente'"
-        /primeras?\s+\d+/i.test(content)  // "primeras 3 de 10"
+        lowerContent.includes('continuar')
       );
-
-      // DEBUG: Log para ver qué está detectando
-      if (role === 'assistant') {
-        console.log('🔍 DETECCIÓN BOTÓN SIGUIENTE:', {
-          hasMoreSuggestion,
-          contentLength: content.length,
-          contentPreview: content.substring(0, 200) + '...',
-          lowerContent: lowerContent.substring(0, 200) + '...'
-        });
-      }
       
       const quickReplyButtons = hasMoreSuggestion ? `
         <div class="turijobs-action-buttons">

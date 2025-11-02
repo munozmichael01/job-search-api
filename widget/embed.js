@@ -103,6 +103,7 @@
     let threadId = localStorage.getItem('turijobs_thread_id');
     let messages = [];
     let isLoading = false;
+    let isCreatingThread = false;
     
     openBtn.addEventListener('click', () => {
       if (!isOpen) {
@@ -113,17 +114,24 @@
     function openChat() {
       isOpen = true;
       openBtn.style.display = 'none';
-      
+
+      // Bloquear scroll del body en mobile
+      if (window.innerWidth <= 480) {
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+      }
+
       const chatWindow = createChatWindow();
       widget.appendChild(chatWindow);
-      
+
       if (!threadId) {
         createThread();
       } else {
         loadMessages();
       }
     }
-    
+
     function closeChat() {
       isOpen = false;
       const chatWindow = document.querySelector('.turijobs-chat-window');
@@ -131,6 +139,13 @@
         chatWindow.remove();
       }
       openBtn.style.display = 'flex';
+
+      // Desbloquear scroll del body
+      if (window.innerWidth <= 480) {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+      }
     }
     
     function createChatWindow() {
@@ -197,23 +212,33 @@
     }
     
     async function createThread() {
+      // Prevenir llamadas duplicadas
+      if (isCreatingThread) {
+        console.log('⚠️ Thread creation already in progress, skipping...');
+        return;
+      }
+
+      isCreatingThread = true;
+
       try {
         const response = await fetch(`${API_BASE_URL}/api/chat/create-thread`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' }
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
           threadId = data.thread_id;
           localStorage.setItem('turijobs_thread_id', threadId);
-          
+
           // Mensaje de bienvenida
           addMessage('assistant', '¡Hola! 👋 Soy tu asistente de búsqueda de empleo en el sector turístico.\n\nPuedo ayudarte a encontrar ofertas reales de Turijobs en:\n🍽️ Cocina - Chef, ayudante, cocinero\n🛎️ Sala - Camarero, barista, sommelier\n🏨 Recepción - Recepcionista, conserje\n🧹 Housekeeping - Gobernanta, limpieza\n📊 Gestión - Manager, RRHH\n\n¿Qué tipo de trabajo buscas y dónde?');
         }
       } catch (error) {
         console.error('Error creating thread:', error);
+      } finally {
+        isCreatingThread = false;
       }
     }
     

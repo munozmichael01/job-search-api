@@ -543,8 +543,8 @@ export default async function handler(req, res) {
             // Buscar MISMO puesto (query) en ciudades cercanas
             const offersInNearbyCities = [];
 
-            // Usar queryTerms con synonyms (igual que el search regular)
-            const queryTerms = queryNormalized ? [queryNormalized] : [];
+            // queryTerms ya está definido al inicio del handler con todos los sinónimos (línea 188)
+            // Reutilizamos queryTerms para que "barman" encuentre "bartender" y viceversa
 
             nearbyCitiesWithOffers.slice(0, 10).forEach(nearbyCity => {
               const nearbyCityNormalized = normalizeText(nearbyCity.city);

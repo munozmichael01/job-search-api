@@ -26,6 +26,27 @@ function loadCityCoordinates() {
   return cityCoordinates;
 }
 
+// Buscar ciudad en mapa de coordenadas con match exacto o parcial
+function findCityInCoordinates(cityName, coordinatesMap) {
+  const normalized = normalizeText(cityName);
+
+  // 1. Intenta match exacto
+  if (coordinatesMap[normalized]) {
+    return { coords: coordinatesMap[normalized], matchedName: normalized };
+  }
+
+  // 2. Intenta match parcial (A contiene B o B contiene A)
+  const partialMatch = Object.keys(coordinatesMap).find(key =>
+    key.includes(normalized) || normalized.includes(key)
+  );
+
+  if (partialMatch) {
+    return { coords: coordinatesMap[partialMatch], matchedName: partialMatch };
+  }
+
+  return null; // No encontrado
+}
+
 // Calcular distancia entre dos puntos usando fórmula de Haversine
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371; // Radio de la Tierra en km
@@ -55,8 +76,9 @@ function buildDynamicCityDistances(offers) {
 
   // Para cada ciudad con ofertas, encontrar ciudades cercanas (también con ofertas)
   citiesWithOffers.forEach(city1 => {
-    const coords1 = coords[city1];
-    if (!coords1) return; // Skip si no tiene coordenadas
+    const cityResult = findCityInCoordinates(city1, coords);
+    if (!cityResult) return; // Skip si no tiene coordenadas
+    const coords1 = cityResult.coords;
 
     const nearbyCities = [];
     citiesWithOffers.forEach(city2 => {
@@ -466,11 +488,17 @@ export default async function handler(req, res) {
         // Cargar coordenadas de TODAS las ciudades (no solo las que tienen ofertas)
         const cityCoordinates = loadCityCoordinates();
 
-        // Verificar si la ciudad solicitada tiene coordenadas
-        if (!cityCoordinates[locationNormalized]) {
+        // Verificar si la ciudad solicitada tiene coordenadas (match exacto o parcial)
+        const cityResult = findCityInCoordinates(location, cityCoordinates);
+
+        if (!cityResult) {
           console.log(`   ℹ️  "${location}" no tiene coordenadas en city_coordinates.json, saltando NIVEL 0.5`);
         } else {
-          const requestedCityCoords = cityCoordinates[locationNormalized];
+          const requestedCityCoords = cityResult.coords;
+          const matchedCityName = cityResult.matchedName;
+          if (matchedCityName !== locationNormalized) {
+            console.log(`   ✅ Match parcial: "${location}" → "${matchedCityName}"`);
+          }
           console.log(`   "${location}" tiene coordenadas: lat ${requestedCityCoords.lat}, lon ${requestedCityCoords.lon}`);
 
           // Encontrar ciudades cercanas (dentro de 50km) que tengan ofertas
@@ -605,7 +633,19 @@ export default async function handler(req, res) {
 
         const queryNormalized = normalizeText(query);
         const locationNormalized = normalizeText(location);
-        const nearbyCitiesData = dynamicCityDistances[locationNormalized] || [];
+        // Intentar match parcial para el mapa dinámico
+        let nearbyCitiesData = dynamicCityDistances[locationNormalized] || [];
+
+        // Si no hay match exacto, buscar match parcial en el mapa dinámico
+        if (nearbyCitiesData.length === 0) {
+          const partialMatch = Object.keys(dynamicCityDistances).find(key =>
+            key.includes(locationNormalized) || locationNormalized.includes(key)
+          );
+          if (partialMatch) {
+            nearbyCitiesData = dynamicCityDistances[partialMatch];
+            console.log(`   ✅ Match parcial en mapa dinámico: "${location}" → "${partialMatch}"`);
+          }
+        }
 
         if (nearbyCitiesData.length > 0) {
           console.log(`   Buscando "${query}" en ${nearbyCitiesData.length} ciudades cercanas...`);

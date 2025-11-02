@@ -545,7 +545,7 @@ export default async function handler(req, res) {
               }
             };
 
-            console.log(`   ✅ NIVEL 1.5: Agregando ${relatedJobsResults.length} de ${totalNearbyMatches} ofertas de ciudades cercanas (${mostCommonCity} a ${mostCommonDistance}km, has_more: ${nearbyHasMore})`);
+            console.log(`   ✅ NIVEL 1.5: Agregando ${relatedJobsResults.length} de ${totalNearbyMatches} ofertas de ciudades cercanas (${mostCommonCity} a ${mostCommonDistance}km, offset=${relatedOffset}, next=${nearbyHasMore ? relatedOffset + neededToReach10 : 'none'})`);
           } else {
             console.log(`   ℹ️  No se encontraron ofertas de "${query}" en ciudades cercanas`);
           }

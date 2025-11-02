@@ -508,8 +508,11 @@ export default async function handler(req, res) {
           const citiesWithOffers = {};
           cacheData.offers.forEach(job => {
             const city = normalizeText(job.ciudad || job.city || '');
-            if (city && cityCoordinates[city]) {
-              citiesWithOffers[city] = cityCoordinates[city];
+            if (city) {
+              const cityResult = findCityInCoordinates(city, cityCoordinates);
+              if (cityResult) {
+                citiesWithOffers[cityResult.matchedName] = cityResult.coords;
+              }
             }
           });
 

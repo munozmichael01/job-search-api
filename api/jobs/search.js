@@ -9,6 +9,82 @@ const __dirname = path.dirname(__filename);
 
 let jobSynonyms = null;
 let cityDistances = null;
+let cityCoordinates = null;
+let dynamicCityDistances = null; // Mapa dinámico basado en ofertas activas
+
+function loadCityCoordinates() {
+  if (!cityCoordinates) {
+    try {
+      const coordsPath = path.join(__dirname, '../../data/city_coordinates.json');
+      cityCoordinates = JSON.parse(fs.readFileSync(coordsPath, 'utf-8'));
+      console.log(`✅ Cargadas coordenadas para ${Object.keys(cityCoordinates).length} ciudades`);
+    } catch (error) {
+      console.error('⚠️  No se pudieron cargar coordenadas:', error.message);
+      cityCoordinates = {};
+    }
+  }
+  return cityCoordinates;
+}
+
+// Calcular distancia entre dos puntos usando fórmula de Haversine
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radio de la Tierra en km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// Construir mapa dinámico de ciudades cercanas basado en ofertas activas
+function buildDynamicCityDistances(offers) {
+  const coords = loadCityCoordinates();
+  const cityMap = {};
+
+  // Extraer ciudades únicas con ofertas
+  const citiesWithOffers = new Set();
+  offers.forEach(offer => {
+    const city = normalizeText(offer.ciudad || offer.city || '');
+    if (city) citiesWithOffers.add(city);
+  });
+
+  console.log(`🌍 Construyendo mapa dinámico para ${citiesWithOffers.size} ciudades con ofertas`);
+
+  // Para cada ciudad con ofertas, encontrar ciudades cercanas (también con ofertas)
+  citiesWithOffers.forEach(city1 => {
+    const coords1 = coords[city1];
+    if (!coords1) return; // Skip si no tiene coordenadas
+
+    const nearbyCities = [];
+    citiesWithOffers.forEach(city2 => {
+      if (city1 === city2) return; // Skip misma ciudad
+
+      const coords2 = coords[city2];
+      if (!coords2) return; // Skip si no tiene coordenadas
+
+      const distance = calculateDistance(
+        coords1.lat, coords1.lon,
+        coords2.lat, coords2.lon
+      );
+
+      if (distance <= 50) { // Solo ciudades dentro de 50km
+        nearbyCities.push({ city: city2, distance: Math.round(distance * 10) / 10 });
+      }
+    });
+
+    // Ordenar por distancia
+    nearbyCities.sort((a, b) => a.distance - b.distance);
+    cityMap[city1] = nearbyCities;
+  });
+
+  const totalPairs = Object.values(cityMap).reduce((sum, arr) => sum + arr.length, 0);
+  console.log(`✅ Mapa dinámico construido: ${Object.keys(cityMap).length} ciudades, ${totalPairs} conexiones`);
+
+  return cityMap;
+}
 
 function loadSynonyms() {
   if (!jobSynonyms) {
@@ -64,6 +140,12 @@ export default async function handler(req, res) {
         message: 'No hay datos en caché',
         metadata: cacheData?.metadata || null
       });
+    }
+
+    // Construir mapa dinámico de ciudades cercanas si no existe
+    if (!dynamicCityDistances) {
+      console.log('🌍 Construyendo mapa dinámico de ciudades cercanas...');
+      dynamicCityDistances = buildDynamicCityDistances(cacheData.offers);
     }
 
     if (cacheData.metadata.status === 'error') {
@@ -137,18 +219,15 @@ export default async function handler(req, res) {
     const hasMore = startOffset + maxResults < totalMatches;
     const remainingResults = hasMore ? totalMatches - (startOffset + maxResults) : 0;
 
-    // ENRIQUECIMIENTO: Nearby Cities
+    // ENRIQUECIMIENTO: Nearby Cities (usa mapa dinámico)
     let nearbyCities = null;
     if (location && totalMatches < 10 && startOffset === 0) {
       try {
-        const distances = loadCityDistances();
-
-        // Buscar con capitalización estándar
-        const locationFormatted = location.charAt(0).toUpperCase() + location.slice(1).toLowerCase();
-        const nearbyCitiesData = distances[locationFormatted];
+        const locationNormalized = normalizeText(location);
+        const nearbyCitiesData = dynamicCityDistances[locationNormalized];
 
         if (!nearbyCitiesData || !Array.isArray(nearbyCitiesData)) {
-          console.log(`⚠️  No hay distancias para: ${locationFormatted}`);
+          console.log(`ℹ️  No hay ciudades cercanas en mapa dinámico para: ${location}`);
         } else {
           // Agrupar ofertas por ciudad
           const citiesWithJobs = {};
@@ -256,61 +335,18 @@ export default async function handler(req, res) {
           const foundInOriginalCity = offersWithRelatedJobs.length;
           console.log(`   Encontradas ${foundInOriginalCity} ofertas en "${location}", buscando en ciudades cercanas para ampliar...`);
 
-          // Cargar nearby cities
-          loadCityDistances();
+          // Usar mapa dinámico de ciudades cercanas (basado en ofertas activas)
+          const locationNormalized = normalizeText(location);
+          let nearbyCitiesData = dynamicCityDistances[locationNormalized] || [];
 
-          // Buscar la key correcta (case-insensitive match)
-          const locationKey = Object.keys(cityDistances).find(key =>
-            normalizeText(key) === normalizeText(location)
-          ) || location;
-
-          let nearbyCitiesData = cityDistances[locationKey] || [];
-
-          // FALLBACK: Si la ciudad no está en el archivo, intentar detectar provincia
+          // Si no hay ciudades cercanas en el mapa dinámico
           if (nearbyCitiesData.length === 0) {
-            console.log(`   ⚠️  "${location}" no está en city_distances.json, usando fallback...`);
-
-            // Detectar provincia buscando ofertas en el cache que mencionen esta ciudad
-            const offersInThisCity = cacheData.offers.filter(job => {
-              const city = normalizeText(job.ciudad || job.city || '');
-              return city.includes(normalizeText(location)) || normalizeText(location).includes(city);
-            }).slice(0, 5);
-
-            // Si hay ofertas, usar la provincia de la primera oferta
-            if (offersInThisCity.length > 0) {
-              const provincia = offersInThisCity[0].provincia || offersInThisCity[0].region || '';
-              console.log(`   Detectada provincia: "${provincia}"`);
-
-              // Buscar ciudades principales de esa provincia en el diccionario
-              const mainCitiesInProvince = Object.keys(cityDistances).filter(cityKey => {
-                // Buscar ofertas de esa ciudad para ver si está en la misma provincia
-                const offersInCity = cacheData.offers.filter(j => {
-                  const c = normalizeText(j.ciudad || j.city || '');
-                  return c === normalizeText(cityKey);
-                }).slice(0, 1);
-
-                if (offersInCity.length > 0) {
-                  const cityProvincia = offersInCity[0].provincia || offersInCity[0].region || '';
-                  return normalizeText(cityProvincia) === normalizeText(provincia);
-                }
-                return false;
-              }).slice(0, 3); // Top 3 ciudades principales
-
-              if (mainCitiesInProvince.length > 0) {
-                console.log(`   Usando ciudades principales de ${provincia}:`, mainCitiesInProvince.join(', '));
-                // Crear estructura de nearby cities artificial (asumir 20km de distancia)
-                nearbyCitiesData = mainCitiesInProvince.map(city => ({ city, distance: 20 }));
-              } else {
-                console.log(`   ⚠️  No se encontraron ciudades principales de ${provincia} en city_distances.json`);
-              }
-            } else {
-              console.log(`   ⚠️  No se encontraron ofertas en "${location}" para detectar provincia`);
-            }
-
-            // NO usar fallback universal - es mejor no mostrar nada que forzar una ciudad incorrecta
-            if (nearbyCitiesData.length === 0) {
-              console.log(`   ℹ️  Sin ciudades cercanas disponibles - NIVEL 2 no se activará para "${location}"`);
-            }
+            console.log(`   ℹ️  "${location}" no tiene ciudades cercanas en el mapa dinámico`);
+            console.log(`   Razones posibles:`);
+            console.log(`     - No hay ofertas en "${location}"`);
+            console.log(`     - "${location}" no tiene coordenadas en city_coordinates.json`);
+            console.log(`     - No hay otras ciudades con ofertas dentro de 50km`);
+            console.log(`   NIVEL 2 no se activará - respetando intención del usuario`);
           }
 
           // Analizar TODAS las ciudades dentro de 50km (no solo las primeras 5)

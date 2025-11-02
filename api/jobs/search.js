@@ -300,13 +300,16 @@ export default async function handler(req, res) {
                 console.log(`   Usando ciudades principales de ${provincia}:`, mainCitiesInProvince.join(', '));
                 // Crear estructura de nearby cities artificial (asumir 20km de distancia)
                 nearbyCitiesData = mainCitiesInProvince.map(city => ({ city, distance: 20 }));
+              } else {
+                console.log(`   ⚠️  No se encontraron ciudades principales de ${provincia} en city_distances.json`);
               }
+            } else {
+              console.log(`   ⚠️  No se encontraron ofertas en "${location}" para detectar provincia`);
             }
 
-            // Si no se detectó provincia, usar Barcelona como fallback universal
+            // NO usar fallback universal - es mejor no mostrar nada que forzar una ciudad incorrecta
             if (nearbyCitiesData.length === 0) {
-              console.log(`   Usando Barcelona como fallback universal`);
-              nearbyCitiesData = [{ city: 'Barcelona', distance: 30 }];
+              console.log(`   ℹ️  Sin ciudades cercanas disponibles - NIVEL 2 no se activará para "${location}"`);
             }
           }
 

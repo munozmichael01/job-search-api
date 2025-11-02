@@ -107,11 +107,21 @@
     
     openBtn.addEventListener('click', () => {
       if (!isOpen) {
+        // Deshabilitar botón para prevenir doble clic
+        openBtn.disabled = true;
         openChat();
+        // Re-habilitar después de abrir (en caso de que falle)
+        setTimeout(() => { openBtn.disabled = false; }, 1000);
       }
     });
     
     function openChat() {
+      // Prevenir aperturas duplicadas
+      if (isOpen) {
+        console.log('⚠️ Chat already open, ignoring duplicate call');
+        return;
+      }
+
       isOpen = true;
       openBtn.style.display = 'none';
 
@@ -125,9 +135,9 @@
       const chatWindow = createChatWindow();
       widget.appendChild(chatWindow);
 
-      if (!threadId) {
+      if (!threadId && !isCreatingThread) {
         createThread();
-      } else {
+      } else if (threadId) {
         loadMessages();
       }
     }

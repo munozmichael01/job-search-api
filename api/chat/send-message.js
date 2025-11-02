@@ -25,6 +25,7 @@ async function executeFunctionCall(functionName, functionArgs) {
       if (functionArgs.category) params.append('category', functionArgs.category);
       if (functionArgs.limit) params.append('limit', functionArgs.limit);
       if (functionArgs.offset !== undefined) params.append('offset', functionArgs.offset);
+      if (functionArgs.related_offset !== undefined) params.append('related_offset', functionArgs.related_offset);
 
       const response = await fetch(`${baseUrl}/api/jobs/search?${params.toString()}`);
       const data = await response.json();

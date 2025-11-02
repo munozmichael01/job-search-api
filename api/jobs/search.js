@@ -557,6 +557,11 @@ export default async function handler(req, res) {
       }
     }
 
+    // En NIVEL 1.5 nearby, NO devolver ofertas originales en páginas siguientes
+    const finalResults = (amplificationUsed?.type === 'nivel_1_5_nearby' && relatedOffset > 0)
+      ? []
+      : results;
+
     return res.status(200).json({
       success: true,
       metadata: {
@@ -573,14 +578,14 @@ export default async function handler(req, res) {
       },
       pagination: {
         total_matches: totalMatches,
-        returned_results: results.length,
+        returned_results: finalResults.length,
         offset: startOffset,
         limit: maxResults,
         has_more: hasMore,
         remaining: remainingResults,
         next_offset: hasMore ? startOffset + maxResults : null
       },
-      results: results,
+      results: finalResults,
       ...(nearbyCities && nearbyCities.length > 0 && { nearby_cities: nearbyCities }),
       ...(relatedJobsResults && relatedJobsResults.length > 0 && {
         related_jobs_results: relatedJobsResults,

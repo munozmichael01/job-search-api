@@ -264,7 +264,52 @@ export default async function handler(req, res) {
             normalizeText(key) === normalizeText(location)
           ) || location;
 
-          const nearbyCitiesData = cityDistances[locationKey] || [];
+          let nearbyCitiesData = cityDistances[locationKey] || [];
+
+          // FALLBACK: Si la ciudad no está en el archivo, intentar detectar provincia
+          if (nearbyCitiesData.length === 0) {
+            console.log(`   ⚠️  "${location}" no está en city_distances.json, usando fallback...`);
+
+            // Detectar provincia buscando ofertas en el cache que mencionen esta ciudad
+            const offersInThisCity = cacheData.offers.filter(job => {
+              const city = normalizeText(job.ciudad || job.city || '');
+              return city.includes(normalizeText(location)) || normalizeText(location).includes(city);
+            }).slice(0, 5);
+
+            // Si hay ofertas, usar la provincia de la primera oferta
+            if (offersInThisCity.length > 0) {
+              const provincia = offersInThisCity[0].provincia || offersInThisCity[0].region || '';
+              console.log(`   Detectada provincia: "${provincia}"`);
+
+              // Buscar ciudades principales de esa provincia en el diccionario
+              const mainCitiesInProvince = Object.keys(cityDistances).filter(cityKey => {
+                // Buscar ofertas de esa ciudad para ver si está en la misma provincia
+                const offersInCity = cacheData.offers.filter(j => {
+                  const c = normalizeText(j.ciudad || j.city || '');
+                  return c === normalizeText(cityKey);
+                }).slice(0, 1);
+
+                if (offersInCity.length > 0) {
+                  const cityProvincia = offersInCity[0].provincia || offersInCity[0].region || '';
+                  return normalizeText(cityProvincia) === normalizeText(provincia);
+                }
+                return false;
+              }).slice(0, 3); // Top 3 ciudades principales
+
+              if (mainCitiesInProvince.length > 0) {
+                console.log(`   Usando ciudades principales de ${provincia}:`, mainCitiesInProvince.join(', '));
+                // Crear estructura de nearby cities artificial (asumir 20km de distancia)
+                nearbyCitiesData = mainCitiesInProvince.map(city => ({ city, distance: 20 }));
+              }
+            }
+
+            // Si no se detectó provincia, usar Barcelona como fallback universal
+            if (nearbyCitiesData.length === 0) {
+              console.log(`   Usando Barcelona como fallback universal`);
+              nearbyCitiesData = [{ city: 'Barcelona', distance: 30 }];
+            }
+          }
+
           // Analizar TODAS las ciudades dentro de 50km (no solo las primeras 5)
           // Barcelona puede estar en posición 31+ en cities pequeñas como Sitges
           const nearbyCitiesWithin50km = nearbyCitiesData

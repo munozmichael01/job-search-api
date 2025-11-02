@@ -102,8 +102,10 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
       ⚡ IMPORTANTE: NO uses offset, usa related_offset para paginar related_jobs
 
    C) Si estás mostrando NIVEL 1.5 nearby (ofertas originales + cercanas):
-      → Incrementa related_offset: searchJobs(query="chef", location="viladecans", related_offset=8)
-      ⚡ IMPORTANTE: Esto solo paginará las ofertas de ciudades cercanas, NO las originales
+      → Usa next_offset de nearby_pagination: searchJobs(query="chef", location="viladecans", related_offset=[nearby_pagination.next_offset])
+      ⚡ IMPORTANTE: DEBES usar el valor de nearby_pagination.next_offset de la respuesta anterior
+      ⚡ NO inventes el offset - usa el valor exact que viene en next_offset
+      ⚡ Esto solo paginará las ofertas de ciudades cercanas, NO las originales
       ⚡ Las ofertas originales siempre se muestran todas
 
    Si pagination.has_more === true (después de mostrar todas las ofertas):
@@ -165,6 +167,8 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
       [Mostrar ofertas de related_jobs_results]"
 
    B2) Si hay amplification_used.type === "nivel_1_5_nearby":
+
+      ⚡ PRIMERA PÁGINA (nearby_pagination.offset === 0):
       "Encontré **[original_count] ofertas de [query] en [original_location]**:
 
       [Mostrar ofertas originales de results]
@@ -172,6 +176,13 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
       También agregué **[added_count] ofertas de [nearby_city]** ([distance_km] km):
 
       [Mostrar TODAS las ofertas de related_jobs_results con formato normal]"
+
+      ⚡ PÁGINAS SIGUIENTES (nearby_pagination.offset > 0):
+      "Aquí tienes más ofertas de [query] en [nearby_city]** ([distance_km] km de [original_location]):
+
+      [Mostrar TODAS las ofertas de related_jobs_results con formato normal]
+
+      ⚠️ NO repitas las ofertas originales de [original_location] - solo muestra related_jobs_results"
 
       Si amplification_used.nearby_pagination.has_more === true:
       "📋 Hay [nearby_pagination.remaining] ofertas más de ciudades cercanas. Dime 'siguiente' para continuar."

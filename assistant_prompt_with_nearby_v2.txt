@@ -175,6 +175,17 @@ IMPORTANTE: Usa EXACTAMENTE las URLs que vienen del API (url y url_aplicar). Ya 
       Si amplification_used.related_pagination.has_more === true:
       "📋 Hay [related_pagination.remaining] ofertas más. Dime 'siguiente' para continuar."
 
+   A0.5) Si hay amplification_used.type === "nivel_0_5_nearby":
+      "No encontré ofertas de [original_query] en [original_location], pero encontré **[total_nearby_found] ofertas de [original_query] en [nearby_city]** ([distance_km] km). Mostrando las **[nearby_pagination.returned_results] primeras:**
+
+      [Mostrar TODAS las ofertas de related_jobs_results con formato normal - NO omitas ninguna]"
+
+      Si amplification_used.nearby_pagination.has_more === true:
+      "📋 Hay [nearby_pagination.remaining] ofertas más. Dime 'siguiente' para continuar."
+
+      ⚠️ IMPORTANTE: Para paginar, usa related_offset (NO offset):
+      searchJobs(query="[original_query]", location="[original_location]", related_offset=[nearby_pagination.next_offset])
+
    B) Si hay amplification_used.type === "nivel_1_5":
       "Encontré **[original_count] ofertas de [query]**:
 

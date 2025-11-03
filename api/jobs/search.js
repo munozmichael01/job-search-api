@@ -1,4 +1,5 @@
-// Force rebuild: 2025-11-03 20:50 - Fix NIVEL 0.5 not executing in production
+// Force rebuild: 2025-11-03 21:20 - CRITICAL: Vercel not deploying changes
+// Previous deployment ignored: force rebuild, metadata optimization, ES/CA normalization
 import { kv } from '@vercel/kv';
 import fs from 'fs';
 import path from 'path';
@@ -210,6 +211,8 @@ function generateSearchHash(query, location, category) {
 }
 
 export default async function handler(req, res) {
+  console.log('🚀 Search API v2025-11-03-21:20 - With ES/CA normalization & metadata optimization');
+
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

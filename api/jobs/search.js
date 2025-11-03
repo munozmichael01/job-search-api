@@ -1,3 +1,4 @@
+// Force rebuild: 2025-11-03 20:50 - Fix NIVEL 0.5 not executing in production
 import { kv } from '@vercel/kv';
 import fs from 'fs';
 import path from 'path';
@@ -809,10 +810,13 @@ export default async function handler(req, res) {
       ? []
       : results;
 
+    // Filtrar valid_cities del metadata (no es necesario enviarlo al cliente, solo se usa internamente)
+    const { valid_cities, ...metadataWithoutValidCities } = cacheData.metadata;
+
     return res.status(200).json({
       success: true,
       metadata: {
-        ...cacheData.metadata,
+        ...metadataWithoutValidCities,
         cache_age_minutes: ageMinutes,
         query_params: {
           query,

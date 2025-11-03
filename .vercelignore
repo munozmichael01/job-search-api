@@ -1,6 +1,3 @@
-# Archivos grandes que no deben desplegarse
-data/city_distances_full.json
-
 # Archivos de respaldo
 *.backup
 

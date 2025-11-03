@@ -18,7 +18,7 @@ function normalizeText(text) {
     .trim();
 }
 
-// Helper: buscar ciudad en city_distances_full.json con match flexible
+// Helper: buscar ciudad en city_distances.json con match flexible
 function findCityInDistances(cityName, distancesMap) {
   const normalized = normalizeText(cityName);
 
@@ -144,7 +144,7 @@ export default async function handler(req, res) {
     // 🗺️  GENERAR LISTA DE CIUDADES VÁLIDAS (con ofertas + cercanas ≤50km)
     console.log('🗺️  Generando lista de ciudades válidas para NIVEL 0.5...');
     const cityDistancesFull = JSON.parse(
-      fs.readFileSync(path.join(__dirname, '../../data/city_distances_full.json'), 'utf-8')
+      fs.readFileSync(path.join(__dirname, '../../data/city_distances.json'), 'utf-8')
     );
 
     // 1. Extraer ciudades únicas con ofertas

@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 let jobSynonyms = null;
 let cityDistances = null;
 let cityCoordinates = null;
-let cityDistancesFull = null; // city_distances_full.json (1,064 ciudades)
+let cityDistancesFull = null; // city_distances.json (1,057 ciudades, ≤150km)
 let dynamicCityDistances = null; // Mapa dinámico basado en ofertas activas
 
 function loadCityCoordinates() {
@@ -30,11 +30,11 @@ function loadCityCoordinates() {
 function loadCityDistancesFull() {
   if (!cityDistancesFull) {
     try {
-      const distancesPath = path.join(__dirname, '../../data/city_distances_full.json');
+      const distancesPath = path.join(__dirname, '../../data/city_distances.json');
       cityDistancesFull = JSON.parse(fs.readFileSync(distancesPath, 'utf-8'));
       console.log(`✅ Cargadas distancias para ${Object.keys(cityDistancesFull).length} ciudades`);
     } catch (error) {
-      console.error('⚠️  No se pudieron cargar city_distances_full.json:', error.message);
+      console.error('⚠️  No se pudieron cargar city_distances.json:', error.message);
       cityDistancesFull = {};
     }
   }
@@ -368,12 +368,12 @@ export default async function handler(req, res) {
         } else {
           console.log(`   ✅ "${location}" está en lista de ciudades válidas`);
 
-          // Cargar city_distances_full.json para obtener ciudades cercanas
+          // Cargar city_distances.json para obtener ciudades cercanas
           const cityDistancesFull = loadCityDistancesFull();
           const cityResult = findCityInDistances(location, cityDistancesFull);
 
           if (!cityResult) {
-            console.log(`   ℹ️  "${location}" no tiene distancias en city_distances_full.json, saltando NIVEL 0.5`);
+            console.log(`   ℹ️  "${location}" no tiene distancias en city_distances.json, saltando NIVEL 0.5`);
           } else {
             const matchedCityName = cityResult.matchedName;
             if (normalizeText(matchedCityName) !== locationNormalized) {

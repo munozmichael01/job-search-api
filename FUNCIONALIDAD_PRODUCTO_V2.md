@@ -1,8 +1,8 @@
 # Turijobs AI Chat Widget - Documento Funcional de Producto V2
 
-**Versión:** 2.0
-**Fecha:** 1 de noviembre de 2025
-**Actualización:** Refleja estado actual del sistema en producción
+**Versión:** 2.1
+**Fecha:** 3 de noviembre de 2025
+**Actualización:** Incluye reordenamiento NIVEL 0.5 y NIVEL 2 (commits eab6412, 18fa9db)
 
 ---
 
@@ -15,16 +15,23 @@
    - Integración simple: `<script src="..."></script>`
    - Compatible con Webflow y cualquier sitio web
 
-2. **NIVEL 2 + NEARBY CITIES**
+2. **NIVEL 0.5: Búsqueda en Ciudades Cercanas** (NUEVO - Nov 2025)
+   - Búsqueda del MISMO puesto en ciudades cercanas cuando hay 0 resultados
+   - Caso "bartender sitges": busca "Bartender" en "Barcelona" (38km)
+   - Caso "barman sant cugat": busca "Barman" en "Barcelona" (12km)
+   - Más específico que NIVEL 2 (mantiene el puesto exacto)
+
+3. **NIVEL 2 + NEARBY CITIES**
    - Búsqueda ampliada: puestos relacionados + ciudades cercanas
    - Caso "sushiman castelldefels": busca "Cocinero" en "Barcelona" (20km)
+   - Ahora es fallback de NIVEL 0.5 (solo si NIVEL 0.5 no encuentra nada)
 
-3. **Optimizaciones de Performance**
+4. **Optimizaciones de Performance**
    - Índices pre-calculados: O(n²) → O(n)
    - Refresh: 5+ minutos → 12 segundos
    - Cache reducido: 11.5MB → 3-4MB
 
-4. **Mejoras de UX**
+5. **Mejoras de UX**
    - Mensajes más precisos: "ofertas relacionadas" vs "ofertas de [puesto]"
    - Paginación natural (GPT-4 decide cuántas ofertas mostrar)
 
@@ -351,6 +358,12 @@ for (const key in jobWeights) {
 
 ## Estrategia de Búsqueda Multinivel
 
+**ORDEN DE EJECUCIÓN** (noviembre 2025):
+1. NIVEL 1 - Búsqueda directa (10+ resultados)
+2. NIVEL 1.5 - Amplificación ligera (1-9 resultados)
+3. **NIVEL 0.5 - MISMO puesto en ciudades cercanas (0 resultados)** ⭐ NUEVO
+4. NIVEL 2 - Puestos relacionados (0 resultados, si NIVEL 0.5 no encontró nada)
+
 ### NIVEL 1: Búsqueda Directa
 
 ```
@@ -373,10 +386,48 @@ Ejemplo:
   Total: 13 ofertas mostradas
 ```
 
+### NIVEL 0.5: MISMO Puesto en Ciudades Cercanas ⭐ NUEVO (Nov 2025)
+
+```
+Condición: 0 resultados directos + ciudad solicitada tiene coordenadas
+Acción: Buscar el MISMO puesto (query) en ciudades cercanas (≤50km)
+Mensaje: "No encontré ofertas de bartender en Sitges, pero encontré 4 ofertas
+         de bartender en Barcelona (38 km):"
+
+IMPORTANTE: Mantiene el puesto exacto solicitado por el usuario
+(a diferencia de NIVEL 2 que busca puestos relacionados)
+
+Lógica:
+  1. Verificar que la ciudad tiene coordenadas en city_coordinates.json
+  2. Buscar ciudades cercanas (≤50km) que tengan ofertas activas
+  3. Calcular distancias con Haversine
+  4. Buscar el MISMO puesto (usando sinónimos) en esas ciudades
+  5. Retornar resultados de la ciudad más cercana con ofertas
+
+Ejemplo Real (bartender sitges):
+  1. Búsqueda directa: "Bartender" en "Sitges" → 0 resultados
+  2. Sitges tiene coordenadas: { lat: 41.2376, lon: 1.8114 }
+  3. Ciudades cercanas con ofertas: Barcelona (38km), Hospitalet (32km)
+  4. Nueva búsqueda: "Bartender" (mismo puesto) en "Barcelona" → 4 ofertas
+  5. Retorna 4 ofertas de Bartender en Barcelona
+
+  Amplification:
+    type: "nivel_0_5_nearby"
+    original_query: "bartender"
+    original_location: "Sitges"
+    nearby_city: "Barcelona"
+    distance_km: 38
+    total_nearby_found: 4
+
+Ventaja sobre NIVEL 2:
+  - Sitges: NIVEL 0.5 → 4 ofertas de "Bartender" ✅
+  - Sitges: NIVEL 2 → 1 oferta de "Ayudante de Barra" (menos relevante)
+```
+
 ### NIVEL 2: Puestos Relacionados
 
 ```
-Condición: 0 resultados directos, hay related_jobs con available_offers > 0
+Condición: 0 resultados directos + NIVEL 0.5 no encontró nada (!relatedJobsResults)
 Acción: Buscar automáticamente el related_job más relevante
 Mensaje: "No encontré ofertas de chef ejecutivo, pero encontré 12 ofertas
          relacionadas:"
@@ -387,21 +438,25 @@ Lógica:
   3. Ordenar por weight descendente
   4. Tomar el primero
   5. Hacer nueva búsqueda con ese puesto
+
+NOTA: Solo se ejecuta si NIVEL 0.5 NO encontró resultados
+      (condición: && !relatedJobsResults)
 ```
 
 ### NIVEL 2 NEARBY: Puestos Relacionados + Ciudades Cercanas
 
 ```
-Condición: 0 resultados directos, 0 related_jobs disponibles, hay nearby_cities
+Condición: 0 resultados directos + 0 related_jobs en la ciudad + hay nearby_cities
 Acción: Buscar related_jobs en ciudades cercanas
 Mensaje: "No encontré ofertas de sushiman en Castelldefels, pero encontré 10
          ofertas relacionadas en Barcelona (20 km):"
 
 Ejemplo Real (sushiman castelldefels):
   1. Búsqueda directa: "Sushiman" en "Castelldefels" → 0 resultados
-  2. Related jobs de "Sushiman": "Cocinero" (weight: 0.87, pos 17/40)
-  3. Nearby cities de "Castelldefels": Barcelona (20 km, 450 ofertas)
-  4. Nueva búsqueda: "Cocinero" en "Barcelona" → 10 ofertas
+  2. NIVEL 0.5: Buscar "Sushiman" en ciudades cercanas → 0 resultados
+  3. NIVEL 2: Related jobs de "Sushiman": "Cocinero" (weight: 0.87, pos 17/40)
+  4. Nearby cities de "Castelldefels": Barcelona (20 km, 450 ofertas)
+  5. Nueva búsqueda: "Cocinero" en "Barcelona" → 10 ofertas
 
   Amplification:
     type: "nivel_2_nearby"
@@ -410,15 +465,6 @@ Ejemplo Real (sushiman castelldefels):
     related_job_used: "Cocinero"
     nearby_city: "Barcelona"
     distance_km: 20
-```
-
-### NIVEL 3: Ciudades Cercanas (Sin Related Jobs)
-
-```
-Condición: 0 resultados directos, hay nearby_cities disponibles
-Acción: Buscar en ciudad cercana con más ofertas
-Mensaje: "No encontré ofertas en Sant Cugat, pero encontré 45 ofertas en
-         Barcelona (15 km):"
 ```
 
 ---
@@ -874,22 +920,31 @@ offers.forEach(offer => {
 **Funcionalidad:**
 - ✅ NIVEL 1: Búsqueda directa
 - ✅ NIVEL 1.5: Amplificación ligera
-- ✅ NIVEL 2: Puestos relacionados
-- ✅ NIVEL 2 NEARBY: Puestos relacionados + Ciudades cercanas ⭐ NUEVO
+- ✅ NIVEL 0.5: MISMO puesto en ciudades cercanas ⭐ NUEVO (Nov 2025)
+- ✅ NIVEL 2: Puestos relacionados (con condición !relatedJobsResults)
+- ✅ NIVEL 2 NEARBY: Puestos relacionados + Ciudades cercanas
 - ✅ Widget standalone JavaScript
 - ✅ Mensajes UX mejorados ("ofertas relacionadas")
 
 ### Casos de Uso Validados
 
+✅ **"bartender sitges"** ⭐ NUEVO (NIVEL 0.5)
+- Resultado: 4 ofertas de "Bartender" en "Barcelona" (38km)
+- Amplificación: nivel_0_5_nearby
+- Tiempo: ~150ms
+- Nota: Antes activaba NIVEL 2 (1 oferta de "Ayudante de Barra"), ahora más relevante
+
+✅ **"barman sant cugat"** ⭐ NUEVO (NIVEL 0.5)
+- Resultado: 4 ofertas de "Barman" en "Barcelona" (12km)
+- Amplificación: nivel_0_5_nearby
+- Tiempo: ~150ms
+- Nota: Antes respondía "No encontré ofertas", ahora muestra resultados relevantes
+
 ✅ **"sushiman castelldefels"**
 - Resultado: 10 ofertas de "Cocinero" en "Barcelona" (20km)
 - Amplificación: nivel_2_nearby
 - Tiempo: ~150ms
-
-✅ **"sommelier sitges"**
-- Resultado: Ofertas de puestos relacionados en Barcelona
-- Amplificación: nivel_2_nearby
-- Tiempo: ~150ms
+- Nota: NIVEL 0.5 busca "Sushiman" → 0 resultados, luego NIVEL 2 busca "Cocinero"
 
 ✅ **"camarero barcelona"**
 - Resultado: 45 ofertas directas
@@ -907,10 +962,21 @@ offers.forEach(offer => {
 - `assistant_prompt_with_nearby_v2.txt` (5,502 caracteres)
 
 **Scripts de Fix Aplicados:**
-- ✅ `fix-performance-with-indexes.js`
-- ✅ `fix-cache-size-limit.js`
-- ✅ `fix-related-jobs-limit.js`
-- ✅ `fix-prompt-final-clean.js`
+- ✅ `fix-performance-with-indexes.js` (Optimización O(n²) → O(n))
+- ✅ `fix-cache-size-limit.js` (11.5MB → 3-4MB)
+- ✅ `fix-related-jobs-limit.js` (5 → 20 related jobs)
+- ✅ `fix-prompt-final-clean.js` (Mensajes UX mejorados)
+- ✅ `swap-nivel-0-5-and-2.js` ⭐ NUEVO (Reordenar niveles 0.5 y 2)
+- ✅ `add-condition-to-nivel-2.js` ⭐ NUEVO (Condición !relatedJobsResults)
+
+**Commits Recientes (Nov 2025):**
+- `eab6412` - fix(nivel-2): Add !relatedJobsResults condition to prevent overwriting NIVEL 0.5 results
+- `18fa9db` - fix: Swap NIVEL 0.5 and NIVEL 2 execution order for better specificity
+- `e968c66` - fix(nivel-0.5): Use synonym system from parent scope
+- `252279a` - fix(nivel-0.5): Use same query matching logic as regular search
+- `47797d0` - fix(nivel-0.5): Use findCityInCoordinates for citiesWithOffers lookup
+- `110be37` - Fix match parcial de ciudades en TODOS los niveles (0.5, 1.5, 2, dynamic map)
+- `76e45b5` - Implementar NIVEL 0.5: buscar mismo puesto en ciudades cercanas cuando hay 0 resultados
 
 **Data Files:**
 - `data/job_weights.json` (puestos relacionados)

@@ -25,4 +25,4 @@ yarn-error.log*
 
 # Vercel
 .vercel
-data/city_distances_full.json
+# data/city_distances_full.json - AHORA NECESARIO para NIVEL 0.5

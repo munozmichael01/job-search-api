@@ -846,4 +846,4 @@ export default async function handler(req, res) {
   }
 }
 
-// Force rebuild to deploy Spanish/Catalan variant handling
+// Force rebuild: Spanish/Catalan variant handling deployed at 2025-11-03 16:37

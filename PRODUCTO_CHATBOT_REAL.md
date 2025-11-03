@@ -94,7 +94,7 @@ Resultado: 1,111 ciudades válidas
 
 ## 4. Sistema de Niveles (Cómo Funcionan REALMENTE)
 
-El chatbot tiene 4 niveles de búsqueda que se ejecutan en cascada:
+El chatbot tiene 5 niveles de búsqueda que se ejecutan en cascada:
 
 ### NIVEL 1: Búsqueda Normal
 **¿Cuándo?** Cuando hay ≥10 resultados directos
@@ -162,14 +162,14 @@ Nivel activado: nivel_0_5_nearby
 
 ---
 
-### NIVEL 2: Puestos Relacionados
-**¿Cuándo?** Cuando NO hay resultados del puesto buscado en ninguna ciudad cercana
+### NIVEL 2: Puestos Relacionados (Misma Ciudad)
+**¿Cuándo?** Cuando NO hay resultados del puesto buscado en ninguna ciudad cercana, pero SÍ hay puestos relacionados en la ciudad original
 
 **Ejemplo real:**
 ```
 Usuario: "sushiman madrid"
 Resultados de sushiman: 0
-Resultados de "Sushiman" (puesto relacionado): 1
+Resultados de "Sushiman" (puesto relacionado) en Madrid: 1
 Nivel activado: nivel_2
 ```
 
@@ -179,9 +179,38 @@ Nivel activado: nivel_2
 3. Activa NIVEL 2: busca puestos relacionados
 4. Consulta job_relationships_graph.json
 5. Encuentra "Sushiman" como puesto relacionado
-6. **Retorna ofertas de puestos similares/relacionados**
+6. Busca "Sushiman" en Madrid → 1 oferta
+7. **Retorna ofertas de puestos similares en la MISMA ciudad**
 
-**Nota:** Es el último recurso cuando nada más funciona
+---
+
+### NIVEL 2 NEARBY: Puestos Relacionados + Ciudades Cercanas
+**¿Cuándo?** Cuando NO hay resultados del puesto buscado NI de puestos relacionados en la ciudad, pero SÍ hay puestos relacionados en ciudades cercanas
+
+**Ejemplo real:**
+```
+Usuario: "sommelier sitges"
+Resultados de sommelier: 0
+Resultados de "Chef Sommelier" en Barcelona (34.8km): 5
+Nivel activado: nivel_2_nearby
+```
+
+**Qué hace:**
+1. Busca "sommelier" en Sitges → 0 resultados
+2. NIVEL 0.5 busca sommelier en ciudades cercanas → 0 resultados
+3. Activa NIVEL 2: busca puestos relacionados
+4. Consulta job_relationships_graph.json
+5. Encuentra "Chef Sommelier" como puesto relacionado
+6. Busca "Chef Sommelier" en Sitges → 0
+7. **Busca "Chef Sommelier" en ciudades cercanas**
+8. Encuentra 5 ofertas en Barcelona (34.8 km)
+9. **Retorna ofertas de puestos similares en CIUDADES CERCANAS**
+
+**Diferencia con NIVEL 0.5:**
+- NIVEL 0.5: Mismo puesto, ciudad cercana ("chef" → "chef" en ciudad cercana)
+- NIVEL 2 NEARBY: Puesto relacionado, ciudad cercana ("sommelier" → "chef sommelier" en ciudad cercana)
+
+**Nota:** Es el último recurso absoluto cuando nada más funciona
 
 ---
 
@@ -588,8 +617,9 @@ Total: ~2-5 segundos (primera vez) | ~1-2 segundos (conversaciones siguientes)
 
 ✅ **NIVEL 1** - Búsqueda normal (≥10 resultados)
 ✅ **NIVEL 1.5** - Ampliación ciudad cercana (1-9 resultados)
-✅ **NIVEL 0.5** - Ciudad cercana (0 resultados, mismo puesto)
-✅ **NIVEL 2** - Puestos relacionados (0 resultados totales)
+✅ **NIVEL 0.5** - Ciudad cercana mismo puesto (0 resultados)
+✅ **NIVEL 2** - Puestos relacionados misma ciudad (0 resultados)
+✅ **NIVEL 2 NEARBY** - Puestos relacionados + ciudad cercana (último recurso)
 ✅ Expansión de sinónimos (chef→cocinero, barman→bartender)
 ✅ Paginación (10 ofertas por página)
 ✅ Normalización catalán/español (Sant Cugat = San Cugat)
@@ -602,7 +632,8 @@ Total: ~2-5 segundos (primera vez) | ~1-2 segundos (conversaciones siguientes)
 | "chef barcelona" | 6 ofertas Barcelona | Normal |
 | "recepcionista viladecans" | 2 Viladecans + 8 Barcelona | 1.5 |
 | "chef getafe" | 6 ofertas Madrid (12.7km) | 0.5 |
-| "sushiman madrid" | 1 oferta "Sushiman" | 2 |
+| "sushiman madrid" | 1 oferta "Sushiman" Madrid | 2 |
+| "sommelier sitges" | 5 "Chef Sommelier" Barcelona (34.8km) | 2 NEARBY |
 
 ---
 

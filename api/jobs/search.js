@@ -1,5 +1,5 @@
-// Force rebuild: 2025-11-03 21:45 - Modified vercel.json function config to force re-upload
-// Strategy: Changed function configuration to invalidate Vercel's function cache
+// CRITICAL FIX: maxDuration 300s -> 10s (Vercel Free tier requires ≤10s)
+// This invalid config was silently blocking all function deployments
 import { kv } from '@vercel/kv';
 import fs from 'fs';
 import path from 'path';
@@ -211,7 +211,7 @@ function generateSearchHash(query, location, category) {
 }
 
 export default async function handler(req, res) {
-  console.log('🚀 Search API v2025-11-03-21:45 - Function config modified to force cache invalidation');
+  console.log('🚀 Search API v2025-11-03-22:00 - CRITICAL FIX: maxDuration 300s->10s for Free tier');
 
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });

@@ -1,9 +1,9 @@
 // Version check endpoint to verify deployment
-// Force function re-upload: 2025-11-03-21:45
+// CRITICAL FIX: maxDuration changed from 300s to 10s (Free tier limit)
 export default async function handler(req, res) {
   return res.status(200).json({
-    version: "2025-11-03-21:45",
-    commit: "34b28ca",
+    version: "2025-11-03-22:00",
+    commit: "TBD",
     timestamp: new Date().toISOString(),
     message: "If you see this, the new code is deployed",
     features: [

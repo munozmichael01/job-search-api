@@ -1,5 +1,5 @@
-// Force rebuild: 2025-11-03 21:20 - CRITICAL: Vercel not deploying changes
-// Previous deployment ignored: force rebuild, metadata optimization, ES/CA normalization
+// Force rebuild: 2025-11-03 21:45 - Modified vercel.json function config to force re-upload
+// Strategy: Changed function configuration to invalidate Vercel's function cache
 import { kv } from '@vercel/kv';
 import fs from 'fs';
 import path from 'path';
@@ -211,7 +211,7 @@ function generateSearchHash(query, location, category) {
 }
 
 export default async function handler(req, res) {
-  console.log('🚀 Search API v2025-11-03-21:20 - With ES/CA normalization & metadata optimization');
+  console.log('🚀 Search API v2025-11-03-21:45 - Function config modified to force cache invalidation');
 
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });

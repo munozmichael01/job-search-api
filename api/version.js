@@ -1,7 +1,8 @@
 // Version check endpoint to verify deployment
+// Force function re-upload: 2025-11-03-21:45
 export default async function handler(req, res) {
   return res.status(200).json({
-    version: "2025-11-03-21:30",
+    version: "2025-11-03-21:45",
     commit: "34b28ca",
     timestamp: new Date().toISOString(),
     message: "If you see this, the new code is deployed",

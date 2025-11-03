@@ -363,9 +363,19 @@ export default async function handler(req, res) {
         // Verificar si la ciudad está en la lista de ciudades válidas del cache
         const validCities = cacheData.metadata.valid_cities || [];
 
-        if (!validCities.includes(locationNormalized)) {
+        // Buscar match exacto o parcial en valid_cities
+        const cityInValidList = validCities.find(city =>
+          city === locationNormalized || // Match exacto
+          city.includes(locationNormalized) || // "sant cugat del valles" incluye "sant cugat"
+          locationNormalized.includes(city) // "sant cugat" está contenido en búsqueda
+        );
+
+        if (!cityInValidList) {
           console.log(`   ℹ️  "${location}" no está en lista de ciudades válidas (${validCities.length} ciudades), saltando NIVEL 0.5`);
         } else {
+          if (cityInValidList !== locationNormalized) {
+            console.log(`   ✅ Match parcial en valid_cities: "${location}" → "${cityInValidList}"`);
+          }
           console.log(`   ✅ "${location}" está en lista de ciudades válidas`);
 
           // Cargar city_distances.json para obtener ciudades cercanas

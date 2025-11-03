@@ -33,7 +33,7 @@
 
 5. **Mejoras de UX**
    - Mensajes más precisos: "ofertas relacionadas" vs "ofertas de [puesto]"
-   - Paginación natural (GPT-4 decide cuántas ofertas mostrar)
+   - Paginación fija: 10 ofertas por página (incluyendo ciudades cercanas y puestos relacionados)
 
 ---
 
@@ -68,7 +68,7 @@ El **Turijobs AI Chat Widget** es un asistente conversacional alimentado por GPT
 
 - ✅ ~3,000 ofertas activas en caché
 - ✅ 95%+ ofertas con puestos relacionados (20 por oferta)
-- ✅ 85%+ ofertas con ciudades cercanas (5 por oferta)
+- ✅ 85%+ ofertas con ciudades cercanas (≤50km de distancia)
 - ✅ Widget JavaScript standalone en producción
 - ✅ Refresh en 12.2 segundos (optimizado con índices)
 - ✅ Cache de 3-4MB (eliminada descripcion)
@@ -398,16 +398,16 @@ IMPORTANTE: Mantiene el puesto exacto solicitado por el usuario
 (a diferencia de NIVEL 2 que busca puestos relacionados)
 
 Lógica:
-  1. Verificar que la ciudad tiene coordenadas en city_coordinates.json
-  2. Buscar ciudades cercanas (≤50km) que tengan ofertas activas
-  3. Calcular distancias con Haversine
+  1. Verificar que la ciudad está en valid_cities (generada en refresh)
+  2. Buscar en city_distances.json ciudades cercanas (≤50km)
+  3. Usar distancias pre-calculadas (no calcula, usa archivo)
   4. Buscar el MISMO puesto (usando sinónimos) en esas ciudades
   5. Retornar resultados de la ciudad más cercana con ofertas
 
 Ejemplo Real (bartender sitges):
   1. Búsqueda directa: "Bartender" en "Sitges" → 0 resultados
-  2. Sitges tiene coordenadas: { lat: 41.2376, lon: 1.8114 }
-  3. Ciudades cercanas con ofertas: Barcelona (38km), Hospitalet (32km)
+  2. Sitges está en valid_cities (generada en refresh)
+  3. Buscar en city_distances.json: Barcelona (38km), Hospitalet (32km)
   4. Nueva búsqueda: "Bartender" (mismo puesto) en "Barcelona" → 4 ofertas
   5. Retorna 4 ofertas de Bartender en Barcelona
 
@@ -524,8 +524,8 @@ await kv.set('job_offers_cache', { metadata, offers: compactOffers });
 // ANTES: "pero encontré 10 ofertas de Sushiman en Barcelona"
 // DESPUÉS: "pero encontré 10 ofertas relacionadas en Barcelona"
 
-// Eliminadas instrucciones anti-paginación que no funcionaban
-// GPT-4 pagina naturalmente (~3 ofertas + botón "siguiente")
+// Paginación fija: 10 ofertas por página
+// API retorna máximo 10 ofertas + pagination.has_more para paginar
 ```
 
 ### Scripts de Actualización del Asistente

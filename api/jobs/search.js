@@ -66,9 +66,23 @@ function findCityInCoordinates(cityName, coordinatesMap) {
 function findCityInDistances(cityName, distancesMap) {
   const normalized = normalizeText(cityName);
 
+  // Helper: normalizar variantes español/catalán
+  function normalizeSpanishCatalan(text) {
+    return text
+      .replace(/\bsant\b/g, 'san') // Sant → San
+      .replace(/\bsan\b/g, 'san')   // Consistencia
+      .replace(/\bdel\b/g, 'del')   // Del estándar
+      .replace(/\bde\b/g, 'de')     // De estándar
+      .replace(/valles/g, 'valles') // Vallès/Vallés → valles
+      .trim();
+  }
+
+  const normalizedVariant = normalizeSpanishCatalan(normalized);
+
   // 1. Intenta match exacto (case insensitive)
   for (const key in distancesMap) {
-    if (normalizeText(key) === normalized) {
+    const keyNorm = normalizeText(key);
+    if (keyNorm === normalized || normalizeSpanishCatalan(keyNorm) === normalizedVariant) {
       return { distances: distancesMap[key], matchedName: key };
     }
   }
@@ -76,7 +90,14 @@ function findCityInDistances(cityName, distancesMap) {
   // 2. Intenta match parcial (A contiene B o B contiene A)
   const partialMatch = Object.keys(distancesMap).find(key => {
     const keyNorm = normalizeText(key);
-    return keyNorm.includes(normalized) || normalized.includes(keyNorm);
+    const keyVariant = normalizeSpanishCatalan(keyNorm);
+
+    return (
+      keyNorm.includes(normalized) ||
+      normalized.includes(keyNorm) ||
+      keyVariant.includes(normalizedVariant) ||
+      normalizedVariant.includes(keyVariant)
+    );
   });
 
   if (partialMatch) {

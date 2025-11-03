@@ -1,8 +1,46 @@
 import { XMLParser } from 'fast-xml-parser';
 import { kv } from '@vercel/kv';
 import { enrichOffers } from '../../lib/enrichOffers.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const XML_FEED_URL = "https://feed.turijobs.com/partner/files/774E13F3-9D57-4BD6-920D-3A79A70C6AA2/E9753D5A-0F05-4444-9210-9D02EB15C7D5";
+
+// Helper: normalizar texto
+function normalizeText(text) {
+  if (!text) return '';
+  return text.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .trim();
+}
+
+// Helper: buscar ciudad en city_distances_full.json con match flexible
+function findCityInDistances(cityName, distancesMap) {
+  const normalized = normalizeText(cityName);
+
+  // 1. Intenta match exacto (case insensitive)
+  for (const key in distancesMap) {
+    if (normalizeText(key) === normalized) {
+      return { distances: distancesMap[key], matchedName: key };
+    }
+  }
+
+  // 2. Intenta match parcial (A contiene B o B contiene A)
+  const partialMatch = Object.keys(distancesMap).find(key => {
+    const keyNorm = normalizeText(key);
+    return keyNorm.includes(normalized) || normalized.includes(keyNorm);
+  });
+
+  if (partialMatch) {
+    return { distances: distancesMap[partialMatch], matchedName: partialMatch };
+  }
+
+  return null;
+}
 
 export default async function handler(req, res) {
   // Solo permitir GET
@@ -103,6 +141,53 @@ export default async function handler(req, res) {
     console.log('✨ Enriqueciendo ofertas con datos inteligentes...');
     const enrichedJobs = enrichOffers(normalizedJobs);
 
+    // 🗺️  GENERAR LISTA DE CIUDADES VÁLIDAS (con ofertas + cercanas ≤50km)
+    console.log('🗺️  Generando lista de ciudades válidas para NIVEL 0.5...');
+    const cityDistancesFull = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '../../data/city_distances_full.json'), 'utf-8')
+    );
+
+    // 1. Extraer ciudades únicas con ofertas
+    const citiesWithOffers = [...new Set(
+      enrichedJobs
+        .map(j => j.ciudad)
+        .filter(Boolean)
+        .map(c => c.trim())
+    )];
+
+    console.log(`   📍 ${citiesWithOffers.length} ciudades con ofertas activas`);
+
+    // 2. Para cada ciudad con ofertas, agregar ciudades cercanas ≤50km
+    const validCitiesSet = new Set();
+    let foundInDistancesFile = 0;
+    let notFoundInDistancesFile = 0;
+
+    citiesWithOffers.forEach(city => {
+      // Agregar la ciudad misma
+      validCitiesSet.add(normalizeText(city));
+
+      // Buscar en city_distances_full.json (con match flexible)
+      const result = findCityInDistances(city, cityDistancesFull);
+
+      if (result) {
+        foundInDistancesFile++;
+
+        // Agregar ciudades cercanas ≤50km
+        result.distances
+          .filter(c => c.distance <= 50)
+          .forEach(c => validCitiesSet.add(normalizeText(c.city)));
+      } else {
+        notFoundInDistancesFile++;
+        console.log(`   ⚠️  Ciudad no encontrada en city_distances_full.json: "${city}"`);
+      }
+    });
+
+    const validCitiesList = Array.from(validCitiesSet).sort();
+
+    console.log(`   ✅ ${foundInDistancesFile} ciudades encontradas en city_distances_full.json`);
+    console.log(`   ⚠️  ${notFoundInDistancesFile} ciudades NO encontradas`);
+    console.log(`   ✅ ${validCitiesList.length} ciudades válidas totales (con ofertas + cercanas ≤50km)`);
+
     // Reducir tamaño del JSON para caber en Vercel KV (10MB limit)
     // Eliminar descripcion que ocupa ~70% del tamaño y no se usa en búsquedas
     console.log('📦 Optimizando tamaño del cache (eliminando descripciones)...');
@@ -117,7 +202,9 @@ export default async function handler(req, res) {
         last_update: new Date().toISOString(),
         total_jobs: compactOffers.length,
         status: 'success',
-        feed_url: XML_FEED_URL
+        feed_url: XML_FEED_URL,
+        cities_with_offers: citiesWithOffers.length,
+        valid_cities: validCitiesList // Lista para NIVEL 0.5
       },
       offers: compactOffers
     };

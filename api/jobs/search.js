@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 let jobSynonyms = null;
 let cityDistances = null;
 let cityCoordinates = null;
+let cityDistancesFull = null; // city_distances_full.json (1,064 ciudades)
 let dynamicCityDistances = null; // Mapa dinámico basado en ofertas activas
 
 function loadCityCoordinates() {
@@ -24,6 +25,20 @@ function loadCityCoordinates() {
     }
   }
   return cityCoordinates;
+}
+
+function loadCityDistancesFull() {
+  if (!cityDistancesFull) {
+    try {
+      const distancesPath = path.join(__dirname, '../../data/city_distances_full.json');
+      cityDistancesFull = JSON.parse(fs.readFileSync(distancesPath, 'utf-8'));
+      console.log(`✅ Cargadas distancias para ${Object.keys(cityDistancesFull).length} ciudades`);
+    } catch (error) {
+      console.error('⚠️  No se pudieron cargar city_distances_full.json:', error.message);
+      cityDistancesFull = {};
+    }
+  }
+  return cityDistancesFull;
 }
 
 // Buscar ciudad en mapa de coordenadas con match exacto o parcial
@@ -42,6 +57,30 @@ function findCityInCoordinates(cityName, coordinatesMap) {
 
   if (partialMatch) {
     return { coords: coordinatesMap[partialMatch], matchedName: partialMatch };
+  }
+
+  return null; // No encontrado
+}
+
+// Buscar ciudad en city_distances_full.json con match exacto o parcial
+function findCityInDistances(cityName, distancesMap) {
+  const normalized = normalizeText(cityName);
+
+  // 1. Intenta match exacto (case insensitive)
+  for (const key in distancesMap) {
+    if (normalizeText(key) === normalized) {
+      return { distances: distancesMap[key], matchedName: key };
+    }
+  }
+
+  // 2. Intenta match parcial (A contiene B o B contiene A)
+  const partialMatch = Object.keys(distancesMap).find(key => {
+    const keyNorm = normalizeText(key);
+    return keyNorm.includes(normalized) || normalized.includes(keyNorm);
+  });
+
+  if (partialMatch) {
+    return { distances: distancesMap[partialMatch], matchedName: partialMatch };
   }
 
   return null; // No encontrado
@@ -313,7 +352,7 @@ export default async function handler(req, res) {
     let relatedJobsResults = null;
     let amplificationUsed = null;
 
-    // NIVEL 0.5: Si NO hay resultados pero la ciudad tiene coordenadas, buscar en ciudades cercanas
+    // NIVEL 0.5: Si NO hay resultados, buscar MISMO puesto en ciudades cercanas
     if (query && location && totalMatches === 0 && startOffset === 0 && !relatedJobsResults) {
       try {
         console.log(`🔍 NIVEL 0.5: No hay resultados en "${location}", buscando MISMO puesto en ciudades cercanas...`);
@@ -321,56 +360,39 @@ export default async function handler(req, res) {
         const queryNormalized = normalizeText(query);
         const locationNormalized = normalizeText(location);
 
-        // Cargar coordenadas de TODAS las ciudades (no solo las que tienen ofertas)
-        const cityCoordinates = loadCityCoordinates();
+        // Verificar si la ciudad está en la lista de ciudades válidas del cache
+        const validCities = cacheData.metadata.valid_cities || [];
 
-        // Verificar si la ciudad solicitada tiene coordenadas (match exacto o parcial)
-        const cityResult = findCityInCoordinates(location, cityCoordinates);
-
-        if (!cityResult) {
-          console.log(`   ℹ️  "${location}" no tiene coordenadas en city_coordinates.json, saltando NIVEL 0.5`);
+        if (!validCities.includes(locationNormalized)) {
+          console.log(`   ℹ️  "${location}" no está en lista de ciudades válidas (${validCities.length} ciudades), saltando NIVEL 0.5`);
         } else {
-          const requestedCityCoords = cityResult.coords;
-          const matchedCityName = cityResult.matchedName;
-          if (matchedCityName !== locationNormalized) {
-            console.log(`   ✅ Match parcial: "${location}" → "${matchedCityName}"`);
-          }
-          console.log(`   "${location}" tiene coordenadas: lat ${requestedCityCoords.lat}, lon ${requestedCityCoords.lon}`);
+          console.log(`   ✅ "${location}" está en lista de ciudades válidas`);
 
-          // Encontrar ciudades cercanas (dentro de 50km) que tengan ofertas
-          const nearbyCitiesWithOffers = [];
+          // Cargar city_distances_full.json para obtener ciudades cercanas
+          const cityDistancesFull = loadCityDistancesFull();
+          const cityResult = findCityInDistances(location, cityDistancesFull);
 
-          // Obtener ciudades únicas con ofertas
-          const citiesWithOffers = {};
-          cacheData.offers.forEach(job => {
-            const city = normalizeText(job.ciudad || job.city || '');
-            if (city) {
-              const cityResult = findCityInCoordinates(city, cityCoordinates);
-              if (cityResult) {
-                citiesWithOffers[cityResult.matchedName] = cityResult.coords;
-              }
+          if (!cityResult) {
+            console.log(`   ℹ️  "${location}" no tiene distancias en city_distances_full.json, saltando NIVEL 0.5`);
+          } else {
+            const matchedCityName = cityResult.matchedName;
+            if (normalizeText(matchedCityName) !== locationNormalized) {
+              console.log(`   ✅ Match parcial: "${location}" → "${matchedCityName}"`);
             }
-          });
 
-          // Calcular distancias a ciudades con ofertas
-          Object.keys(citiesWithOffers).forEach(city => {
-            if (city === locationNormalized) return; // Skip la ciudad solicitada
+            // Obtener ciudades cercanas ≤50km que tengan ofertas activas
+            const nearbyCitiesWithOffers = cityResult.distances
+              .filter(c => c.distance <= 50)
+              .map(c => ({
+                city: normalizeText(c.city),
+                distance: c.distance,
+                originalName: c.city
+              }))
+              // Filtrar solo ciudades que tienen ofertas activas (están en valid_cities)
+              .filter(c => validCities.includes(c.city));
 
-            const coords = citiesWithOffers[city];
-            const distance = calculateDistance(
-              requestedCityCoords.lat,
-              requestedCityCoords.lon,
-              coords.lat,
-              coords.lon
-            );
-
-            if (distance <= 50) {
-              nearbyCitiesWithOffers.push({ city, distance: parseFloat(distance.toFixed(1)) });
-            }
-          });
-
-          // Ordenar por distancia
-          nearbyCitiesWithOffers.sort((a, b) => a.distance - b.distance);
+            // Ordenar ya están ordenadas por distancia en el archivo
+            nearbyCitiesWithOffers.sort((a, b) => a.distance - b.distance);
 
           if (nearbyCitiesWithOffers.length > 0) {
             console.log(`   Encontradas ${nearbyCitiesWithOffers.length} ciudades cercanas con ofertas`);
@@ -383,7 +405,7 @@ export default async function handler(req, res) {
             // Reutilizamos queryTerms para que "barman" encuentre "bartender" y viceversa
 
             nearbyCitiesWithOffers.slice(0, 10).forEach(nearbyCity => {
-              const nearbyCityNormalized = normalizeText(nearbyCity.city);
+              const nearbyCityNormalized = nearbyCity.city; // Ya normalizado
 
               cacheData.offers.forEach(job => {
                 // Match del query (mismo método que el search regular)
@@ -396,7 +418,7 @@ export default async function handler(req, res) {
                 );
                 if (!titleMatch) return;
 
-                // Match de ciudad cercana
+                // Match de ciudad cercana (comparar normalizado)
                 const city = normalizeText(job.ciudad || job.city || '');
                 const region = normalizeText(job.region || '');
                 const cityMatch = city.includes(nearbyCityNormalized) ||
@@ -406,7 +428,7 @@ export default async function handler(req, res) {
 
                 offersInNearbyCities.push({
                   ...job,
-                  _nearbyCity: nearbyCity.city,
+                  _nearbyCity: nearbyCity.originalName, // Mantener capitalización original
                   _distance: nearbyCity.distance
                 });
               });
@@ -465,10 +487,12 @@ export default async function handler(req, res) {
           } else {
             console.log(`   ℹ️  No hay ciudades con ofertas dentro de 50km de "${location}"`);
           }
-        }
+          } // Cierre de if (cityResult)
+        } // Cierre de if (validCities.includes)
       } catch (error) {
         console.error('⚠️  Error en NIVEL 0.5:', error.message);
       }
+    } // Cierre de if (NIVEL 0.5)
 
 
     // NIVEL 2: Si NO hay resultados Y NIVEL 0.5 no encontró nada, buscar en related_jobs
@@ -633,8 +657,6 @@ export default async function handler(req, res) {
       } catch (error) {
         console.error('⚠️  Error en NIVEL 2:', error.message);
       }
-    }
-
     }
 
     // NIVEL 1.5: Si hay pocos resultados (<10), ampliar con MISMO puesto en ciudades cercanas

@@ -385,12 +385,31 @@ export default async function handler(req, res) {
         // Verificar si la ciudad está en la lista de ciudades válidas del cache
         const validCities = cacheData.metadata.valid_cities || [];
 
-        // Buscar match exacto o parcial en valid_cities
-        const cityInValidList = validCities.find(city =>
-          city === locationNormalized || // Match exacto
-          city.includes(locationNormalized) || // "sant cugat del valles" incluye "sant cugat"
-          locationNormalized.includes(city) // "sant cugat" está contenido en búsqueda
-        );
+        // Helper: normalizar variantes español/catalán (igual que en findCityInDistances)
+        function normalizeSpanishCatalan(text) {
+          return text
+            .replace(/\bsant\b/g, 'san') // Sant → San
+            .replace(/\bsan\b/g, 'san')   // Consistencia
+            .replace(/\bdel\b/g, 'del')   // Del estándar
+            .replace(/\bde\b/g, 'de')     // De estándar
+            .replace(/valles/g, 'valles') // Vallès/Vallés → valles
+            .trim();
+        }
+
+        const locationVariant = normalizeSpanishCatalan(locationNormalized);
+
+        // Buscar match exacto o parcial en valid_cities (con normalización ES/CA)
+        const cityInValidList = validCities.find(city => {
+          const cityVariant = normalizeSpanishCatalan(city);
+          return (
+            city === locationNormalized || // Match exacto original
+            cityVariant === locationVariant || // Match exacto con normalización ES/CA
+            city.includes(locationNormalized) || // Match parcial original
+            cityVariant.includes(locationVariant) || // Match parcial ES/CA
+            locationNormalized.includes(city) ||
+            locationVariant.includes(cityVariant)
+          );
+        });
 
         if (!cityInValidList) {
           console.log(`   ℹ️  "${location}" no está en lista de ciudades válidas (${validCities.length} ciudades), saltando NIVEL 0.5`);

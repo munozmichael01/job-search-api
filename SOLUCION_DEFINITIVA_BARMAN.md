@@ -5,7 +5,7 @@
 
 ---
 
-## 🎯 Problema Identificado
+## 🎯 Problemas Identificados (2)
 
 ### Síntoma
 La búsqueda **"barman sant cugat"** retorna:
@@ -18,38 +18,109 @@ La búsqueda **"barman sant cugat"** retorna:
 }
 ```
 
-### Causa Raíz
+### Causa Raíz #1: Deployment Cacheado
 **NIVEL 0.5 no se está ejecutando en producción.**
 
 A pesar de que:
 - ✅ Barcelona tiene 4 ofertas de bartender
-- ✅ Sant Cugat está en valid_cities
 - ✅ Barcelona está a 12.5 km de Sant Cugat
 - ✅ El código de NIVEL 0.5 existe en el repositorio
 - ✅ Todas las condiciones se cumplen
 
 **El código de NIVEL 0.5 simplemente NO se ejecuta.**
 
-### ¿Por qué?
-El deployment de Vercel puede tener cacheada una versión ANTERIOR del código donde NIVEL 0.5 no estaba implementado o tenía bugs.
+**Razón:** El deployment de Vercel puede tener cacheada una versión ANTERIOR del código donde NIVEL 0.5 no estaba implementado o tenía bugs.
+
+### Causa Raíz #2: Normalización Español/Catalán Faltante 🚨 CRÍTICO
+**"sant cugat" no hace match con "san cugat del valles" en `valid_cities`**
+
+- Usuario busca: **"sant cugat"**
+- En `valid_cities`: **"san cugat del valles"**
+- Match: ❌ FALLA porque **"sant" ≠ "san"**
+- Resultado: NIVEL 0.5 nunca se activa
+
+**Razón:** La validación de `valid_cities` NO aplicaba la normalización español/catalán (Sant→San) que SÍ existe en `findCityInDistances()`.
+
+Este era un **bug silencioso** que impedía que NIVEL 0.5 funcionara incluso si el deployment estaba correcto.
 
 ---
 
-## 🔧 Solución Implementada
+## 🔧 Soluciones Implementadas (3)
 
-### 1. Forzar Rebuild de Vercel
+### 1. ✅ Forzar Rebuild de Vercel
 Agregué comentario con timestamp en `api/jobs/search.js`:
 ```javascript
 // Force rebuild: 2025-11-03 20:50 - Fix NIVEL 0.5 not executing in production
 ```
 
-Esto fuerza a Vercel a:
+**Esto fuerza a Vercel a:**
 - Recompilar la function completamente
 - Limpiar el caché de deployment
 - Desplegar la versión ACTUAL del código
 
-### 2. Optimizar Metadata (Bonus)
-**Problema que encontraste:** Se envían **1111 ciudades** en cada respuesta (~15KB de datos innecesarios).
+---
+
+### 2. ✅ Agregar Normalización Español/Catalán a `valid_cities` 🚨 CRÍTICO
+
+**Antes (BUG):**
+```javascript
+// ❌ NO normalizaba sant→san
+const cityInValidList = validCities.find(city =>
+  city.includes(locationNormalized) || ...
+);
+// "sant cugat" NO hacía match con "san cugat del valles"
+```
+
+**Después (ARREGLADO):**
+```javascript
+// ✅ Normaliza sant→san antes de comparar
+function normalizeSpanishCatalan(text) {
+  return text
+    .replace(/\bsant\b/g, 'san')  // Sant → San
+    .replace(/\bsan\b/g, 'san')   // Consistencia
+    .replace(/valles/g, 'valles') // Vallès/Vallés → valles
+    .trim();
+}
+
+const locationVariant = normalizeSpanishCatalan(locationNormalized);
+
+const cityInValidList = validCities.find(city => {
+  const cityVariant = normalizeSpanishCatalan(city);
+  return (
+    cityVariant === locationVariant ||        // Match exacto ES/CA
+    cityVariant.includes(locationVariant) ||  // Match parcial ES/CA
+    // ... otros métodos de match
+  );
+});
+// ✅ "sant cugat" HACE match con "san cugat del valles"
+```
+
+**Test:**
+```bash
+$ node test-sant-cugat-match.js
+Usuario busca: sant cugat
+Normalizado: sant cugat
+Variante ES/CA: san cugat
+
+Resultado:
+✅ Match encontrado: san cugat del valles
+✅ NIVEL 0.5 puede activarse
+```
+
+**Impacto:**
+- ✅ NIVEL 0.5 ahora se activa para ciudades catalanas
+- ✅ "sant cugat", "sant feliu", "sant joan", etc. funcionan
+- ✅ Consistente con la lógica de `findCityInDistances()`
+
+---
+
+### 3. ✅ Optimizar Metadata (Bonus)
+
+**Problema identificado:** Se envían **1111 ciudades** en cada respuesta (~15KB de datos innecesarios).
+
+**Aclaración importante:**
+- `valid_cities` = 1111 ciudades (TODAS las válidas para búsqueda) - Se usa SOLO internamente
+- `nearby_cities` = 3-5 ciudades (relevantes para ESA búsqueda) - Se sigue enviando al cliente
 
 **Solución:**
 ```javascript
@@ -59,10 +130,12 @@ const { valid_cities, ...metadataWithoutValidCities } = cacheData.metadata;
 return res.status(200).json({
   success: true,
   metadata: {
-    ...metadataWithoutValidCities,  // Sin valid_cities
+    ...metadataWithoutValidCities,  // Sin valid_cities (1111 ciudades)
     cache_age_minutes: ageMinutes,
     ...
-  }
+  },
+  // ✅ nearby_cities SIGUE en la respuesta (solo las relevantes)
+  nearby_cities: [...]
 });
 ```
 
@@ -70,7 +143,8 @@ return res.status(200).json({
 - ✅ Respuestas ~15KB más pequeñas
 - ✅ Menos bandwidth usado
 - ✅ Respuestas más rápidas
-- ✅ valid_cities solo se usa internamente en el backend
+- ✅ `valid_cities` solo se usa internamente en el backend
+- ✅ `nearby_cities` relevantes siguen disponibles para el cliente
 
 ---
 

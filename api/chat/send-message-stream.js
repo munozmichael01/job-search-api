@@ -139,14 +139,56 @@ export default async function handler(req, res) {
 
         console.log(`✅ Funciones ejecutadas, enviando resultados...`);
 
-        // Enviar los resultados - esto reiniciará el stream
-        await openai.beta.threads.runs.submitToolOutputs(
+        // Enviar los resultados con streaming
+        const toolStream = await openai.beta.threads.runs.submitToolOutputsStream(
           thread_id,
           event.data.id,
           { tool_outputs: toolOutputs }
         );
 
         res.write(`data: ${JSON.stringify({ type: 'status', content: 'processing_results' })}\n\n`);
+
+        // Procesar el nuevo stream después de submitToolOutputs
+        for await (const toolEvent of toolStream) {
+          // Contenido de texto
+          if (toolEvent.event === 'thread.message.delta') {
+            const delta = toolEvent.data.delta;
+            if (delta.content && delta.content[0] && delta.content[0].text) {
+              const chunk = delta.content[0].text.value;
+              accumulatedText += chunk;
+
+              res.write(`data: ${JSON.stringify({
+                type: 'content',
+                content: chunk,
+                accumulated: accumulatedText
+              })}\n\n`);
+            }
+          }
+
+          // Run completado
+          if (toolEvent.event === 'thread.run.completed') {
+            console.log(`✅ Streaming completado después de tool outputs`);
+            res.write(`data: ${JSON.stringify({
+              type: 'done',
+              thread_id: thread_id,
+              run_id: toolEvent.data.id,
+              full_message: accumulatedText
+            })}\n\n`);
+            res.end();
+            return;
+          }
+
+          // Errores
+          if (toolEvent.event === 'thread.run.failed' || toolEvent.event === 'thread.run.cancelled' || toolEvent.event === 'thread.run.expired') {
+            console.error(`❌ Run falló después de tool outputs: ${toolEvent.event}`);
+            res.write(`data: ${JSON.stringify({
+              type: 'error',
+              content: `Run falló con status: ${toolEvent.event}`
+            })}\n\n`);
+            res.end();
+            return;
+          }
+        }
       }
 
       // Contenido de texto

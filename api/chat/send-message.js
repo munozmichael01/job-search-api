@@ -74,14 +74,18 @@ export default async function handler(req, res) {
   try {
     console.log(`💬 Enviando mensaje al thread: ${thread_id}`);
     console.log(`📝 Mensaje: ${message}`);
+    console.log(`🆔 Assistant ID: ${ASSISTANT_ID}`);
 
     // 1. Agregar el mensaje del usuario al thread
+    console.log(`📤 Agregando mensaje al thread...`);
     await openai.beta.threads.messages.create(thread_id, {
       role: 'user',
       content: message,
     });
+    console.log(`✅ Mensaje agregado al thread`);
 
     // 2. Ejecutar el Assistant
+    console.log(`🚀 Creando run con Assistant...`);
     const run = await openai.beta.threads.runs.create(thread_id, {
       assistant_id: ASSISTANT_ID,
     });

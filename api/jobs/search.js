@@ -211,7 +211,7 @@ function generateSearchHash(query, location, category) {
 }
 
 export default async function handler(req, res) {
-  console.log('🚀 Search API v2025-11-03-22:00 - CRITICAL FIX: maxDuration 300s->10s for Free tier');
+  console.log('🚀 Search API v2025-11-04 - Pro tier: maxDuration 300s');
 
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });

@@ -22,17 +22,10 @@ export default function ChatWidget() {
     }
   }, [messages]);
 
-  // Crear thread al abrir por primera vez
+  // Crear thread nuevo SIEMPRE al abrir
   useEffect(() => {
     if (isOpen && !threadId) {
-      const savedThreadId = localStorage.getItem('turijobs_thread_id');
-      
-      if (savedThreadId) {
-        setThreadId(savedThreadId);
-        loadMessages(savedThreadId);
-      } else {
-        createThread();
-      }
+      createThread();
     }
   }, [isOpen, threadId]);
 
@@ -47,8 +40,7 @@ export default function ChatWidget() {
       
       if (data.success) {
         setThreadId(data.thread_id);
-        localStorage.setItem('turijobs_thread_id', data.thread_id);
-        
+
         // Mensaje de bienvenida
         setMessages([{
           role: 'assistant',
@@ -58,30 +50,6 @@ export default function ChatWidget() {
       }
     } catch (error) {
       console.error('Error creating thread:', error);
-    }
-  };
-
-  const loadMessages = async (tid) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/chat/get-messages?thread_id=${tid}`);
-      const data = await response.json();
-      
-      if (data.success && data.messages.length > 0) {
-        setMessages(data.messages.map(msg => ({
-          role: msg.role,
-          content: msg.content,
-          timestamp: msg.timestamp
-        })));
-      } else {
-        // Si no hay mensajes, mostrar bienvenida
-        setMessages([{
-          role: 'assistant',
-          content: '¡Hola! 👋 Soy tu asistente de búsqueda de empleo en el sector turístico.\n\n¿Qué tipo de trabajo buscas?',
-          timestamp: new Date().toISOString()
-        }]);
-      }
-    } catch (error) {
-      console.error('Error loading messages:', error);
     }
   };
 
@@ -141,7 +109,6 @@ export default function ChatWidget() {
   };
 
   const resetChat = () => {
-    localStorage.removeItem('turijobs_thread_id');
     setThreadId(null);
     setMessages([]);
     createThread();

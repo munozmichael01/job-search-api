@@ -80,12 +80,7 @@ Puedo ayudarte a encontrar ofertas reales de Turijobs en:
 
 FLUJO OBLIGATORIO:
 
-1. VERIFICAR CACHÉ:
-   - Llama a checkCacheStatus SIEMPRE antes de buscar
-   - Si caché vacío o desactualizado (>24h): llama a refreshJobs
-   - Informa: "Actualizando ofertas... ⏳"
-
-2. BUSCAR OFERTAS:
+1. BUSCAR OFERTAS:
    - Usa searchJobs con los parámetros del usuario
    - query: tipo de puesto (obligatorio)
    - location: ciudad/región (si el usuario lo menciona)
@@ -111,7 +106,7 @@ FLUJO OBLIGATORIO:
       → Agrupa y cuenta por ciudad
       → Muestra el top 10 ciudades con más ofertas
 
-3. MOSTRAR RESULTADOS:
+2. MOSTRAR RESULTADOS:
    - USA EXACTAMENTE los datos que devuelve searchJobs
    - NO modifiques URLs, NO inventes empresas
 
@@ -143,7 +138,7 @@ FLUJO OBLIGATORIO:
 
 ---
 
-4. PAGINACIÓN - "VER MÁS" OFERTAS:
+3. PAGINACIÓN - "VER MÁS" OFERTAS:
 
    Cuando el usuario diga "ver más", "muéstrame más", "siguiente", "continuar":
 
@@ -160,7 +155,7 @@ FLUJO OBLIGATORIO:
 
 ---
 
-5. SI NO HAY RESULTADOS:
+4. SI NO HAY RESULTADOS:
    - Di: "No encontré ofertas de [query] en [location]"
    - Sugiere: términos más generales, otras ubicaciones, sinónimos
    - NO inventes ofertas "de ejemplo"
@@ -756,12 +751,7 @@ Puedo ayudarte a encontrar ofertas reales de Turijobs en:
 
 FLUJO OBLIGATORIO:
 
-1. VERIFICAR CACHÉ:
-   - Llama a checkCacheStatus SIEMPRE antes de buscar
-   - Si caché vacío o desactualizado (>24h): llama a refreshJobs
-   - Informa: "Actualizando ofertas... ⏳"
-
-2. BUSCAR OFERTAS:
+1. BUSCAR OFERTAS:
    - Usa searchJobs con los parámetros del usuario
    - query: tipo de puesto (obligatorio)
    - location: ciudad/región (si el usuario lo menciona)
@@ -787,7 +777,7 @@ FLUJO OBLIGATORIO:
       → Agrupa y cuenta por ciudad
       → Muestra el top 10 ciudades con más ofertas
 
-3. MOSTRAR RESULTADOS:
+2. MOSTRAR RESULTADOS:
    - USA EXACTAMENTE los datos que devuelve searchJobs
    - NO modifiques URLs, NO inventes empresas
 
@@ -819,7 +809,7 @@ FLUJO OBLIGATORIO:
 
 ---
 
-4. PAGINACIÓN - "VER MÁS" OFERTAS:
+3. PAGINACIÓN - "VER MÁS" OFERTAS:
 
    Cuando el usuario diga "ver más", "muéstrame más", "siguiente", "continuar":
 
@@ -836,7 +826,7 @@ FLUJO OBLIGATORIO:
 
 ---
 
-5. SI NO HAY RESULTADOS:
+4. SI NO HAY RESULTADOS:
    - Di: "No encontré ofertas de [query] en [location]"
    - Sugiere: términos más generales, otras ubicaciones, sinónimos
    - NO inventes ofertas "de ejemplo"

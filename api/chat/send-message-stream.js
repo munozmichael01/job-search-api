@@ -7,7 +7,7 @@ const openai = new OpenAI({
 const ASSISTANT_ID = process.env.OPENAI_ASSISTANT_ID;
 
 // Ejecutar las funciones cuando el Assistant las llame
-async function executeFunctionCall(functionName, functionArgs) {
+async function executeFunctionCall(functionName, functionArgs, res = null) {
   const baseUrl = 'https://job-search-api-psi.vercel.app';
 
   console.log(`🔧 Ejecutando función: ${functionName}`);
@@ -15,6 +15,14 @@ async function executeFunctionCall(functionName, functionArgs) {
 
   try {
     if (functionName === 'searchJobs') {
+      // Enviar feedback al usuario
+      if (res) {
+        const statusMsg = functionArgs.location
+          ? `Buscando ${functionArgs.query || 'ofertas'} en ${functionArgs.location}...`
+          : `Buscando ${functionArgs.query || 'ofertas'}...`;
+        res.write(`data: ${JSON.stringify({ type: 'status', content: statusMsg })}\n\n`);
+      }
+
       const params = new URLSearchParams();
       if (functionArgs.query) params.append('query', functionArgs.query);
       if (functionArgs.location) params.append('location', functionArgs.location);
@@ -24,6 +32,16 @@ async function executeFunctionCall(functionName, functionArgs) {
 
       const response = await fetch(`${baseUrl}/api/jobs/search?${params.toString()}`);
       const data = await response.json();
+
+      // Informar resultados encontrados
+      if (res && data.success) {
+        const count = data.pagination?.total_matches || 0;
+        const statusMsg = count > 0
+          ? `Encontré ${count} ofertas, formateando...`
+          : `No hay resultados, buscando alternativas...`;
+        res.write(`data: ${JSON.stringify({ type: 'status', content: statusMsg })}\n\n`);
+      }
+
       return JSON.stringify(data);
     }
 
@@ -110,7 +128,7 @@ export default async function handler(req, res) {
             const functionName = toolCall.function.name;
             const functionArgs = JSON.parse(toolCall.function.arguments);
 
-            const output = await executeFunctionCall(functionName, functionArgs);
+            const output = await executeFunctionCall(functionName, functionArgs, res);
 
             return {
               tool_call_id: toolCall.id,

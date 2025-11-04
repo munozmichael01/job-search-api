@@ -450,7 +450,8 @@ export default async function handler(req, res) {
 
           if (nearbyCitiesWithOffers.length > 0) {
             console.log(`   Encontradas ${nearbyCitiesWithOffers.length} ciudades cercanas con ofertas`);
-            console.log(`   Top 3: ${nearbyCitiesWithOffers.slice(0, 3).map(c => `${c.city} (${c.distance}km)`).join(', ')}`);
+            console.log(`   Top 5: ${nearbyCitiesWithOffers.slice(0, 5).map(c => `${c.city} (${c.distance}km)`).join(', ')}`);
+            console.log(`   Buscando en las primeras 25 ciudades (o menos si hay menos disponibles)...`);
 
             // Buscar MISMO puesto (query) en ciudades cercanas
             const offersInNearbyCities = [];
@@ -458,7 +459,7 @@ export default async function handler(req, res) {
             // queryTerms ya está definido al inicio del handler con todos los sinónimos (línea 188)
             // Reutilizamos queryTerms para que "barman" encuentre "bartender" y viceversa
 
-            nearbyCitiesWithOffers.slice(0, 10).forEach(nearbyCity => {
+            nearbyCitiesWithOffers.slice(0, 25).forEach(nearbyCity => {
               const nearbyCityNormalized = nearbyCity.city; // Ya normalizado
 
               cacheData.offers.forEach(job => {
@@ -740,7 +741,7 @@ export default async function handler(req, res) {
           // Buscar MISMO puesto (query) en ciudades cercanas
           const offersInNearbyCities = [];
 
-          nearbyCitiesData.slice(0, 10).forEach(nearbyCity => {
+          nearbyCitiesData.slice(0, 25).forEach(nearbyCity => {
             const nearbyCityNormalized = normalizeText(nearbyCity.city);
 
             cacheData.offers.forEach(job => {

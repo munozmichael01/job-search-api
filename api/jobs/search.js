@@ -449,9 +449,9 @@ export default async function handler(req, res) {
             nearbyCitiesWithOffers.sort((a, b) => a.distance - b.distance);
 
           if (nearbyCitiesWithOffers.length > 0) {
-            console.log(`   Encontradas ${nearbyCitiesWithOffers.length} ciudades cercanas con ofertas`);
+            console.log(`   Encontradas ${nearbyCitiesWithOffers.length} ciudades cercanas con ofertas (≤50km)`);
             console.log(`   Top 5: ${nearbyCitiesWithOffers.slice(0, 5).map(c => `${c.city} (${c.distance}km)`).join(', ')}`);
-            console.log(`   Buscando en las primeras 25 ciudades (o menos si hay menos disponibles)...`);
+            console.log(`   Buscando en TODAS las ${nearbyCitiesWithOffers.length} ciudades...`);
 
             // Buscar MISMO puesto (query) en ciudades cercanas
             const offersInNearbyCities = [];
@@ -459,7 +459,7 @@ export default async function handler(req, res) {
             // queryTerms ya está definido al inicio del handler con todos los sinónimos (línea 188)
             // Reutilizamos queryTerms para que "barman" encuentre "bartender" y viceversa
 
-            nearbyCitiesWithOffers.slice(0, 25).forEach(nearbyCity => {
+            nearbyCitiesWithOffers.forEach(nearbyCity => {
               const nearbyCityNormalized = nearbyCity.city; // Ya normalizado
 
               cacheData.offers.forEach(job => {
@@ -736,12 +736,12 @@ export default async function handler(req, res) {
         }
 
         if (nearbyCitiesData.length > 0) {
-          console.log(`   Buscando "${query}" en ${nearbyCitiesData.length} ciudades cercanas...`);
+          console.log(`   Buscando "${query}" en TODAS las ${nearbyCitiesData.length} ciudades cercanas (≤50km)...`);
 
           // Buscar MISMO puesto (query) en ciudades cercanas
           const offersInNearbyCities = [];
 
-          nearbyCitiesData.slice(0, 25).forEach(nearbyCity => {
+          nearbyCitiesData.forEach(nearbyCity => {
             const nearbyCityNormalized = normalizeText(nearbyCity.city);
 
             cacheData.offers.forEach(job => {

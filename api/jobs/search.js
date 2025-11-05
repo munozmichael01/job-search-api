@@ -807,6 +807,13 @@ export default async function handler(req, res) {
 
         const queryNormalized = normalizeText(query);
         const locationNormalized = normalizeText(location);
+
+        // Safety check: reconstruir mapa si no existe
+        if (!dynamicCityDistances) {
+          console.log(`   ⚠️  dynamicCityDistances es null, reconstruyendo...`);
+          dynamicCityDistances = buildDynamicCityDistances(cacheData.offers);
+        }
+
         console.log(`   🔍 Buscando "${locationNormalized}" en dynamicCityDistances (${Object.keys(dynamicCityDistances).length} ciudades)...`);
         // Intentar match parcial para el mapa dinámico
         let nearbyCitiesData = dynamicCityDistances[locationNormalized] || [];

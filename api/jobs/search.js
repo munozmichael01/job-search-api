@@ -230,7 +230,8 @@ export default async function handler(req, res) {
     }
 
     // Construir mapa dinámico de ciudades cercanas si no existe
-    if (!dynamicCityDistances) {
+    // TEMPORAL: Forzar reconstrucción para testing
+    if (!dynamicCityDistances || true) {
       console.log('🌍 Construyendo mapa dinámico de ciudades cercanas...');
       dynamicCityDistances = buildDynamicCityDistances(cacheData.offers);
     }

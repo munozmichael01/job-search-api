@@ -230,16 +230,9 @@ export default async function handler(req, res) {
     }
 
     // Construir mapa dinámico de ciudades cercanas si no existe
-    // TEMPORAL: Forzar reconstrucción para testing
-    if (!dynamicCityDistances || true) {
+    if (!dynamicCityDistances) {
       console.log('🌍 Construyendo mapa dinámico de ciudades cercanas...');
       dynamicCityDistances = buildDynamicCityDistances(cacheData.offers);
-      // DEBUG: Verificar si tarragona está en el mapa
-      if (dynamicCityDistances['tarragona']) {
-        console.log(`✅ "tarragona" en mapa con ${dynamicCityDistances['tarragona'].length} ciudades cercanas`);
-      } else {
-        console.log(`❌ "tarragona" NO está en el mapa dinámico`);
-      }
     }
 
     if (cacheData.metadata.status === 'error') {
@@ -750,74 +743,17 @@ export default async function handler(req, res) {
       }
     }
 
-    // DEBUG: Verificar variables antes de NIVEL 1.5
-    const debugN15_1 = `🐛 DEBUG antes de NIVEL 1.5: query="${query}" location="${location}" totalMatches=${totalMatches} startOffset=${startOffset} relatedJobsResults=${relatedJobsResults}`;
-    console.log(debugN15_1);
-    if (debugMode) debugLogs.push(debugN15_1);
-
-    const debugN15_2 = `🐛 Evaluando condiciones NIVEL 1.5:`;
-    console.log(debugN15_2);
-    if (debugMode) debugLogs.push(debugN15_2);
-
-    const debugN15_3 = `   - query: ${!!query} (${query})`;
-    console.log(debugN15_3);
-    if (debugMode) debugLogs.push(debugN15_3);
-
-    const debugN15_4 = `   - location: ${!!location} (${location})`;
-    console.log(debugN15_4);
-    if (debugMode) debugLogs.push(debugN15_4);
-
-    const debugN15_5 = `   - totalMatches > 0: ${totalMatches > 0} (${totalMatches})`;
-    console.log(debugN15_5);
-    if (debugMode) debugLogs.push(debugN15_5);
-
-    const debugN15_6 = `   - totalMatches < 10: ${totalMatches < 10} (${totalMatches})`;
-    console.log(debugN15_6);
-    if (debugMode) debugLogs.push(debugN15_6);
-
-    const debugN15_7 = `   - startOffset === 0: ${startOffset === 0} (${startOffset})`;
-    console.log(debugN15_7);
-    if (debugMode) debugLogs.push(debugN15_7);
-
-    const debugN15_8 = `   - !relatedJobsResults: ${!relatedJobsResults} (${relatedJobsResults})`;
-    console.log(debugN15_8);
-    if (debugMode) debugLogs.push(debugN15_8);
-
-    const shouldActivate = query && location && totalMatches > 0 && totalMatches < 10 && startOffset === 0 && !relatedJobsResults;
-    const debugN15_9 = `   - RESULTADO: ${shouldActivate}`;
-    console.log(debugN15_9);
-    if (debugMode) debugLogs.push(debugN15_9);
-
     // NIVEL 1.5: Si hay pocos resultados (<10), ampliar con MISMO puesto en ciudades cercanas
-    if (shouldActivate) {
-      const debugN15_ENTER = `🎯 ¡ENTRAMOS AL IF DE NIVEL 1.5!`;
-      console.log(debugN15_ENTER);
-      if (debugMode) debugLogs.push(debugN15_ENTER);
-
-      const debugN15_BEFORE_TRY = `📍 Antes del try-catch de NIVEL 1.5`;
-      console.log(debugN15_BEFORE_TRY);
-      if (debugMode) debugLogs.push(debugN15_BEFORE_TRY);
-
+    if (query && location && totalMatches > 0 && totalMatches < 10 && startOffset === 0 && !relatedJobsResults) {
       try {
-        const debugN15_IN_TRY = `📍 Dentro del try de NIVEL 1.5`;
-        console.log(debugN15_IN_TRY);
-        if (debugMode) debugLogs.push(debugN15_IN_TRY);
-
         console.log(`🔍 NIVEL 1.5: Solo ${totalMatches} resultados, ampliando con ciudades cercanas...`);
 
         const queryNormalized = normalizeText(query);
         const locationNormalized = normalizeText(location);
 
-        // Safety check: reconstruir mapa si no existe
-        if (!dynamicCityDistances) {
-          console.log(`   ⚠️  dynamicCityDistances es null, reconstruyendo...`);
-          dynamicCityDistances = buildDynamicCityDistances(cacheData.offers);
-        }
-
-        console.log(`   🔍 Buscando "${locationNormalized}" en dynamicCityDistances (${Object.keys(dynamicCityDistances).length} ciudades)...`);
-        // Intentar match parcial para el mapa dinámico
+        // Intentar match en el mapa dinámico
         let nearbyCitiesData = dynamicCityDistances[locationNormalized] || [];
-        console.log(`   ${nearbyCitiesData.length > 0 ? '✅' : '❌'} Match exacto en dynamicCityDistances: ${nearbyCitiesData.length} ciudades cercanas`);
+        console.log(`   Buscando en ${nearbyCitiesData.length} ciudades cercanas a "${location}"...`);
 
         // Si no hay match exacto, buscar match parcial en el mapa dinámico
         if (nearbyCitiesData.length === 0) {
@@ -1065,12 +1001,7 @@ export default async function handler(req, res) {
         }
 
       } catch (error) {
-        const errorMsg = `⚠️  Error en NIVEL 1.5: ${error.message}`;
-        console.error(errorMsg);
-        if (debugMode) {
-          debugLogs.push(errorMsg);
-          debugLogs.push(`Stack: ${error.stack}`);
-        }
+        console.error('⚠️  Error en NIVEL 1.5:', error.message);
       }
     }
 

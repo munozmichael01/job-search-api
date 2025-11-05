@@ -794,7 +794,15 @@ export default async function handler(req, res) {
       console.log(debugN15_ENTER);
       if (debugMode) debugLogs.push(debugN15_ENTER);
 
+      const debugN15_BEFORE_TRY = `📍 Antes del try-catch de NIVEL 1.5`;
+      console.log(debugN15_BEFORE_TRY);
+      if (debugMode) debugLogs.push(debugN15_BEFORE_TRY);
+
       try {
+        const debugN15_IN_TRY = `📍 Dentro del try de NIVEL 1.5`;
+        console.log(debugN15_IN_TRY);
+        if (debugMode) debugLogs.push(debugN15_IN_TRY);
+
         console.log(`🔍 NIVEL 1.5: Solo ${totalMatches} resultados, ampliando con ciudades cercanas...`);
 
         const queryNormalized = normalizeText(query);

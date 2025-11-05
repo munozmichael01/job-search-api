@@ -751,16 +751,42 @@ export default async function handler(req, res) {
     }
 
     // DEBUG: Verificar variables antes de NIVEL 1.5
-    console.log(`🐛 DEBUG antes de NIVEL 1.5: query="${query}" location="${location}" totalMatches=${totalMatches} startOffset=${startOffset} relatedJobsResults=${relatedJobsResults}`);
-    console.log(`🐛 Evaluando condiciones NIVEL 1.5:`);
-    console.log(`   - query: ${!!query} (${query})`);
-    console.log(`   - location: ${!!location} (${location})`);
-    console.log(`   - totalMatches > 0: ${totalMatches > 0} (${totalMatches})`);
-    console.log(`   - totalMatches < 10: ${totalMatches < 10} (${totalMatches})`);
-    console.log(`   - startOffset === 0: ${startOffset === 0} (${startOffset})`);
-    console.log(`   - !relatedJobsResults: ${!relatedJobsResults} (${relatedJobsResults})`);
+    const debugN15_1 = `🐛 DEBUG antes de NIVEL 1.5: query="${query}" location="${location}" totalMatches=${totalMatches} startOffset=${startOffset} relatedJobsResults=${relatedJobsResults}`;
+    console.log(debugN15_1);
+    if (debugMode) debugLogs.push(debugN15_1);
+
+    const debugN15_2 = `🐛 Evaluando condiciones NIVEL 1.5:`;
+    console.log(debugN15_2);
+    if (debugMode) debugLogs.push(debugN15_2);
+
+    const debugN15_3 = `   - query: ${!!query} (${query})`;
+    console.log(debugN15_3);
+    if (debugMode) debugLogs.push(debugN15_3);
+
+    const debugN15_4 = `   - location: ${!!location} (${location})`;
+    console.log(debugN15_4);
+    if (debugMode) debugLogs.push(debugN15_4);
+
+    const debugN15_5 = `   - totalMatches > 0: ${totalMatches > 0} (${totalMatches})`;
+    console.log(debugN15_5);
+    if (debugMode) debugLogs.push(debugN15_5);
+
+    const debugN15_6 = `   - totalMatches < 10: ${totalMatches < 10} (${totalMatches})`;
+    console.log(debugN15_6);
+    if (debugMode) debugLogs.push(debugN15_6);
+
+    const debugN15_7 = `   - startOffset === 0: ${startOffset === 0} (${startOffset})`;
+    console.log(debugN15_7);
+    if (debugMode) debugLogs.push(debugN15_7);
+
+    const debugN15_8 = `   - !relatedJobsResults: ${!relatedJobsResults} (${relatedJobsResults})`;
+    console.log(debugN15_8);
+    if (debugMode) debugLogs.push(debugN15_8);
+
     const shouldActivate = query && location && totalMatches > 0 && totalMatches < 10 && startOffset === 0 && !relatedJobsResults;
-    console.log(`   - RESULTADO: ${shouldActivate}`);
+    const debugN15_9 = `   - RESULTADO: ${shouldActivate}`;
+    console.log(debugN15_9);
+    if (debugMode) debugLogs.push(debugN15_9);
 
     // NIVEL 1.5: Si hay pocos resultados (<10), ampliar con MISMO puesto en ciudades cercanas
     if (query && location && totalMatches > 0 && totalMatches < 10 && startOffset === 0 && !relatedJobsResults) {

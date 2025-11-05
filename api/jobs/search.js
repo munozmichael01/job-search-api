@@ -429,6 +429,10 @@ export default async function handler(req, res) {
 
           const cityResult = findCityInDistances(location, cityDistancesFull);
 
+          const debugInfo9 = `   🔍 cityResult: ${cityResult ? JSON.stringify({ matchedName: cityResult.matchedName, distancesCount: cityResult.distances?.length }) : 'NULL'}`;
+          console.log(debugInfo9);
+          if (debugMode) debugLogs.push(debugInfo9);
+
           if (!cityResult) {
             const debugInfo8 = `   ℹ️  "${location}" no tiene distancias en city_distances.json, saltando NIVEL 0.5`;
             console.log(debugInfo8);

@@ -438,10 +438,18 @@ export default async function handler(req, res) {
             console.log(debugInfo8);
             if (debugMode) debugLogs.push(debugInfo8);
           } else {
+            const debugInfo10 = `   ✅ Entrando al else block (cityResult existe)`;
+            console.log(debugInfo10);
+            if (debugMode) debugLogs.push(debugInfo10);
+
             const matchedCityName = cityResult.matchedName;
             if (normalizeText(matchedCityName) !== locationNormalized) {
               console.log(`   ✅ Match parcial: "${location}" → "${matchedCityName}"`);
             }
+
+            const debugInfo11 = `   🔍 Filtrando ciudades cercanas...`;
+            console.log(debugInfo11);
+            if (debugMode) debugLogs.push(debugInfo11);
 
             // Obtener ciudades cercanas ≤50km que tengan ofertas activas
             const nearbyCitiesWithOffers = cityResult.distances
@@ -453,6 +461,10 @@ export default async function handler(req, res) {
               }))
               // Filtrar solo ciudades que tienen ofertas activas (están en valid_cities)
               .filter(c => validCities.includes(c.city));
+
+            const debugInfo12 = `   🔍 Ciudades cercanas con ofertas: ${nearbyCitiesWithOffers.length}`;
+            console.log(debugInfo12);
+            if (debugMode) debugLogs.push(debugInfo12);
 
             // Ordenar ya están ordenadas por distancia en el archivo
             nearbyCitiesWithOffers.sort((a, b) => a.distance - b.distance);

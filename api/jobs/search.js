@@ -789,7 +789,7 @@ export default async function handler(req, res) {
     if (debugMode) debugLogs.push(debugN15_9);
 
     // NIVEL 1.5: Si hay pocos resultados (<10), ampliar con MISMO puesto en ciudades cercanas
-    if (query && location && totalMatches > 0 && totalMatches < 10 && startOffset === 0 && !relatedJobsResults) {
+    if (shouldActivate) {
       try {
         console.log(`🔍 NIVEL 1.5: Solo ${totalMatches} resultados, ampliando con ciudades cercanas...`);
 

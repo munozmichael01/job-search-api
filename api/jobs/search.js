@@ -238,7 +238,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const { query = '', location = '', category = '', limit = '10', offset = '0', related_offset = '0' } = req.query;
+    const { query = '', location = '', category = '', limit = '10', offset = '0', related_offset = '0', include_enriched = 'false' } = req.query;
     const maxResults = parseInt(limit) || 10;
     const startOffset = parseInt(offset) || 0;
     const relatedOffset = parseInt(related_offset) || 0;
@@ -955,6 +955,22 @@ export default async function handler(req, res) {
       ? []
       : results;
 
+    // OPTIMIZACIÓN: Eliminar campo enriched de las ofertas antes de enviarlas
+    // El campo enriched se usa en el backend para búsquedas, pero NO se necesita en el frontend/chat
+    // Esto reduce el tamaño del JSON en ~20-30% (6.3 KB en ~32 KB response)
+    // Para debugging, se puede agregar ?include_enriched=true en la query
+    const includeEnrichedData = include_enriched === 'true';
+
+    const cleanResults = includeEnrichedData ? finalResults : finalResults.map(offer => {
+      const { enriched, ...cleanOffer } = offer;
+      return cleanOffer;
+    });
+
+    const cleanRelatedJobsResults = includeEnrichedData || !relatedJobsResults ? relatedJobsResults : relatedJobsResults.map(offer => {
+      const { enriched, ...cleanOffer } = offer;
+      return cleanOffer;
+    });
+
     return res.status(200).json({
       success: true,
       metadata: {
@@ -971,17 +987,17 @@ export default async function handler(req, res) {
       },
       pagination: {
         total_matches: totalMatches,
-        returned_results: finalResults.length,
+        returned_results: cleanResults.length,
         offset: startOffset,
         limit: maxResults,
         has_more: hasMore,
         remaining: remainingResults,
         next_offset: hasMore ? startOffset + maxResults : null
       },
-      results: finalResults,
+      results: cleanResults,
       ...(nearbyCities && nearbyCities.length > 0 && { nearby_cities: nearbyCities }),
-      ...(relatedJobsResults && relatedJobsResults.length > 0 && {
-        related_jobs_results: relatedJobsResults,
+      ...(cleanRelatedJobsResults && cleanRelatedJobsResults.length > 0 && {
+        related_jobs_results: cleanRelatedJobsResults,
         amplification_used: amplificationUsed
       })
     });

@@ -213,12 +213,28 @@ Si no hay "Chef Ejecutivo" en Madrid:
 **Backend (api/jobs/search.js):**
 - ✅ NIVEL 1.5: Cuando hay 1-9 resultados, amplía automáticamente con puestos relacionados (weight > 0.85)
 - ✅ NIVEL 2: Cuando hay 0 resultados, busca automáticamente en puestos similares (weight > 0.80)
+- ✅ **NIVEL 2 + NEARBY CITIES:** Combina puestos relacionados + ubicaciones cercanas
+  - Busca en ciudades cercanas (50km) cuando no hay resultados locales
+  - Ejemplo: "sommelier sitges" → Retorna Bartender de Barcelona (34 km)
 - ✅ Retorna `related_jobs_results` y `amplification_used` en la respuesta
 - ✅ Todo en 1 sola llamada al API (experiencia más rápida para el usuario)
-- ✅ **FIX CRÍTICO (30 oct):** NIVEL 2 ahora retorna las ofertas correctas
-  - **Antes:** Buscaba ofertas con el nombre del related_job en el título → 0 resultados ❌
-  - **Ahora:** Retorna directamente las ofertas que tienen el query en related_jobs ✅
-  - **Ejemplo:** "sommelier" (0 results) → Retorna Bartender offer (tiene Sommelier en related_jobs)
+
+**Bugs Críticos Corregidos (30 oct):**
+
+1. **Bug: NIVEL 2 retornaba ofertas incorrectas**
+   - **Antes:** Buscaba ofertas con el nombre del related_job en el título → 0 resultados ❌
+   - **Ahora:** Retorna directamente las ofertas que tienen el query en related_jobs ✅
+   - **Commit:** e3dff6d
+
+2. **Bug: Capitalización de ciudades**
+   - **Antes:** `cityDistances["sitges"]` → undefined (keys son "Sitges") ❌
+   - **Ahora:** Case-insensitive lookup con normalizeText() ✅
+   - **Commit:** 9e6c5f0
+
+3. **Bug: Límite de ciudades cercanas**
+   - **Antes:** `.slice(0, 5)` solo analizaba 5 ciudades → Barcelona (pos. 31) no incluida ❌
+   - **Ahora:** Analiza TODAS las ciudades dentro de 50km ✅
+   - **Commit:** 0c82e11
 
 **Enriquecimiento (lib/enrichOffers.js):**
 - ✅ Bug fix: Algoritmo de matching ahora retorna puestos correctos
@@ -227,14 +243,15 @@ Si no hay "Chef Ejecutivo" en Madrid:
 - ✅ Mejora en paso 3: preferir claves más cortas cuando hay empate
 
 **Assistant (asst_vfJs03e6YW2A0eCr9IrzhPBn):**
-- ✅ Prompt simplificado (4.8 KB, optimizado para eficiencia)
+- ✅ Prompt actualizado con instrucciones para `nivel_2_nearby`
 - ✅ Assistant muestra lo que recibe del backend (no hace búsquedas iterativas)
-- ✅ Instrucciones claras para mostrar amplification_used.type
+- ✅ Formato: "No encontré X en Y, pero encontré Z ofertas de W en [ciudad] ([distancia] km)"
 
 **Tests de Producción (30 oct):**
-- ✅ NIVEL 2: "sommelier" en Valencia → Retorna 1 Bartender offer ✅
+- ✅ NIVEL 2: "sommelier valencia" → Retorna 1 Bartender offer ✅
+- ✅ NIVEL 2 + NEARBY: "sommelier sitges" → Retorna 2 Bartender de Barcelona (34 km) ✅
 - ✅ NIVEL 1.5: Logic correct (no activa con >=10 resultados) ✅
-- ✅ Búsqueda normal: "camarero" en Valencia → 12 resultados, no amplification needed ✅
+- ✅ Búsqueda normal: "camarero valencia" → 12 resultados, no amplification needed ✅
 
 ---
 
@@ -270,21 +287,30 @@ Si no hay "Chef Ejecutivo" en Madrid:
 
 ## CONCLUSIÓN
 
-**Cumplimiento actual: ~85% de la especificación** ⬆️ (era 60%)
+**Cumplimiento actual: ~90% de la especificación** ⬆️⬆️ (era 60% → 85% → 90%)
 
 ✅ **Lo que funciona bien:**
-- Nearby cities (distancias reales)
-- Búsqueda básica con sinónimos
-- Cache system
-- Prompt optimizado (4.8 KB)
-- **NUEVO:** NIVEL 1.5 - Amplificación automática (1-9 resultados)
-- **NUEVO:** NIVEL 2 - Búsqueda en related_jobs (0 resultados)
-- **NUEVO:** Enriquecimiento completo con related_jobs correctos
+- Nearby cities (distancias reales, automático)
+- Búsqueda básica con sinónimos multi-idioma
+- Cache system (Vercel KV + cron job)
+- Prompt optimizado con nivel_2_nearby
+- **NIVEL 1.5:** Amplificación automática (1-9 resultados)
+- **NIVEL 2:** Búsqueda en related_jobs (0 resultados)
+- **NIVEL 2 + NEARBY:** Combina puestos relacionados + ciudades cercanas ⭐
+- Enriquecimiento completo con related_jobs correctos
+- **3 DIMENSIONES:** Búsqueda inteligente que combina:
+  1. Puestos relacionados (Sommelier → Bartender)
+  2. Ubicaciones cercanas (Sitges → Barcelona 34km)
+  3. Automático en 1 llamada (UX optimizada)
 
 ❌ **Lo que falta (nice to have):**
 - NIVEL 4-5: Regional/Nacional (casos edge muy raros)
 - checkCacheStatus / refreshJobs manual (reemplazado por cron job automático)
 - Fecha de publicación en formato del assistant
 
-**Estado:** ✅ **FUNCIONALIDAD CRÍTICA COMPLETA**
-El sistema ahora cumple con todos los requisitos P0 de la especificación original.
+**Estado:** ✅✅ **FUNCIONALIDAD CRÍTICA + AVANZADA COMPLETA**
+
+El sistema ahora cumple con:
+- ✅ Todos los requisitos P0 (críticos)
+- ✅ Búsqueda multi-dimensional (puestos + ubicaciones)
+- ✅ Todos los bugs corregidos y testeados en producción

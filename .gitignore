@@ -25,4 +25,28 @@ yarn-error.log*
 
 # Vercel
 .vercel
-# data/city_distances_full.json - AHORA NECESARIO para NIVEL 0.5
+
+# Archivos grandes que no deben subirse a GitHub
+data/city_distances_full.json
+
+# Archivos de test y debug con potenciales secrets
+test-*.js
+check-*.js
+debug-*.js
+fix-*.js
+verify-*.js
+apply-*.js
+update-*.js
+implement-*.js
+upgrade-*.js
+rollback-*.js
+search-*.js
+swap-*.js
+expand-*.js
+find-*.js
+compare-*.js
+inspect-*.js
+show-*.js
+analyze-*.md
+*.backup
+*.before-*

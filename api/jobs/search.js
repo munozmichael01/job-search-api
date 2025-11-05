@@ -752,6 +752,15 @@ export default async function handler(req, res) {
 
     // DEBUG: Verificar variables antes de NIVEL 1.5
     console.log(`🐛 DEBUG antes de NIVEL 1.5: query="${query}" location="${location}" totalMatches=${totalMatches} startOffset=${startOffset} relatedJobsResults=${relatedJobsResults}`);
+    console.log(`🐛 Evaluando condiciones NIVEL 1.5:`);
+    console.log(`   - query: ${!!query} (${query})`);
+    console.log(`   - location: ${!!location} (${location})`);
+    console.log(`   - totalMatches > 0: ${totalMatches > 0} (${totalMatches})`);
+    console.log(`   - totalMatches < 10: ${totalMatches < 10} (${totalMatches})`);
+    console.log(`   - startOffset === 0: ${startOffset === 0} (${startOffset})`);
+    console.log(`   - !relatedJobsResults: ${!relatedJobsResults} (${relatedJobsResults})`);
+    const shouldActivate = query && location && totalMatches > 0 && totalMatches < 10 && startOffset === 0 && !relatedJobsResults;
+    console.log(`   - RESULTADO: ${shouldActivate}`);
 
     // NIVEL 1.5: Si hay pocos resultados (<10), ampliar con MISMO puesto en ciudades cercanas
     if (query && location && totalMatches > 0 && totalMatches < 10 && startOffset === 0 && !relatedJobsResults) {

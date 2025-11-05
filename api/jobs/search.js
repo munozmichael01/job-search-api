@@ -388,8 +388,9 @@ export default async function handler(req, res) {
         const queryNormalized = normalizeText(query);
         const locationNormalized = normalizeText(location);
 
-        // Verificar si la ciudad está en la lista de ciudades válidas del cache
-        const validCities = cacheData.metadata.valid_cities || [];
+        // Construir lista de ciudades válidas desde las ofertas (no desde metadata)
+        const validCities = [...new Set(cacheData.offers.map(offer => normalizeText(offer.ciudad || offer.city || '')).filter(c => c))];
+        console.log(`   ✅ Construidas ${validCities.length} ciudades válidas desde ofertas en caché`);
 
         // Buscar match exacto o parcial en valid_cities
         const cityInValidList = validCities.find(city =>
@@ -747,8 +748,10 @@ export default async function handler(req, res) {
 
         const queryNormalized = normalizeText(query);
         const locationNormalized = normalizeText(location);
+        console.log(`   🔍 Buscando "${locationNormalized}" en dynamicCityDistances (${Object.keys(dynamicCityDistances).length} ciudades)...`);
         // Intentar match parcial para el mapa dinámico
         let nearbyCitiesData = dynamicCityDistances[locationNormalized] || [];
+        console.log(`   ${nearbyCitiesData.length > 0 ? '✅' : '❌'} Match exacto en dynamicCityDistances: ${nearbyCitiesData.length} ciudades cercanas`);
 
         // Si no hay match exacto, buscar match parcial en el mapa dinámico
         if (nearbyCitiesData.length === 0) {

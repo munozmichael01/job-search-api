@@ -549,7 +549,10 @@ export default async function handler(req, res) {
           } // Cierre de if (cityResult)
         } // Cierre de if (validCities.includes)
       } catch (error) {
-        console.error('⚠️  Error en NIVEL 0.5:', error.message);
+        const debugErrorInfo = `⚠️  Error en NIVEL 0.5: ${error.message}`;
+        console.error(debugErrorInfo);
+        if (debugMode) debugLogs.push(debugErrorInfo);
+        if (debugMode) debugLogs.push(`Stack: ${error.stack}`);
       }
     } // Cierre de if (NIVEL 0.5)
 

@@ -403,19 +403,36 @@ export default async function handler(req, res) {
         if (debugMode) debugLogs.push(debugInfo2);
 
         if (!cityInValidList) {
-          console.log(`   ℹ️  "${location}" no está en lista de ciudades válidas (${validCities.length} ciudades), saltando NIVEL 0.5`);
+          const debugInfo3 = `   ℹ️  "${location}" no está en lista de ciudades válidas (${validCities.length} ciudades), saltando NIVEL 0.5`;
+          console.log(debugInfo3);
+          if (debugMode) debugLogs.push(debugInfo3);
         } else {
           if (cityInValidList !== locationNormalized) {
-            console.log(`   ✅ Match parcial en valid_cities: "${location}" → "${cityInValidList}"`);
+            const debugInfo4 = `   ✅ Match parcial en valid_cities: "${location}" → "${cityInValidList}"`;
+            console.log(debugInfo4);
+            if (debugMode) debugLogs.push(debugInfo4);
           }
-          console.log(`   ✅ "${location}" está en lista de ciudades válidas`);
+          const debugInfo5 = `   ✅ "${location}" está en lista de ciudades válidas`;
+          console.log(debugInfo5);
+          if (debugMode) debugLogs.push(debugInfo5);
 
           // Cargar city_distances.json para obtener ciudades cercanas
+          const debugInfo6 = `   🔍 Cargando city_distances_full.json...`;
+          console.log(debugInfo6);
+          if (debugMode) debugLogs.push(debugInfo6);
+
           const cityDistancesFull = loadCityDistancesFull();
+
+          const debugInfo7 = `   🔍 Buscando "${location}" en city_distances...`;
+          console.log(debugInfo7);
+          if (debugMode) debugLogs.push(debugInfo7);
+
           const cityResult = findCityInDistances(location, cityDistancesFull);
 
           if (!cityResult) {
-            console.log(`   ℹ️  "${location}" no tiene distancias en city_distances.json, saltando NIVEL 0.5`);
+            const debugInfo8 = `   ℹ️  "${location}" no tiene distancias en city_distances.json, saltando NIVEL 0.5`;
+            console.log(debugInfo8);
+            if (debugMode) debugLogs.push(debugInfo8);
           } else {
             const matchedCityName = cityResult.matchedName;
             if (normalizeText(matchedCityName) !== locationNormalized) {

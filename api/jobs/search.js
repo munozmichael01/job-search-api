@@ -234,6 +234,12 @@ export default async function handler(req, res) {
     if (!dynamicCityDistances || true) {
       console.log('🌍 Construyendo mapa dinámico de ciudades cercanas...');
       dynamicCityDistances = buildDynamicCityDistances(cacheData.offers);
+      // DEBUG: Verificar si tarragona está en el mapa
+      if (dynamicCityDistances['tarragona']) {
+        console.log(`✅ "tarragona" en mapa con ${dynamicCityDistances['tarragona'].length} ciudades cercanas`);
+      } else {
+        console.log(`❌ "tarragona" NO está en el mapa dinámico`);
+      }
     }
 
     if (cacheData.metadata.status === 'error') {

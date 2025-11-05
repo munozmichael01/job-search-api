@@ -11,7 +11,8 @@ let jobSynonyms = null;
 let cityDistances = null;
 let cityCoordinates = null;
 let cityDistancesFull = null; // city_distances.json (1,057 ciudades, ≤150km)
-let dynamicCityDistances = null; // Mapa dinámico basado en ofertas activas (v2: con Salou y Vila-seca)
+let dynamicCityDistances = null; // Mapa dinámico basado en ofertas activas
+const MAP_VERSION = 3; // v3: con Salou, Vila y Vila-seca
 
 function loadCityCoordinates() {
   if (!cityCoordinates) {
@@ -159,6 +160,11 @@ function buildDynamicCityDistances(offers) {
       }
     });
 
+    // Log específico para Tarragona
+    if (normalizeText(city1) === 'tarragona') {
+      console.log(`🔍 DEBUG: Tarragona encontró ${nearbyCities.length} ciudades cercanas:`, nearbyCities.map(c => `${c.city} (${c.distance}km)`));
+    }
+
     // Solo añadir si: tiene ofertas O tiene ciudades cercanas con ofertas
     if (nearbyCities.length > 0 || citiesWithOffers.has(normalizeText(city1))) {
       // Ordenar por distancia
@@ -230,9 +236,9 @@ export default async function handler(req, res) {
     }
 
     // Construir mapa dinámico de ciudades cercanas
-    // Forzar reconstrucción con nuevas coordenadas de Salou y Vila-seca
-    if (!dynamicCityDistances) {
-      console.log('🌍 Construyendo mapa dinámico de ciudades cercanas (v2: con Salou y Vila-seca)...');
+    // TEMP: Forzar reconstrucción SIEMPRE para debug
+    if (!dynamicCityDistances || true) {
+      console.log('🌍 Construyendo mapa dinámico de ciudades cercanas (TEMP: forzado para debug)...');
       dynamicCityDistances = buildDynamicCityDistances(cacheData.offers);
       console.log(`✅ Mapa construido con ${Object.keys(dynamicCityDistances).length} ciudades`);
 
@@ -759,6 +765,9 @@ export default async function handler(req, res) {
         const locationNormalized = normalizeText(location);
 
         // Intentar match en el mapa dinámico
+        console.log(`   🔍 DEBUG: Buscando "${locationNormalized}" en mapa con ${Object.keys(dynamicCityDistances).length} entradas`);
+        console.log(`   🔍 DEBUG: Tarragona en mapa: ${dynamicCityDistances['tarragona'] ? `SÍ (${dynamicCityDistances['tarragona'].length} ciudades)` : 'NO'}`);
+
         let nearbyCitiesData = dynamicCityDistances[locationNormalized] || [];
         console.log(`   Buscando en ${nearbyCitiesData.length} ciudades cercanas a "${location}"...`);
 

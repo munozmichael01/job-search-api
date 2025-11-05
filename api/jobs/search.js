@@ -11,7 +11,7 @@ let jobSynonyms = null;
 let cityDistances = null;
 let cityCoordinates = null;
 let cityDistancesFull = null; // city_distances.json (1,057 ciudades, ≤150km)
-let dynamicCityDistances = null; // Mapa dinámico basado en ofertas activas
+let dynamicCityDistances = null; // Mapa dinámico basado en ofertas activas (v2: con Salou y Vila-seca)
 
 function loadCityCoordinates() {
   if (!cityCoordinates) {
@@ -229,10 +229,17 @@ export default async function handler(req, res) {
       });
     }
 
-    // Construir mapa dinámico de ciudades cercanas si no existe
+    // Construir mapa dinámico de ciudades cercanas
+    // Forzar reconstrucción con nuevas coordenadas de Salou y Vila-seca
     if (!dynamicCityDistances) {
-      console.log('🌍 Construyendo mapa dinámico de ciudades cercanas...');
+      console.log('🌍 Construyendo mapa dinámico de ciudades cercanas (v2: con Salou y Vila-seca)...');
       dynamicCityDistances = buildDynamicCityDistances(cacheData.offers);
+      console.log(`✅ Mapa construido con ${Object.keys(dynamicCityDistances).length} ciudades`);
+
+      // Verificar que Tarragona esté en el mapa
+      if (dynamicCityDistances['tarragona']) {
+        console.log(`✅ Tarragona tiene ${dynamicCityDistances['tarragona'].length} ciudades cercanas`);
+      }
     }
 
     if (cacheData.metadata.status === 'error') {

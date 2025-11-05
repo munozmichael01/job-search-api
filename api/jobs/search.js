@@ -132,20 +132,22 @@ function buildDynamicCityDistances(offers) {
     if (city) citiesWithOffers.add(city);
   });
 
-  console.log(`🌍 Construyendo mapa dinámico para ${citiesWithOffers.size} ciudades con ofertas`);
+  console.log(`🌍 Construyendo mapa dinámico: ${citiesWithOffers.size} ciudades con ofertas, ${Object.keys(coords).length} ciudades totales`);
 
-  // Para cada ciudad con ofertas, encontrar ciudades cercanas (también con ofertas)
-  citiesWithOffers.forEach(city1 => {
-    const cityResult = findCityInCoordinates(city1, coords);
-    if (!cityResult) return; // Skip si no tiene coordenadas
-    const coords1 = cityResult.coords;
+  // Para CADA ciudad (tenga o no ofertas), buscar ciudades CON ofertas ≤50km
+  Object.keys(coords).forEach(city1 => {
+    const coords1 = coords[city1];
+    if (!coords1) return; // Skip si no tiene coordenadas
 
     const nearbyCities = [];
-    citiesWithOffers.forEach(city2 => {
-      if (city1 === city2) return; // Skip misma ciudad
 
-      const coords2 = coords[city2];
-      if (!coords2) return; // Skip si no tiene coordenadas
+    // Buscar ciudades CON ofertas que estén ≤50km
+    citiesWithOffers.forEach(city2 => {
+      if (normalizeText(city1) === city2) return; // Skip misma ciudad
+
+      const cityResult = findCityInCoordinates(city2, coords);
+      if (!cityResult) return; // Skip si no tiene coordenadas
+      const coords2 = cityResult.coords;
 
       const distance = calculateDistance(
         coords1.lat, coords1.lon,
@@ -157,13 +159,16 @@ function buildDynamicCityDistances(offers) {
       }
     });
 
-    // Ordenar por distancia
-    nearbyCities.sort((a, b) => a.distance - b.distance);
-    cityMap[city1] = nearbyCities;
+    // Solo añadir si: tiene ofertas O tiene ciudades cercanas con ofertas
+    if (nearbyCities.length > 0 || citiesWithOffers.has(normalizeText(city1))) {
+      // Ordenar por distancia
+      nearbyCities.sort((a, b) => a.distance - b.distance);
+      cityMap[normalizeText(city1)] = nearbyCities;
+    }
   });
 
   const totalPairs = Object.values(cityMap).reduce((sum, arr) => sum + arr.length, 0);
-  console.log(`✅ Mapa dinámico construido: ${Object.keys(cityMap).length} ciudades, ${totalPairs} conexiones`);
+  console.log(`✅ Mapa dinámico construido: ${Object.keys(cityMap).length} ciudades en mapa, ${totalPairs} conexiones`);
 
   return cityMap;
 }

@@ -790,6 +790,10 @@ export default async function handler(req, res) {
 
     // NIVEL 1.5: Si hay pocos resultados (<10), ampliar con MISMO puesto en ciudades cercanas
     if (shouldActivate) {
+      const debugN15_ENTER = `🎯 ¡ENTRAMOS AL IF DE NIVEL 1.5!`;
+      console.log(debugN15_ENTER);
+      if (debugMode) debugLogs.push(debugN15_ENTER);
+
       try {
         console.log(`🔍 NIVEL 1.5: Solo ${totalMatches} resultados, ampliando con ciudades cercanas...`);
 

@@ -238,10 +238,12 @@ export default async function handler(req, res) {
       });
     }
 
-    const { query = '', location = '', category = '', limit = '10', offset = '0', related_offset = '0', include_enriched = 'false' } = req.query;
+    const { query = '', location = '', category = '', limit = '10', offset = '0', related_offset = '0', include_enriched = 'false', debug = 'false' } = req.query;
     const maxResults = parseInt(limit) || 10;
     const startOffset = parseInt(offset) || 0;
     const relatedOffset = parseInt(related_offset) || 0;
+    const debugMode = debug === 'true';
+    const debugLogs = [];
 
     const synonyms = loadSynonyms();
     const normalizedQuery = normalizeText(query);
@@ -374,7 +376,9 @@ export default async function handler(req, res) {
     let amplificationUsed = null;
 
     // DEBUG: Verificar variables antes de NIVEL 0.5
-    console.log(`🐛 DEBUG antes de NIVEL 0.5: query="${query}" location="${location}" totalMatches=${totalMatches} startOffset=${startOffset} relatedJobsResults=${relatedJobsResults}`);
+    const debugInfo1 = `🐛 DEBUG antes de NIVEL 0.5: query="${query}" location="${location}" totalMatches=${totalMatches} startOffset=${startOffset} relatedJobsResults=${relatedJobsResults}`;
+    console.log(debugInfo1);
+    if (debugMode) debugLogs.push(debugInfo1);
 
     // NIVEL 0.5: Si NO hay resultados, buscar MISMO puesto en ciudades cercanas
     if (query && location && totalMatches === 0 && startOffset === 0 && !relatedJobsResults) {
@@ -394,7 +398,9 @@ export default async function handler(req, res) {
           locationNormalized.includes(city) // "sant cugat" está contenido en búsqueda
         );
 
-        console.log(`🐛 DEBUG: valid_cities.length = ${validCities.length}, cityInValidList = "${cityInValidList}"`);
+        const debugInfo2 = `🐛 DEBUG: valid_cities.length = ${validCities.length}, cityInValidList = "${cityInValidList}"`;
+        console.log(debugInfo2);
+        if (debugMode) debugLogs.push(debugInfo2);
 
         if (!cityInValidList) {
           console.log(`   ℹ️  "${location}" no está en lista de ciudades válidas (${validCities.length} ciudades), saltando NIVEL 0.5`);
@@ -993,6 +999,7 @@ export default async function handler(req, res) {
         // - cities_with_offers (3 bytes) - no usado
         // Ahorro: ~15.9 KB por request
       },
+      ...(debugMode && { debug_logs: debugLogs }),
       pagination: {
         total_matches: totalMatches,
         returned_results: cleanResults.length,

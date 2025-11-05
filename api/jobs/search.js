@@ -373,6 +373,9 @@ export default async function handler(req, res) {
     let relatedJobsResults = null;
     let amplificationUsed = null;
 
+    // DEBUG: Verificar variables antes de NIVEL 0.5
+    console.log(`🐛 DEBUG antes de NIVEL 0.5: query="${query}" location="${location}" totalMatches=${totalMatches} startOffset=${startOffset} relatedJobsResults=${relatedJobsResults}`);
+
     // NIVEL 0.5: Si NO hay resultados, buscar MISMO puesto en ciudades cercanas
     if (query && location && totalMatches === 0 && startOffset === 0 && !relatedJobsResults) {
       try {
@@ -390,6 +393,8 @@ export default async function handler(req, res) {
           city.includes(locationNormalized) || // "sant cugat del valles" incluye "sant cugat"
           locationNormalized.includes(city) // "sant cugat" está contenido en búsqueda
         );
+
+        console.log(`🐛 DEBUG: valid_cities.length = ${validCities.length}, cityInValidList = "${cityInValidList}"`);
 
         if (!cityInValidList) {
           console.log(`   ℹ️  "${location}" no está en lista de ciudades válidas (${validCities.length} ciudades), saltando NIVEL 0.5`);
@@ -689,6 +694,9 @@ export default async function handler(req, res) {
         console.error('⚠️  Error en NIVEL 2:', error.message);
       }
     }
+
+    // DEBUG: Verificar variables antes de NIVEL 1.5
+    console.log(`🐛 DEBUG antes de NIVEL 1.5: query="${query}" location="${location}" totalMatches=${totalMatches} startOffset=${startOffset} relatedJobsResults=${relatedJobsResults}`);
 
     // NIVEL 1.5: Si hay pocos resultados (<10), ampliar con MISMO puesto en ciudades cercanas
     if (query && location && totalMatches > 0 && totalMatches < 10 && startOffset === 0 && !relatedJobsResults) {

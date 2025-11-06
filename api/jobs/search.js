@@ -895,7 +895,9 @@ export default async function handler(req, res) {
         if (debugMode) debugLogs.push(msg5);
 
         if (currentTotal < 10) {
-          console.log(`🔄 NIVEL 1.5 no alcanzó 10 resultados (${currentTotal}), activando fallback a NIVEL 2...`);
+          const msg6 = `🔄 NIVEL 1.5 no alcanzó 10 resultados (${currentTotal}), activando fallback a NIVEL 2...`;
+          console.log(msg6);
+          if (debugMode) debugLogs.push(msg6);
 
           const offersWithRelatedJobs = [];
 

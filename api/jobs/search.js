@@ -930,10 +930,17 @@ export default async function handler(req, res) {
             }
           });
 
-          console.log(`   Encontradas ${offersWithRelatedJobs.length} ofertas relacionadas en "${location}"`);
+          const msg7 = `   📊 Ofertas relacionadas en "${location}": ${offersWithRelatedJobs.length}. Total ahora: ${currentTotal + offersWithRelatedJobs.length}`;
+          console.log(msg7);
+          if (debugMode) debugLogs.push(msg7);
 
           // Si aún no llega a 10, buscar en ciudades cercanas (NIVEL 2 NEARBY)
-          if ((currentTotal + offersWithRelatedJobs.length) < 10 && nearbyCitiesData && nearbyCitiesData.length > 0) {
+          const shouldActivateNivel2Nearby = (currentTotal + offersWithRelatedJobs.length) < 10 && nearbyCitiesData && nearbyCitiesData.length > 0;
+          const msg8 = `   🔍 NIVEL 2 NEARBY: currentTotal+related=${currentTotal + offersWithRelatedJobs.length}, nearbyCities=${nearbyCitiesData?.length || 0}, activar: ${shouldActivateNivel2Nearby}`;
+          console.log(msg8);
+          if (debugMode) debugLogs.push(msg8);
+
+          if (shouldActivateNivel2Nearby) {
             console.log(`   Buscando trabajos relacionados en ciudades cercanas...`);
 
             const nearbyCitiesWithin50km = nearbyCitiesData.filter(c => c.distance && c.distance <= 50);

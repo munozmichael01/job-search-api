@@ -834,6 +834,10 @@ export default async function handler(req, res) {
             });
           });
 
+          const msg4 = `   🔍 Encontradas ${offersInNearbyCities.length} ofertas después de buscar en ${nearbyCitiesData.slice(0, 10).length} ciudades`;
+          console.log(msg4);
+          if (debugMode) debugLogs.push(msg4);
+
           if (offersInNearbyCities.length > 0) {
             // PAGINACIÓN para NIVEL 1.5
             const totalNearbyMatches = offersInNearbyCities.length;

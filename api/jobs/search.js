@@ -1025,7 +1025,9 @@ export default async function handler(req, res) {
         }
 
       } catch (error) {
-        console.error('⚠️  Error en NIVEL 1.5:', error.message);
+        const errorMsg = `⚠️  Error en NIVEL 1.5: ${error.message}`;
+        console.error(errorMsg);
+        if (debugMode) debugLogs.push(errorMsg);
       }
     }
 

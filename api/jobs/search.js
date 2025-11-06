@@ -767,7 +767,9 @@ export default async function handler(req, res) {
       if (debugMode) debugLogs.push(debugEntro);
 
       try {
-        console.log(`🔍 NIVEL 1.5: Solo ${totalMatches} resultados, ampliando con ciudades cercanas...`);
+        const msg1 = `🔍 NIVEL 1.5: Solo ${totalMatches} resultados, ampliando con ciudades cercanas...`;
+        console.log(msg1);
+        if (debugMode) debugLogs.push(msg1);
 
         const queryNormalized = normalizeText(query);
         const locationNormalized = normalizeText(location);

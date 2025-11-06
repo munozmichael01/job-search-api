@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit:*)",
+      "Bash(git log:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(node debug-niveles-no-activan.js:*)",
+      "Bash(node debug-niveles-no-activan.cjs:*)",
+      "Bash(vercel logs:*)",
+      "Bash(vercel ls:*)",
+      "Bash(git add:*)",
+      "Bash(git push)",
+      "Bash(curl:*)",
+      "Bash(node debug-tarragona.cjs:*)",
+      "Bash(node:*)",
+      "Bash(cat:*)",
+      "Bash(vercel:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,83 @@
+CAMBIO 1 - Línea 104-113 (initWidget - carga de threadId con TTL):
+
+ANTES:
+  // Inicializar widget
+  function initWidget() {
+    const widget = document.getElementById('turijobs-widget');
+    const openBtn = document.getElementById('turijobs-open-btn');
+
+    let isOpen = false;
+    let threadId = localStorage.getItem('turijobs_thread_id');
+    let messages = [];
+    let isLoading = false;
+    let isCreatingThread = false;
+
+DESPUÉS:
+  // Inicializar widget
+  function initWidget() {
+    const widget = document.getElementById('turijobs-widget');
+    const openBtn = document.getElementById('turijobs-open-btn');
+
+    let isOpen = false;
+
+    // TTL: 4 horas (14400000 ms)
+    const TTL = 4 * 60 * 60 * 1000;
+    let threadId = null;
+
+    // Cargar threadId con verificación de TTL
+    const threadData = localStorage.getItem('turijobs_thread_data');
+    if (threadData) {
+      try {
+        const parsed = JSON.parse(threadData);
+        const age = Date.now() - parsed.timestamp;
+
+        if (age < TTL) {
+          threadId = parsed.threadId;
+          console.log(`[Turijobs] Thread loaded (${Math.round(age / 1000 / 60)} min old)`);
+        } else {
+          console.log(`[Turijobs] Thread expired (${Math.round(age / 1000 / 60 / 60)} hours old), will create new`);
+          localStorage.removeItem('turijobs_thread_data');
+          localStorage.removeItem('turijobs_thread_id');
+        }
+      } catch (e) {
+        console.error('[Turijobs] Error parsing thread data:', e);
+        localStorage.removeItem('turijobs_thread_data');
+        localStorage.removeItem('turijobs_thread_id');
+      }
+    }
+
+    let messages = [];
+    let isLoading = false;
+    let isCreatingThread = false;
+
+===================================
+
+CAMBIO 2 - Línea 252-254 (createThread - guardar threadId con timestamp):
+
+ANTES:
+        if (data.success) {
+          threadId = data.thread_id;
+          localStorage.setItem('turijobs_thread_id', threadId);
+
+DESPUÉS:
+        if (data.success) {
+          threadId = data.thread_id;
+          localStorage.setItem('turijobs_thread_data', JSON.stringify({
+            threadId: threadId,
+            timestamp: Date.now()
+          }));
+
+===================================
+
+CAMBIO 3 - Línea 407-409 (resetChat - limpiar ambos localStorage):
+
+ANTES:
+    function resetChat() {
+      localStorage.removeItem('turijobs_thread_id');
+      threadId = null;
+
+DESPUÉS:
+    function resetChat() {
+      localStorage.removeItem('turijobs_thread_data');
+      localStorage.removeItem('turijobs_thread_id');
+      threadId = null;

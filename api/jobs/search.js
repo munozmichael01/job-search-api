@@ -762,6 +762,10 @@ export default async function handler(req, res) {
     if (debugMode) debugLogs.push(debugInfoNivel15);
 
     if (query && location && totalMatches > 0 && totalMatches < 10 && startOffset === 0 && !relatedJobsResults) {
+      const debugEntro = `✅ ENTRANDO a NIVEL 1.5`;
+      console.log(debugEntro);
+      if (debugMode) debugLogs.push(debugEntro);
+
       try {
         console.log(`🔍 NIVEL 1.5: Solo ${totalMatches} resultados, ampliando con ciudades cercanas...`);
 

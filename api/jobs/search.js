@@ -941,14 +941,24 @@ export default async function handler(req, res) {
           if (debugMode) debugLogs.push(msg8);
 
           if (shouldActivateNivel2Nearby) {
-            console.log(`   Buscando trabajos relacionados en ciudades cercanas...`);
+            const msg9 = `   🔍 NIVEL 2 NEARBY activado - buscando trabajos relacionados en ciudades cercanas...`;
+            console.log(msg9);
+            if (debugMode) debugLogs.push(msg9);
 
             const nearbyCitiesWithin50km = nearbyCitiesData.filter(c => c.distance && c.distance <= 50);
+
+            const msg10 = `   📍 Ciudades cercanas ≤50km: ${nearbyCitiesWithin50km.map(c => c.city).join(', ')}`;
+            console.log(msg10);
+            if (debugMode) debugLogs.push(msg10);
 
             const offersInNearbyCities = cacheData.offers.filter(job => {
               const city = normalizeText(job.ciudad || job.city || '');
               return nearbyCitiesWithin50km.some(nc => normalizeText(nc.city).includes(city) || city.includes(normalizeText(nc.city)));
             });
+
+            const msg11 = `   📦 Ofertas en ciudades cercanas: ${offersInNearbyCities.length}`;
+            console.log(msg11);
+            if (debugMode) debugLogs.push(msg11);
 
             offersInNearbyCities.forEach(job => {
               if (job.enriched && job.enriched.related_jobs) {

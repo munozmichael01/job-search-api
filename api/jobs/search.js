@@ -960,7 +960,11 @@ export default async function handler(req, res) {
             console.log(msg11);
             if (debugMode) debugLogs.push(msg11);
 
+            let offersWithEnriched = 0;
+            let matchedOffers = 0;
+
             offersInNearbyCities.forEach(job => {
+              if (job.enriched && job.enriched.related_jobs) offersWithEnriched++;
               if (job.enriched && job.enriched.related_jobs) {
                 const matchingRelatedJob = job.enriched.related_jobs.find(rel => {
                   const relNormalized = normalizeText(rel.job);
@@ -968,6 +972,7 @@ export default async function handler(req, res) {
                 });
 
                 if (matchingRelatedJob) {
+                  matchedOffers++;
                   const alreadyIncluded = results.some(r => (r.id || r.guid) === (job.id || job.guid));
                   const alreadyInNearby = relatedJobsResults && relatedJobsResults.some(r => (r.id || r.guid) === (job.id || job.guid));
                   const alreadyAdded = offersWithRelatedJobs.some(o => (o.offer.id || o.offer.guid) === (job.id || job.guid));
@@ -989,6 +994,10 @@ export default async function handler(req, res) {
                 }
               }
             });
+
+            const msg12 = `   📊 NIVEL 2 NEARBY stats: ${offersWithEnriched}/${offersInNearbyCities.length} con related_jobs, ${matchedOffers} matchean con "${query}", ${offersWithRelatedJobs.length} agregadas después de filtros`;
+            console.log(msg12);
+            if (debugMode) debugLogs.push(msg12);
           }
 
           if (offersWithRelatedJobs.length > 0) {

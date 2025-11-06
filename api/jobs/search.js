@@ -775,11 +775,14 @@ export default async function handler(req, res) {
         const locationNormalized = normalizeText(location);
 
         // Intentar match en el mapa dinámico
-        console.log(`   🔍 DEBUG: Buscando "${locationNormalized}" en mapa con ${Object.keys(dynamicCityDistances).length} entradas`);
-        console.log(`   🔍 DEBUG: Tarragona en mapa: ${dynamicCityDistances['tarragona'] ? `SÍ (${dynamicCityDistances['tarragona'].length} ciudades)` : 'NO'}`);
+        const msg2 = `   🔍 Mapa dinámico: ${Object.keys(dynamicCityDistances).length} entradas. Tarragona: ${dynamicCityDistances['tarragona'] ? `SÍ (${dynamicCityDistances['tarragona'].length})` : 'NO'}`;
+        console.log(msg2);
+        if (debugMode) debugLogs.push(msg2);
 
         let nearbyCitiesData = dynamicCityDistances[locationNormalized] || [];
-        console.log(`   Buscando en ${nearbyCitiesData.length} ciudades cercanas a "${location}"...`);
+        const msg3 = `   📍 "${location}" tiene ${nearbyCitiesData.length} ciudades cercanas`;
+        console.log(msg3);
+        if (debugMode) debugLogs.push(msg3);
 
         // Si no hay match exacto, buscar match parcial en el mapa dinámico
         if (nearbyCitiesData.length === 0) {

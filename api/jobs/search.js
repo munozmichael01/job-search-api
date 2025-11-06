@@ -575,12 +575,10 @@ export default async function handler(req, res) {
           } else {
             console.log(`   ℹ️  No hay ciudades con ofertas dentro de 100km de "${location}"`);
           }
-          } // Cierre de if (cityResult)
-        } // Cierre de if (validCities.includes)
 
-        // FALLBACK: Si después de NIVEL 0.5 aún tenemos < 10 resultados, intentar NIVEL 2
-        const currentTotal = relatedJobsResults ? relatedJobsResults.length : 0;
-        if (currentTotal < 10 && location) {
+          // FALLBACK: Si después de NIVEL 0.5 aún tenemos < 10 resultados, intentar NIVEL 2
+          const currentTotal = relatedJobsResults ? relatedJobsResults.length : 0;
+          if (currentTotal < 10 && location) {
           console.log(`🔄 NIVEL 0.5 completó con ${currentTotal} resultados (< 10), activando fallback a NIVEL 2...`);
 
           const offersWithRelatedJobs = [];
@@ -727,6 +725,9 @@ export default async function handler(req, res) {
             console.log(`   ℹ️  No se encontraron trabajos relacionados para fallback`);
           }
         }
+
+          } // Cierre de if (cityResult)
+        } // Cierre de if (validCities.includes)
 
       } catch (error) {
         const debugErrorInfo = `⚠️  Error en NIVEL 0.5: ${error.message}`;

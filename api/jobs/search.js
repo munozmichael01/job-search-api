@@ -890,6 +890,10 @@ export default async function handler(req, res) {
 
         // FALLBACK: Si después de NIVEL 1.5 aún tenemos < 10 resultados, intentar NIVEL 2
         const currentTotal = totalMatches + (relatedJobsResults ? relatedJobsResults.length : 0);
+        const msg5 = `   🔢 currentTotal=${currentTotal}, activar NIVEL 2: ${currentTotal < 10}`;
+        console.log(msg5);
+        if (debugMode) debugLogs.push(msg5);
+
         if (currentTotal < 10) {
           console.log(`🔄 NIVEL 1.5 no alcanzó 10 resultados (${currentTotal}), activando fallback a NIVEL 2...`);
 

@@ -11,8 +11,7 @@ let jobSynonyms = null;
 let cityDistances = null;
 let cityCoordinates = null;
 let cityDistancesFull = null; // city_distances.json (1,057 ciudades, ≤150km)
-let dynamicCityDistances = null; // Mapa dinámico basado en ofertas activas
-const MAP_VERSION = 3; // v3: con Salou, Vila y Vila-seca
+let dynamicCityDistances = null; // Mapa dinámico basado en ofertas activas (v2: con Salou y Vila-seca)
 
 function loadCityCoordinates() {
   if (!cityCoordinates) {
@@ -160,11 +159,6 @@ function buildDynamicCityDistances(offers) {
       }
     });
 
-    // Log específico para Tarragona
-    if (normalizeText(city1) === 'tarragona') {
-      console.log(`🔍 DEBUG: Tarragona encontró ${nearbyCities.length} ciudades cercanas:`, nearbyCities.map(c => `${c.city} (${c.distance}km)`));
-    }
-
     // Solo añadir si: tiene ofertas O tiene ciudades cercanas con ofertas
     if (nearbyCities.length > 0 || citiesWithOffers.has(normalizeText(city1))) {
       // Ordenar por distancia
@@ -236,9 +230,9 @@ export default async function handler(req, res) {
     }
 
     // Construir mapa dinámico de ciudades cercanas
-    // TEMP: Forzar reconstrucción SIEMPRE para debug
-    if (!dynamicCityDistances || true) {
-      console.log('🌍 Construyendo mapa dinámico de ciudades cercanas (TEMP: forzado para debug)...');
+    // Forzar reconstrucción con nuevas coordenadas de Salou y Vila-seca
+    if (!dynamicCityDistances) {
+      console.log('🌍 Construyendo mapa dinámico de ciudades cercanas (v2: con Salou y Vila-seca)...');
       dynamicCityDistances = buildDynamicCityDistances(cacheData.offers);
       console.log(`✅ Mapa construido con ${Object.keys(dynamicCityDistances).length} ciudades`);
 
@@ -757,32 +751,16 @@ export default async function handler(req, res) {
     }
 
     // NIVEL 1.5: Si hay pocos resultados (<10), ampliar con MISMO puesto en ciudades cercanas
-    const debugInfoNivel15 = `🐛 DEBUG antes de NIVEL 1.5: query="${query}" location="${location}" totalMatches=${totalMatches} startOffset=${startOffset} relatedJobsResults=${relatedJobsResults}`;
-    console.log(debugInfoNivel15);
-    if (debugMode) debugLogs.push(debugInfoNivel15);
-
     if (query && location && totalMatches > 0 && totalMatches < 10 && startOffset === 0 && !relatedJobsResults) {
-      const debugEntro = `✅ ENTRANDO a NIVEL 1.5`;
-      console.log(debugEntro);
-      if (debugMode) debugLogs.push(debugEntro);
-
       try {
-        const msg1 = `🔍 NIVEL 1.5: Solo ${totalMatches} resultados, ampliando con ciudades cercanas...`;
-        console.log(msg1);
-        if (debugMode) debugLogs.push(msg1);
+        console.log(`🔍 NIVEL 1.5: Solo ${totalMatches} resultados, ampliando con ciudades cercanas...`);
 
         const queryNormalized = normalizeText(query);
         const locationNormalized = normalizeText(location);
 
         // Intentar match en el mapa dinámico
-        const msg2 = `   🔍 Mapa dinámico: ${Object.keys(dynamicCityDistances).length} entradas. Tarragona: ${dynamicCityDistances['tarragona'] ? `SÍ (${dynamicCityDistances['tarragona'].length})` : 'NO'}`;
-        console.log(msg2);
-        if (debugMode) debugLogs.push(msg2);
-
         let nearbyCitiesData = dynamicCityDistances[locationNormalized] || [];
-        const msg3 = `   📍 "${location}" tiene ${nearbyCitiesData.length} ciudades cercanas`;
-        console.log(msg3);
-        if (debugMode) debugLogs.push(msg3);
+        console.log(`   Buscando en ${nearbyCitiesData.length} ciudades cercanas a "${location}"...`);
 
         // Si no hay match exacto, buscar match parcial en el mapa dinámico
         if (nearbyCitiesData.length === 0) {
@@ -833,10 +811,6 @@ export default async function handler(req, res) {
               });
             });
           });
-
-          const msg4 = `   🔍 Encontradas ${offersInNearbyCities.length} ofertas después de buscar en ${nearbyCitiesData.slice(0, 10).length} ciudades`;
-          console.log(msg4);
-          if (debugMode) debugLogs.push(msg4);
 
           if (offersInNearbyCities.length > 0) {
             // PAGINACIÓN para NIVEL 1.5
@@ -890,14 +864,8 @@ export default async function handler(req, res) {
 
         // FALLBACK: Si después de NIVEL 1.5 aún tenemos < 10 resultados, intentar NIVEL 2
         const currentTotal = totalMatches + (relatedJobsResults ? relatedJobsResults.length : 0);
-        const msg5 = `   🔢 currentTotal=${currentTotal}, activar NIVEL 2: ${currentTotal < 10}`;
-        console.log(msg5);
-        if (debugMode) debugLogs.push(msg5);
-
         if (currentTotal < 10) {
-          const msg6 = `🔄 NIVEL 1.5 no alcanzó 10 resultados (${currentTotal}), activando fallback a NIVEL 2...`;
-          console.log(msg6);
-          if (debugMode) debugLogs.push(msg6);
+          console.log(`🔄 NIVEL 1.5 no alcanzó 10 resultados (${currentTotal}), activando fallback a NIVEL 2...`);
 
           const offersWithRelatedJobs = [];
 
@@ -930,41 +898,20 @@ export default async function handler(req, res) {
             }
           });
 
-          const msg7 = `   📊 Ofertas relacionadas en "${location}": ${offersWithRelatedJobs.length}. Total ahora: ${currentTotal + offersWithRelatedJobs.length}`;
-          console.log(msg7);
-          if (debugMode) debugLogs.push(msg7);
+          console.log(`   Encontradas ${offersWithRelatedJobs.length} ofertas relacionadas en "${location}"`);
 
           // Si aún no llega a 10, buscar en ciudades cercanas (NIVEL 2 NEARBY)
-          const shouldActivateNivel2Nearby = (currentTotal + offersWithRelatedJobs.length) < 10 && nearbyCitiesData && nearbyCitiesData.length > 0;
-          const msg8 = `   🔍 NIVEL 2 NEARBY: currentTotal+related=${currentTotal + offersWithRelatedJobs.length}, nearbyCities=${nearbyCitiesData?.length || 0}, activar: ${shouldActivateNivel2Nearby}`;
-          console.log(msg8);
-          if (debugMode) debugLogs.push(msg8);
-
-          if (shouldActivateNivel2Nearby) {
-            const msg9 = `   🔍 NIVEL 2 NEARBY activado - buscando trabajos relacionados en ciudades cercanas...`;
-            console.log(msg9);
-            if (debugMode) debugLogs.push(msg9);
+          if ((currentTotal + offersWithRelatedJobs.length) < 10 && nearbyCitiesData && nearbyCitiesData.length > 0) {
+            console.log(`   Buscando trabajos relacionados en ciudades cercanas...`);
 
             const nearbyCitiesWithin50km = nearbyCitiesData.filter(c => c.distance && c.distance <= 50);
-
-            const msg10 = `   📍 Ciudades cercanas ≤50km: ${nearbyCitiesWithin50km.map(c => c.city).join(', ')}`;
-            console.log(msg10);
-            if (debugMode) debugLogs.push(msg10);
 
             const offersInNearbyCities = cacheData.offers.filter(job => {
               const city = normalizeText(job.ciudad || job.city || '');
               return nearbyCitiesWithin50km.some(nc => normalizeText(nc.city).includes(city) || city.includes(normalizeText(nc.city)));
             });
 
-            const msg11 = `   📦 Ofertas en ciudades cercanas: ${offersInNearbyCities.length}`;
-            console.log(msg11);
-            if (debugMode) debugLogs.push(msg11);
-
-            let offersWithEnriched = 0;
-            let matchedOffers = 0;
-
             offersInNearbyCities.forEach(job => {
-              if (job.enriched && job.enriched.related_jobs) offersWithEnriched++;
               if (job.enriched && job.enriched.related_jobs) {
                 const matchingRelatedJob = job.enriched.related_jobs.find(rel => {
                   const relNormalized = normalizeText(rel.job);
@@ -972,7 +919,6 @@ export default async function handler(req, res) {
                 });
 
                 if (matchingRelatedJob) {
-                  matchedOffers++;
                   const alreadyIncluded = results.some(r => (r.id || r.guid) === (job.id || job.guid));
                   const alreadyInNearby = relatedJobsResults && relatedJobsResults.some(r => (r.id || r.guid) === (job.id || job.guid));
                   const alreadyAdded = offersWithRelatedJobs.some(o => (o.offer.id || o.offer.guid) === (job.id || job.guid));
@@ -994,10 +940,6 @@ export default async function handler(req, res) {
                 }
               }
             });
-
-            const msg12 = `   📊 NIVEL 2 NEARBY stats: ${offersWithEnriched}/${offersInNearbyCities.length} con related_jobs, ${matchedOffers} matchean con "${query}", ${offersWithRelatedJobs.length} agregadas después de filtros`;
-            console.log(msg12);
-            if (debugMode) debugLogs.push(msg12);
           }
 
           if (offersWithRelatedJobs.length > 0) {
@@ -1066,9 +1008,7 @@ export default async function handler(req, res) {
         }
 
       } catch (error) {
-        const errorMsg = `⚠️  Error en NIVEL 1.5: ${error.message}`;
-        console.error(errorMsg);
-        if (debugMode) debugLogs.push(errorMsg);
+        console.error('⚠️  Error en NIVEL 1.5:', error.message);
       }
     }
 

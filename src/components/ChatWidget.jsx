@@ -9,7 +9,6 @@ export default function ChatWidget() {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [threadId, setThreadId] = useState(null);
-  const messagesEndRef = useRef(null);
   const lastMessageRef = useRef(null);
 
   useEffect(() => {
@@ -193,16 +192,15 @@ export default function ChatWidget() {
            content.includes('siguiente') ||
            content.includes('ver más') ||
            content.includes('ofertas adicionales') ||
-           content.includes('Hay ') && content.includes('ofertas adicionales disponibles');
+           (content.includes('Hay ') && content.includes('ofertas adicionales disponibles'));
   };
 
   // Función para renderizar líneas con URLs como links y formato Markdown
   const renderMessageLine = (line) => {
     // Si la línea contiene una URL, procesarla
     const urlRegex = /(https?:\/\/[^\s)]+)/g;
-    
+
     // Primero, procesar negritas (**texto**)
-    let processedLine = line;
     const boldRegex = /\*\*(.*?)\*\*/g;
     const boldParts = [];
     let lastIndex = 0;
@@ -247,9 +245,6 @@ export default function ChatWidget() {
       const urlParts = part.content.split(urlRegex);
       return urlParts.map((text, index) => {
         if (text.match(urlRegex)) {
-          // Limpiar URL de caracteres finales no deseados y parámetros viejos
-          let cleanUrl = text.replace(/[),;.!?]+$/, '');
-          
           // NO mostrar la URL como texto, solo como link clickeable
           return null;
         }

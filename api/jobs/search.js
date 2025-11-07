@@ -673,6 +673,10 @@ export default async function handler(req, res) {
               .slice(relatedOffset, relatedOffset + maxResults)
               .map(item => item.offer);
 
+            // Guardar el conteo de ofertas de NIVEL 0.5 antes de combinar
+            const nivel05Count = (relatedJobsResults && relatedJobsResults.length > 0) ? relatedJobsResults.length : 0;
+            const previousAmplification = amplificationUsed ? {...amplificationUsed} : null;
+
             // Combinar con resultados anteriores de NIVEL 0.5 si existen
             if (relatedJobsResults && relatedJobsResults.length > 0) {
               relatedJobsResults = [...relatedJobsResults, ...newRelatedResults];
@@ -695,30 +699,57 @@ export default async function handler(req, res) {
               mostCommonDistance = offersFromNearby.find(o => o.nearbyCity === mostCommonNearbyCity)?.distance;
             }
 
-            // Actualizar amplificationUsed
-            amplificationUsed = {
-              type: hasNearbyCities ? 'nivel_2_nearby' : 'nivel_2_fallback',
-              original_count: 0,
-              original_location: location,
-              related_job_used: offersWithRelatedJobs[0].relatedJobName,
-              weight: offersWithRelatedJobs[0].weight,
-              added_count: relatedJobsResults.length,
-              total_with_additions: relatedJobsResults.length,
-              nearby_pagination: {
-                total_matches: totalRelatedMatches,
-                returned_results: newRelatedResults.length,
-                offset: relatedOffset,
-                limit: maxResults,
-                has_more: relatedHasMore,
-                remaining: relatedRemaining,
-                next_offset: relatedHasMore ? relatedOffset + maxResults : null
-              },
-              ...(hasNearbyCities && {
-                nearby_city: mostCommonNearbyCity,
-                distance_km: mostCommonDistance
-              }),
-              fallback_from: 'nivel_0_5'
-            };
+            // Si había resultados de NIVEL 0.5, preservar esa info y agregar el fallback
+            if (previousAmplification && previousAmplification.type === 'nivel_0_5_nearby') {
+              amplificationUsed = {
+                ...previousAmplification,
+                // Actualizar el total con el fallback agregado
+                total_nearby_found: nivel05Count,
+                nearby_pagination: {
+                  ...previousAmplification.nearby_pagination,
+                  total_matches: relatedJobsResults.length, // Total combinado
+                  returned_results: relatedJobsResults.length,
+                  has_more: false, // Ya devolvimos todo
+                  remaining: 0
+                },
+                // Agregar info del fallback
+                fallback_applied: {
+                  type: hasNearbyCities ? 'nivel_2_nearby' : 'nivel_2_fallback',
+                  related_job_used: offersWithRelatedJobs[0].relatedJobName,
+                  weight: offersWithRelatedJobs[0].weight,
+                  added_count: newRelatedResults.length,
+                  ...(hasNearbyCities && {
+                    fallback_nearby_city: mostCommonNearbyCity,
+                    fallback_distance_km: mostCommonDistance
+                  })
+                }
+              };
+            } else {
+              // Si NO había NIVEL 0.5, usar el fallback como amplificación principal
+              amplificationUsed = {
+                type: hasNearbyCities ? 'nivel_2_nearby' : 'nivel_2_fallback',
+                original_count: 0,
+                original_location: location,
+                related_job_used: offersWithRelatedJobs[0].relatedJobName,
+                weight: offersWithRelatedJobs[0].weight,
+                added_count: relatedJobsResults.length,
+                total_with_additions: relatedJobsResults.length,
+                nearby_pagination: {
+                  total_matches: totalRelatedMatches,
+                  returned_results: newRelatedResults.length,
+                  offset: relatedOffset,
+                  limit: maxResults,
+                  has_more: relatedHasMore,
+                  remaining: relatedRemaining,
+                  next_offset: relatedHasMore ? relatedOffset + maxResults : null
+                },
+                ...(hasNearbyCities && {
+                  nearby_city: mostCommonNearbyCity,
+                  distance_km: mostCommonDistance
+                }),
+                fallback_from: 'nivel_0_5'
+              };
+            }
 
             console.log(`   ✅ Fallback desde NIVEL 0.5: Agregando ${newRelatedResults.length} ofertas relacionadas (total ahora: ${relatedJobsResults.length})`);
           } else {

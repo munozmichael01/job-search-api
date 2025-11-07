@@ -539,6 +539,9 @@ export default async function handler(req, res) {
               );
               const mostCommonDistance = offersInNearbyCities.find(o => o._nearbyCity === mostCommonCity)?._distance;
 
+              // Ordenar por distancia (ciudades más cercanas primero)
+              offersInNearbyCities.sort((a, b) => (a._distance || 0) - (b._distance || 0));
+
               // Aplicar paginación
               const totalNearbyMatches = offersInNearbyCities.length;
               const nearbyHasMore = relatedOffset + maxResults < totalNearbyMatches;
@@ -588,11 +591,145 @@ export default async function handler(req, res) {
       }
     } // Cierre de if (NIVEL 1+)
 
+    // DETECCIÓN DE TRABAJOS RELACIONADOS DISPONIBLES
+    // Si NIVEL 1 + NIVEL 1+ < 10, verificar si hay trabajos relacionados y devolver metadata para botón
+    let availableRelatedJobs = null;
+    const currentTotalResults = totalMatches + (relatedJobsResults ? relatedJobsResults.length : 0);
 
-    // NIVEL 2: Si NO hay resultados Y NIVEL 1+ no encontró nada, buscar en related_jobs
-    if (query && totalMatches === 0 && startOffset === 0 && !relatedJobsResults) {
+    if (query && location && currentTotalResults < 10 && !showRelated && startOffset === 0) {
       try {
-        console.log(`🔍 NIVEL 2: Búsqueda de "${query}" retornó 0 resultados, buscando related_jobs...`);
+        console.log(`🔍 Detectando trabajos relacionados disponibles (total actual: ${currentTotalResults})...`);
+
+        // Buscar trabajos relacionados en la ubicación original
+        const offersInSameCity = cacheData.offers.filter(job => {
+          const city = normalizeText(job.ciudad || job.city || '');
+          const region = normalizeText(job.region || '');
+          return city.includes(locationLower) || region.includes(locationLower);
+        });
+
+        const relatedJobsFound = [];
+        offersInSameCity.forEach(job => {
+          if (job.enriched && job.enriched.related_jobs) {
+            const matchingRelatedJob = job.enriched.related_jobs.find(rel => {
+              const relNormalized = normalizeText(rel.job);
+              return (relNormalized.includes(normalizedQuery) || queryTerms.some(term => relNormalized.includes(term))) && rel.weight > 0.80;
+            });
+
+            if (matchingRelatedJob) {
+              // Evitar duplicados con resultados ya mostrados
+              const alreadyInResults = results.some(r => (r.id || r.guid) === (job.id || job.guid));
+              const alreadyInNearby = relatedJobsResults && relatedJobsResults.some(r => (r.id || r.guid) === (job.id || job.guid));
+              const alreadyAdded = relatedJobsFound.some(item => (item.offer.id || item.offer.guid) === (job.id || job.guid));
+
+              if (!alreadyInResults && !alreadyInNearby && !alreadyAdded) {
+                relatedJobsFound.push({
+                  offer: job,
+                  relatedJobName: matchingRelatedJob.job,
+                  weight: matchingRelatedJob.weight
+                });
+              }
+            }
+          }
+        });
+
+        // Si encontramos trabajos relacionados, buscar también en ciudades cercanas para contar el total
+        if (relatedJobsFound.length > 0) {
+          const cityDistancesFull = loadCityDistancesFull();
+          const cityResult = findCityInDistances(location, cityDistancesFull);
+
+          if (cityResult) {
+            const nearbyCitiesWithin100km = cityResult.distances
+              .filter(c => c.distance <= 100)
+              .map(c => ({ city: normalizeText(c.city), distance: c.distance, originalName: c.city }));
+
+            nearbyCitiesWithin100km.forEach(nearbyCity => {
+              const offersInNearbyCity = cacheData.offers.filter(job => {
+                const city = normalizeText(job.ciudad || job.city || '');
+                return city.includes(nearbyCity.city) || nearbyCity.city.includes(city);
+              });
+
+              offersInNearbyCity.forEach(job => {
+                if (job.enriched && job.enriched.related_jobs) {
+                  const matchingRelatedJob = job.enriched.related_jobs.find(rel => {
+                    const relNormalized = normalizeText(rel.job);
+                    return (relNormalized.includes(normalizedQuery) || queryTerms.some(term => relNormalized.includes(term))) && rel.weight > 0.80;
+                  });
+
+                  if (matchingRelatedJob) {
+                    const alreadyInResults = results.some(r => (r.id || r.guid) === (job.id || job.guid));
+                    const alreadyInNearby = relatedJobsResults && relatedJobsResults.some(r => (r.id || r.guid) === (job.id || job.guid));
+                    const alreadyAdded = relatedJobsFound.some(item => (item.offer.id || item.offer.guid) === (job.id || job.guid));
+
+                    if (!alreadyInResults && !alreadyInNearby && !alreadyAdded) {
+                      relatedJobsFound.push({
+                        offer: job,
+                        relatedJobName: matchingRelatedJob.job,
+                        weight: matchingRelatedJob.weight,
+                        nearbyCity: nearbyCity.originalName,
+                        distance: nearbyCity.distance
+                      });
+                    }
+                  }
+                }
+              });
+            });
+          }
+        }
+
+        if (relatedJobsFound.length > 0) {
+          // Ordenar por distancia primero (más cercana primero), luego por weight
+          // Ofertas sin distancia (ciudad original) van primero
+          relatedJobsFound.sort((a, b) => {
+            const distA = a.distance || 0;
+            const distB = b.distance || 0;
+            if (distA !== distB) {
+              return distA - distB; // Menor distancia primero
+            }
+            return b.weight - a.weight; // Luego mayor weight
+          });
+          const mostCommonRelatedJob = relatedJobsFound[0].relatedJobName;
+
+          // Detectar si hay ofertas en ciudades cercanas
+          const hasNearbyCities = relatedJobsFound.some(item => item.nearbyCity);
+          let relatedLocation = location;
+          let relatedDistance = 0;
+
+          if (hasNearbyCities) {
+            const nearbyCityCount = {};
+            relatedJobsFound.filter(item => item.nearbyCity).forEach(item => {
+              nearbyCityCount[item.nearbyCity] = (nearbyCityCount[item.nearbyCity] || 0) + 1;
+            });
+            const mostCommonNearbyCity = Object.keys(nearbyCityCount).reduce((a, b) =>
+              nearbyCityCount[a] > nearbyCityCount[b] ? a : b
+            );
+            const nearbyCityItem = relatedJobsFound.find(item => item.nearbyCity === mostCommonNearbyCity);
+            relatedLocation = mostCommonNearbyCity;
+            relatedDistance = nearbyCityItem?.distance || 0;
+          }
+
+          availableRelatedJobs = {
+            count: relatedJobsFound.length,
+            job_name: mostCommonRelatedJob,
+            location: relatedLocation,
+            ...(relatedDistance > 0 && { distance_km: relatedDistance })
+          };
+
+          console.log(`   ✅ Encontrados ${relatedJobsFound.length} trabajos relacionados disponibles: ${mostCommonRelatedJob}`);
+        } else {
+          console.log(`   ℹ️  No hay trabajos relacionados disponibles`);
+        }
+      } catch (error) {
+        console.error(`⚠️  Error detectando trabajos relacionados: ${error.message}`);
+      }
+    }
+
+    // NIVEL 2: Buscar trabajos relacionados cuando:
+    // 1. No hay resultados y NIVEL 1+ no encontró nada (comportamiento anterior)
+    // 2. Usuario solicita explícitamente con show_related=true (nuevo comportamiento)
+    if (query && ((totalMatches === 0 && startOffset === 0 && !relatedJobsResults) || (showRelated && startOffset === 0))) {
+      try {
+        const reason = showRelated ? 'Usuario solicitó trabajos relacionados (show_related=true)' : `Búsqueda retornó 0 resultados`;
+        console.log(`🔍 NIVEL 2: ${reason}, buscando related_jobs...`);
 
         // Analizar las primeras 100 ofertas de la location (o todas si no hay location)
         const offersToAnalyze = cacheData.offers
@@ -647,18 +784,18 @@ export default async function handler(req, res) {
             console.log(`   NIVEL 2 no se activará - respetando intención del usuario`);
           }
 
-          // Analizar TODAS las ciudades dentro de 50km (no solo las primeras 5)
+          // Analizar TODAS las ciudades dentro de 100km (consistente con NIVEL 1+)
           // Barcelona puede estar en posición 31+ en cities pequeñas como Sitges
-          const nearbyCitiesWithin50km = nearbyCitiesData
-            .filter(c => c.distance && c.distance <= 50);
+          const nearbyCitiesWithin100km = nearbyCitiesData
+            .filter(c => c.distance && c.distance <= 100);
 
-          if (nearbyCitiesWithin50km.length > 0) {
-            console.log(`   Analizando ${nearbyCitiesWithin50km.length} ciudades cercanas...`);
+          if (nearbyCitiesWithin100km.length > 0) {
+            console.log(`   Analizando ${nearbyCitiesWithin100km.length} ciudades cercanas...`);
 
             // Buscar en ciudades cercanas
             const offersInNearbyCities = cacheData.offers.filter(job => {
               const city = normalizeText(job.ciudad || job.city || '');
-              return nearbyCitiesWithin50km.some(nc => normalizeText(nc.city).includes(city) || city.includes(normalizeText(nc.city)));
+              return nearbyCitiesWithin100km.some(nc => normalizeText(nc.city).includes(city) || city.includes(normalizeText(nc.city)));
             }).slice(0, 200);
 
             offersInNearbyCities.forEach(job => {
@@ -674,7 +811,7 @@ export default async function handler(req, res) {
                     relatedJobName: matchingRelatedJob.job,
                     weight: matchingRelatedJob.weight,
                     nearbyCity: job.ciudad || job.city,
-                    distance: nearbyCitiesWithin50km.find(nc =>
+                    distance: nearbyCitiesWithin100km.find(nc =>
                       normalizeText(nc.city).includes(normalizeText(job.ciudad || job.city)) ||
                       normalizeText(job.ciudad || job.city).includes(normalizeText(nc.city))
                     )?.distance || null
@@ -692,8 +829,16 @@ export default async function handler(req, res) {
         if (offersWithRelatedJobs.length > 0) {
           console.log(`   Encontradas ${offersWithRelatedJobs.length} ofertas que sugieren "${query}" como related_job`);
 
-          // Ordenar por weight de la relación
-          offersWithRelatedJobs.sort((a, b) => b.weight - a.weight);
+          // Ordenar por distancia primero (más cercana primero), luego por weight
+          // Ofertas sin distancia (ciudad original) van primero
+          offersWithRelatedJobs.sort((a, b) => {
+            const distA = a.distance || 0;
+            const distB = b.distance || 0;
+            if (distA !== distB) {
+              return distA - distB; // Menor distancia primero
+            }
+            return b.weight - a.weight; // Luego mayor weight
+          });
 
           // Aplicar paginación para related_jobs
           const totalRelatedMatches = offersWithRelatedJobs.length;
@@ -803,7 +948,8 @@ export default async function handler(req, res) {
       ...(cleanRelatedJobsResults && cleanRelatedJobsResults.length > 0 && {
         related_jobs_results: cleanRelatedJobsResults,
         amplification_used: amplificationUsed
-      })
+      }),
+      ...(availableRelatedJobs && { available_related_jobs: availableRelatedJobs })
     });
 
   } catch (error) {

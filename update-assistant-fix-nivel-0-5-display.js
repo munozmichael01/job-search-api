@@ -46,7 +46,7 @@ async function updateAssistant() {
   try {
     console.log('📝 Leyendo prompt actualizado...');
 
-    const promptPath = path.join(__dirname, 'assistant_prompt_with_nearby_v2.txt');
+    const promptPath = path.join(__dirname, 'assistant_prompt_new_architecture.txt');
     const instructions = fs.readFileSync(promptPath, 'utf-8');
 
     console.log(`📏 Tamaño del prompt: ${instructions.length} caracteres`);
@@ -67,9 +67,12 @@ async function updateAssistant() {
     console.log(`📝 Instrucciones: ${updatedAssistant.instructions.length} caracteres`);
 
     console.log('\n🎯 Cambios aplicados:');
-    console.log('  - Reforzadas instrucciones para NIVEL 0.5');
-    console.log('  - Instrucción explícita: Si related_jobs_results tiene 6, mostrar LAS 6');
-    console.log('  - NO omitir, NO resumir, NO seleccionar');
+    console.log('  - Nueva arquitectura: 4 niveles en lugar de 5');
+    console.log('  - NIVEL 1+ unificado (0-9 resultados, ≤100km)');
+    console.log('  - NIVEL 2 activado con show_related=true o auto si 0 resultados');
+    console.log('  - NIVEL 2 NEARBY automático (≤100km)');
+    console.log('  - Botón de trabajos relacionados con available_related_jobs');
+    console.log('  - Todos los resultados ordenados por distancia');
 
   } catch (error) {
     console.error('❌ Error actualizando asistente:', error);

@@ -401,87 +401,63 @@ export default async function handler(req, res) {
         const queryNormalized = normalizeText(query);
         const locationNormalized = normalizeText(location);
 
-        // Construir lista de ciudades válidas desde las ofertas (no desde metadata)
-        const validCities = [...new Set(cacheData.offers.map(offer => normalizeText(offer.ciudad || offer.city || '')).filter(c => c))];
-        console.log(`   ✅ Construidas ${validCities.length} ciudades válidas desde ofertas en caché`);
+        // Cargar city_distances.json directamente (no verificar validCities)
+        // Esto permite buscar en ciudades SIN ofertas pero con nearby cities CON ofertas
+        const debugInfo6 = `   🔍 Cargando city_distances_full.json...`;
+        console.log(debugInfo6);
+        if (debugMode) debugLogs.push(debugInfo6);
 
-        // Buscar match exacto o parcial en valid_cities
-        const cityInValidList = validCities.find(city =>
-          city === locationNormalized || // Match exacto
-          city.includes(locationNormalized) || // "sant cugat del valles" incluye "sant cugat"
-          locationNormalized.includes(city) // "sant cugat" está contenido en búsqueda
-        );
+        const cityDistancesFull = loadCityDistancesFull();
 
-        const debugInfo2 = `🐛 DEBUG: valid_cities.length = ${validCities.length}, cityInValidList = "${cityInValidList}"`;
-        console.log(debugInfo2);
-        if (debugMode) debugLogs.push(debugInfo2);
+        const debugInfo7 = `   🔍 Buscando "${location}" en city_distances...`;
+        console.log(debugInfo7);
+        if (debugMode) debugLogs.push(debugInfo7);
 
-        if (!cityInValidList) {
-          const debugInfo3 = `   ℹ️  "${location}" no está en lista de ciudades válidas (${validCities.length} ciudades), saltando NIVEL 1+`;
-          console.log(debugInfo3);
-          if (debugMode) debugLogs.push(debugInfo3);
+        const cityResult = findCityInDistances(location, cityDistancesFull);
+
+        const debugInfo9 = `   🔍 cityResult: ${cityResult ? JSON.stringify({ matchedName: cityResult.matchedName, distancesCount: cityResult.distances?.length }) : 'NULL'}`;
+        console.log(debugInfo9);
+        if (debugMode) debugLogs.push(debugInfo9);
+
+        if (!cityResult) {
+          const debugInfo8 = `   ℹ️  "${location}" no tiene distancias en city_distances.json, saltando NIVEL 1+`;
+          console.log(debugInfo8);
+          if (debugMode) debugLogs.push(debugInfo8);
         } else {
-          if (cityInValidList !== locationNormalized) {
-            const debugInfo4 = `   ✅ Match parcial en valid_cities: "${location}" → "${cityInValidList}"`;
-            console.log(debugInfo4);
-            if (debugMode) debugLogs.push(debugInfo4);
+          const debugInfo10 = `   ✅ Entrando al else block (cityResult existe)`;
+          console.log(debugInfo10);
+          if (debugMode) debugLogs.push(debugInfo10);
+
+          const matchedCityName = cityResult.matchedName;
+          if (normalizeText(matchedCityName) !== locationNormalized) {
+            console.log(`   ✅ Match parcial: "${location}" → "${matchedCityName}"`);
           }
-          const debugInfo5 = `   ✅ "${location}" está en lista de ciudades válidas`;
-          console.log(debugInfo5);
-          if (debugMode) debugLogs.push(debugInfo5);
 
-          // Cargar city_distances.json para obtener ciudades cercanas
-          const debugInfo6 = `   🔍 Cargando city_distances_full.json...`;
-          console.log(debugInfo6);
-          if (debugMode) debugLogs.push(debugInfo6);
+          const debugInfo11 = `   🔍 Filtrando ciudades cercanas...`;
+          console.log(debugInfo11);
+          if (debugMode) debugLogs.push(debugInfo11);
 
-          const cityDistancesFull = loadCityDistancesFull();
+          // Construir lista de ciudades válidas desde las ofertas (no desde metadata)
+          const validCities = [...new Set(cacheData.offers.map(offer => normalizeText(offer.ciudad || offer.city || '')).filter(c => c))];
+          console.log(`   ✅ Construidas ${validCities.length} ciudades válidas desde ofertas en caché`);
 
-          const debugInfo7 = `   🔍 Buscando "${location}" en city_distances...`;
-          console.log(debugInfo7);
-          if (debugMode) debugLogs.push(debugInfo7);
+          // Obtener ciudades cercanas ≤100km que tengan ofertas activas
+          const nearbyCitiesWithOffers = cityResult.distances
+            .filter(c => c.distance <= 100)
+            .map(c => ({
+              city: normalizeText(c.city),
+              distance: c.distance,
+              originalName: c.city
+            }))
+            // Filtrar solo ciudades que tienen ofertas activas (están en valid_cities)
+            .filter(c => validCities.includes(c.city));
 
-          const cityResult = findCityInDistances(location, cityDistancesFull);
+          const debugInfo12 = `   🔍 Ciudades cercanas con ofertas: ${nearbyCitiesWithOffers.length}`;
+          console.log(debugInfo12);
+          if (debugMode) debugLogs.push(debugInfo12);
 
-          const debugInfo9 = `   🔍 cityResult: ${cityResult ? JSON.stringify({ matchedName: cityResult.matchedName, distancesCount: cityResult.distances?.length }) : 'NULL'}`;
-          console.log(debugInfo9);
-          if (debugMode) debugLogs.push(debugInfo9);
-
-          if (!cityResult) {
-            const debugInfo8 = `   ℹ️  "${location}" no tiene distancias en city_distances.json, saltando NIVEL 1+`;
-            console.log(debugInfo8);
-            if (debugMode) debugLogs.push(debugInfo8);
-          } else {
-            const debugInfo10 = `   ✅ Entrando al else block (cityResult existe)`;
-            console.log(debugInfo10);
-            if (debugMode) debugLogs.push(debugInfo10);
-
-            const matchedCityName = cityResult.matchedName;
-            if (normalizeText(matchedCityName) !== locationNormalized) {
-              console.log(`   ✅ Match parcial: "${location}" → "${matchedCityName}"`);
-            }
-
-            const debugInfo11 = `   🔍 Filtrando ciudades cercanas...`;
-            console.log(debugInfo11);
-            if (debugMode) debugLogs.push(debugInfo11);
-
-            // Obtener ciudades cercanas ≤100km que tengan ofertas activas
-            const nearbyCitiesWithOffers = cityResult.distances
-              .filter(c => c.distance <= 100)
-              .map(c => ({
-                city: normalizeText(c.city),
-                distance: c.distance,
-                originalName: c.city
-              }))
-              // Filtrar solo ciudades que tienen ofertas activas (están en valid_cities)
-              .filter(c => validCities.includes(c.city));
-
-            const debugInfo12 = `   🔍 Ciudades cercanas con ofertas: ${nearbyCitiesWithOffers.length}`;
-            console.log(debugInfo12);
-            if (debugMode) debugLogs.push(debugInfo12);
-
-            // Ordenar ya están ordenadas por distancia en el archivo
-            nearbyCitiesWithOffers.sort((a, b) => a.distance - b.distance);
+          // Ordenar ya están ordenadas por distancia en el archivo
+          nearbyCitiesWithOffers.sort((a, b) => a.distance - b.distance);
 
           if (nearbyCitiesWithOffers.length > 0) {
             console.log(`   Encontradas ${nearbyCitiesWithOffers.length} ciudades cercanas con ofertas`);

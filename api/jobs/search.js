@@ -521,38 +521,38 @@ export default async function handler(req, res) {
               // NIVEL 1+: COMBINAR con resultados originales (si había alguno)
               const totalNearbyMatches = offersInNearbyCities.length;
 
-              // Calcular cuántos resultados ya tenemos de NIVEL 1
-              const nivel1Count = results.length;
-              const remainingSlots = maxResults - nivel1Count;
+              // Calcular cuántos resultados tenemos de NIVEL 1 (total, no solo página actual)
+              const nivel1Count = matchedIds.length;
 
-              // Agregar resultados de NIVEL 1+ a la lista principal (sin usar relatedJobsResults)
-              const nearbyToAdd = offersInNearbyCities
-                .slice(startOffset, startOffset + remainingSlots)
-                .map(offer => {
-                  const { _nearbyCity, _distance, ...cleanOffer } = offer;
-                  return cleanOffer;
-                });
+              // Crear lista COMPLETA combinada: locales + cercanos
+              const allLocalOffers = matchedIds.map(id => cacheData.offers.find(job => (job.id || job.guid) === id)).filter(job => job !== undefined);
+              const cleanNearbyOffers = offersInNearbyCities.map(offer => {
+                const { _nearbyCity, _distance, ...cleanOffer } = offer;
+                return cleanOffer;
+              });
+              const allCombinedOffers = allLocalOffers.concat(cleanNearbyOffers);
 
-              results = results.concat(nearbyToAdd);
+              // Aplicar paginación a la lista combinada completa
+              results = allCombinedOffers.slice(startOffset, startOffset + maxResults);
 
               // ✅ ACTUALIZAR variables globales con valores combinados
               const combinedTotal = nivel1Count + totalNearbyMatches;
-              totalMatches = combinedTotal; // Actualizar totalMatches global
-              hasMore = startOffset + maxResults < combinedTotal; // Actualizar hasMore global
-              remainingResults = hasMore ? combinedTotal - (startOffset + maxResults) : 0; // Actualizar remainingResults
+              totalMatches = combinedTotal; // Total combinado
+              hasMore = startOffset + maxResults < combinedTotal; // Calcular hasMore basado en total combinado
+              remainingResults = hasMore ? combinedTotal - (startOffset + maxResults) : 0; // Calcular remaining
 
               amplificationUsed = {
                 type: 'nivel_1_nearby',
                 original_query: query,
                 original_location: location,
                 original_count: nivel1Count,
-                nearby_count: nearbyToAdd.length,
+                nearby_count: totalNearbyMatches,
                 nearby_city: mostCommonCity,
                 distance_km: mostCommonDistance,
                 total_nearby_found: totalNearbyMatches
               };
 
-              console.log(`   ✅ NIVEL 1+: Combinados ${nivel1Count} locales + ${nearbyToAdd.length} de ${mostCommonCity} (${mostCommonDistance}km). Total: ${results.length}/${totalMatches}`);
+              console.log(`   ✅ NIVEL 1+: Combinados ${nivel1Count} locales + ${totalNearbyMatches} cercanos. Página: ${results.length} (offset ${startOffset}). Total: ${totalMatches}`);
             } else {
               console.log(`   ℹ️  No se encontraron ofertas de "${query}" en ciudades cercanas`);
             }

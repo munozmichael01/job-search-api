@@ -401,15 +401,15 @@ export default async function handler(req, res) {
         const queryNormalized = normalizeText(query);
         const locationNormalized = normalizeText(location);
 
-        // Cargar city_distances.json directamente (no verificar validCities)
+        // Usar mapa de distancias del caché (construido automáticamente por refresh.js)
         // Esto permite buscar en ciudades SIN ofertas pero con nearby cities CON ofertas
-        const debugInfo6 = `   🔍 Cargando city_distances_full.json...`;
+        const debugInfo6 = `   🔍 Usando mapa de distancias del caché...`;
         console.log(debugInfo6);
         if (debugMode) debugLogs.push(debugInfo6);
 
-        const cityDistancesFull = loadCityDistancesFull();
+        const cityDistancesFull = cacheData.city_distances || {};
 
-        const debugInfo7 = `   🔍 Buscando "${location}" en city_distances...`;
+        const debugInfo7 = `   🔍 Buscando "${location}" en city_distances (${Object.keys(cityDistancesFull).length} entradas)...`;
         console.log(debugInfo7);
         if (debugMode) debugLogs.push(debugInfo7);
 
@@ -613,7 +613,7 @@ export default async function handler(req, res) {
 
         // Si encontramos trabajos relacionados, buscar también en ciudades cercanas para contar el total
         if (relatedJobsFound.length > 0) {
-          const cityDistancesFull = loadCityDistancesFull();
+          const cityDistancesFull = cacheData.city_distances || {};
           const cityResult = findCityInDistances(location, cityDistancesFull);
 
           if (cityResult) {

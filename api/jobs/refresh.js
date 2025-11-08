@@ -162,10 +162,10 @@ export default async function handler(req, res) {
     console.log('✨ Enriqueciendo ofertas con datos inteligentes...');
     const enrichedJobs = enrichOffers(normalizedJobs);
 
-    // 🗺️  GENERAR LISTA DE CIUDADES VÁLIDAS (con ofertas + cercanas ≤50km)
-    console.log('🗺️  Generando lista de ciudades válidas para NIVEL 0.5...');
-    const cityDistancesFull = JSON.parse(
-      fs.readFileSync(path.join(__dirname, '../../data/city_distances.json'), 'utf-8')
+    // 🗺️  GENERAR MAPA DE CIUDADES CON DISTANCIAS (con ofertas + cercanas ≤100km)
+    console.log('🗺️  Construyendo mapa de ciudad distances para NIVEL 1+...');
+    const cityDistancesFullSource = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '../../data/city_distances_full.json'), 'utf-8')
     );
 
     // 1. Extraer ciudades únicas con ofertas
@@ -178,36 +178,43 @@ export default async function handler(req, res) {
 
     console.log(`   📍 ${citiesWithOffers.length} ciudades con ofertas activas`);
 
-    // 2. Para cada ciudad con ofertas, agregar ciudades cercanas ≤50km
-    const validCitiesSet = new Set();
+    // 2. Para cada ciudad con ofertas, construir su entrada en el mapa con ciudades cercanas ≤100km
+    const cityDistancesMap = {};
+    const allCitiesSet = new Set();
     let foundInDistancesFile = 0;
     let notFoundInDistancesFile = 0;
 
     citiesWithOffers.forEach(city => {
-      // Agregar la ciudad misma
-      validCitiesSet.add(normalizeText(city));
-
       // Buscar en city_distances_full.json (con match flexible)
-      const result = findCityInDistances(city, cityDistancesFull);
+      const result = findCityInDistances(city, cityDistancesFullSource);
 
       if (result) {
         foundInDistancesFile++;
 
-        // Agregar ciudades cercanas ≤50km
-        result.distances
-          .filter(c => c.distance <= 50)
-          .forEach(c => validCitiesSet.add(normalizeText(c.city)));
+        // Filtrar ciudades cercanas ≤100km
+        const nearbyCities = result.distances.filter(c => c.distance <= 100);
+
+        // Guardar en el mapa con el nombre matched
+        cityDistancesMap[result.matchedName] = nearbyCities;
+
+        // Agregar la ciudad con ofertas al set
+        allCitiesSet.add(normalizeText(city));
+
+        // Agregar TODAS las ciudades cercanas al set (incluso si no tienen ofertas)
+        // Esto permite que Viladecans (sin ofertas) encuentre Barcelona (con ofertas)
+        nearbyCities.forEach(c => allCitiesSet.add(normalizeText(c.city)));
       } else {
         notFoundInDistancesFile++;
         console.log(`   ⚠️  Ciudad no encontrada en city_distances_full.json: "${city}"`);
       }
     });
 
-    const validCitiesList = Array.from(validCitiesSet).sort();
+    const validCitiesList = Array.from(allCitiesSet).sort();
 
     console.log(`   ✅ ${foundInDistancesFile} ciudades encontradas en city_distances_full.json`);
     console.log(`   ⚠️  ${notFoundInDistancesFile} ciudades NO encontradas`);
-    console.log(`   ✅ ${validCitiesList.length} ciudades válidas totales (con ofertas + cercanas ≤50km)`);
+    console.log(`   ✅ ${Object.keys(cityDistancesMap).length} ciudades en el mapa de distancias`);
+    console.log(`   ✅ ${validCitiesList.length} ciudades válidas totales (con ofertas + cercanas ≤100km)`);
 
     // Reducir tamaño del JSON para caber en Vercel KV (10MB limit)
     // Eliminar descripcion que ocupa ~70% del tamaño y no se usa en búsquedas
@@ -225,9 +232,11 @@ export default async function handler(req, res) {
         status: 'success',
         feed_url: XML_FEED_URL,
         cities_with_offers: citiesWithOffers.length,
-        valid_cities: validCitiesList // Lista para NIVEL 0.5
+        valid_cities: validCitiesList, // Lista de todas las ciudades (con ofertas + cercanas)
+        city_distances_entries: Object.keys(cityDistancesMap).length
       },
-      offers: compactOffers
+      offers: compactOffers,
+      city_distances: cityDistancesMap // Mapa de distancias construido automáticamente
     };
 
     console.log(`📏 Tamaño estimado: ~${Math.round(JSON.stringify(cacheData).length / 1024 / 1024 * 10) / 10}MB`);

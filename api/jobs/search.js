@@ -542,37 +542,40 @@ export default async function handler(req, res) {
               // Ordenar por distancia (ciudades más cercanas primero)
               offersInNearbyCities.sort((a, b) => (a._distance || 0) - (b._distance || 0));
 
-              // Aplicar paginación
+              // NIVEL 1+: COMBINAR con resultados originales (si había alguno)
               const totalNearbyMatches = offersInNearbyCities.length;
-              const nearbyHasMore = relatedOffset + maxResults < totalNearbyMatches;
-              const nearbyRemaining = nearbyHasMore ? totalNearbyMatches - (relatedOffset + maxResults) : 0;
 
-              relatedJobsResults = offersInNearbyCities
-                .slice(relatedOffset, relatedOffset + maxResults)
+              // Calcular cuántos resultados ya tenemos de NIVEL 1
+              const nivel1Count = results.length;
+              const remainingSlots = maxResults - nivel1Count;
+
+              // Agregar resultados de NIVEL 1+ a la lista principal (sin usar relatedJobsResults)
+              const nearbyToAdd = offersInNearbyCities
+                .slice(startOffset, startOffset + remainingSlots)
                 .map(offer => {
                   const { _nearbyCity, _distance, ...cleanOffer } = offer;
                   return cleanOffer;
                 });
 
+              results = results.concat(nearbyToAdd);
+
+              // Actualizar totalMatches para reflejar combinación
+              const combinedTotal = nivel1Count + totalNearbyMatches;
+              const returnedResults = results.length;
+              const hasMore = startOffset + returnedResults < combinedTotal;
+
               amplificationUsed = {
                 type: 'nivel_1_nearby',
                 original_query: query,
                 original_location: location,
+                original_count: nivel1Count,
+                nearby_count: nearbyToAdd.length,
                 nearby_city: mostCommonCity,
                 distance_km: mostCommonDistance,
-                total_nearby_found: totalNearbyMatches,
-                nearby_pagination: {
-                  total_matches: totalNearbyMatches,
-                  returned_results: relatedJobsResults.length,
-                  offset: relatedOffset,
-                  limit: maxResults,
-                  has_more: nearbyHasMore,
-                  remaining: nearbyRemaining,
-                  next_offset: nearbyHasMore ? relatedOffset + maxResults : null
-                }
+                total_nearby_found: totalNearbyMatches
               };
 
-              console.log(`   ✅ NIVEL 1+: Retornando ${relatedJobsResults.length} ofertas de ${mostCommonCity} (${mostCommonDistance}km, offset=${relatedOffset}, has_more=${nearbyHasMore})`);
+              console.log(`   ✅ NIVEL 1+: Combinados ${nivel1Count} locales + ${nearbyToAdd.length} de ${mostCommonCity} (${mostCommonDistance}km). Total: ${returnedResults}`);
             } else {
               console.log(`   ℹ️  No se encontraron ofertas de "${query}" en ciudades cercanas`);
             }
@@ -594,7 +597,7 @@ export default async function handler(req, res) {
     // DETECCIÓN DE TRABAJOS RELACIONADOS DISPONIBLES
     // Si NIVEL 1 + NIVEL 1+ < 10, verificar si hay trabajos relacionados y devolver metadata para botón
     let availableRelatedJobs = null;
-    const currentTotalResults = totalMatches + (relatedJobsResults ? relatedJobsResults.length : 0);
+    const currentTotalResults = results.length; // Usar results.length porque NIVEL 1+ ya combinó los resultados
 
     if (query && location && currentTotalResults < 10 && !showRelated && startOffset === 0) {
       try {
@@ -946,9 +949,9 @@ export default async function handler(req, res) {
       results: cleanResults,
       ...(nearbyCities && nearbyCities.length > 0 && { nearby_cities: nearbyCities }),
       ...(cleanRelatedJobsResults && cleanRelatedJobsResults.length > 0 && {
-        related_jobs_results: cleanRelatedJobsResults,
-        amplification_used: amplificationUsed
+        related_jobs_results: cleanRelatedJobsResults
       }),
+      ...(amplificationUsed && { amplification_used: amplificationUsed }),
       ...(availableRelatedJobs && { available_related_jobs: availableRelatedJobs })
     });
 

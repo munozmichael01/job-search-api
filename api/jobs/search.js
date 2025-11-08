@@ -610,15 +610,15 @@ export default async function handler(req, res) {
           }
         });
 
-        // Si encontramos trabajos relacionados, buscar también en ciudades cercanas para contar el total
-        if (relatedJobsFound.length > 0) {
-          const cityDistancesFull = cacheData.city_distances || {};
-          const cityResult = findCityInDistances(location, cityDistancesFull);
+        // Buscar trabajos relacionados en ciudades cercanas (SIEMPRE, no solo si encontramos en la ciudad original)
+        // Esto permite detectar el botón de trabajos relacionados incluso si todas las ofertas actuales vienen de NIVEL 1+
+        const cityDistancesFull = cacheData.city_distances || {};
+        const cityResult = findCityInDistances(location, cityDistancesFull);
 
-          if (cityResult) {
-            const nearbyCitiesWithin100km = cityResult.distances
-              .filter(c => c.distance <= 100)
-              .map(c => ({ city: normalizeText(c.city), distance: c.distance, originalName: c.city }));
+        if (cityResult) {
+          const nearbyCitiesWithin100km = cityResult.distances
+            .filter(c => c.distance <= 100)
+            .map(c => ({ city: normalizeText(c.city), distance: c.distance, originalName: c.city }));
 
             nearbyCitiesWithin100km.forEach(nearbyCity => {
               const offersInNearbyCity = cacheData.offers.filter(job => {
@@ -652,7 +652,6 @@ export default async function handler(req, res) {
               });
             });
           }
-        }
 
         if (relatedJobsFound.length > 0) {
           // Ordenar por distancia primero (más cercana primero), luego por weight

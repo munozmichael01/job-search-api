@@ -165,7 +165,7 @@ export default async function handler(req, res) {
     // 🗺️  GENERAR MAPA DE CIUDADES CON DISTANCIAS (con ofertas + cercanas ≤100km)
     console.log('🗺️  Construyendo mapa de ciudad distances para NIVEL 1+...');
     const cityDistancesFullSource = JSON.parse(
-      fs.readFileSync(path.join(__dirname, '../../data/city_distances_full.json'), 'utf-8')
+      fs.readFileSync(path.join(__dirname, '../../data/city_distances.json'), 'utf-8')
     );
 
     // 1. Extraer ciudades únicas con ofertas
@@ -205,13 +205,13 @@ export default async function handler(req, res) {
         nearbyCities.forEach(c => allCitiesSet.add(normalizeText(c.city)));
       } else {
         notFoundInDistancesFile++;
-        console.log(`   ⚠️  Ciudad no encontrada en city_distances_full.json: "${city}"`);
+        console.log(`   ⚠️  Ciudad no encontrada en city_distances.json: "${city}"`);
       }
     });
 
     const validCitiesList = Array.from(allCitiesSet).sort();
 
-    console.log(`   ✅ ${foundInDistancesFile} ciudades encontradas en city_distances_full.json`);
+    console.log(`   ✅ ${foundInDistancesFile} ciudades encontradas en city_distances.json`);
     console.log(`   ⚠️  ${notFoundInDistancesFile} ciudades NO encontradas`);
     console.log(`   ✅ ${Object.keys(cityDistancesMap).length} ciudades en el mapa de distancias`);
     console.log(`   ✅ ${validCitiesList.length} ciudades válidas totales (con ofertas + cercanas ≤100km)`);

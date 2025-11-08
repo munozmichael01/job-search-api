@@ -559,9 +559,7 @@ export default async function handler(req, res) {
             console.log(`   ℹ️  No hay ciudades con ofertas dentro de 100km de "${location}"`);
           }
 
-          } // Cierre de if (cityResult)
-        } // Cierre de if (validCities.includes)
-
+        } // Cierre de else (cityResult existe)
       } catch (error) {
         const debugErrorInfo = `⚠️  Error en NIVEL 1+: ${error.message}`;
         console.error(debugErrorInfo);

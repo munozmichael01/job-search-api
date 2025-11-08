@@ -302,10 +302,10 @@ export default async function handler(req, res) {
       console.log(`⚡ Cache hit - ${matchedIds.length} resultados`);
     }
 
-    const totalMatches = matchedIds.length;
+    let totalMatches = matchedIds.length; // Cambiado a 'let' para poder actualizar en NIVEL 1+
     const paginatedIds = matchedIds.slice(startOffset, startOffset + maxResults);
 
-    const results = paginatedIds
+    let results = paginatedIds // Cambiado a 'let' para poder actualizar en NIVEL 1+
       .map(id => cacheData.offers.find(job => (job.id || job.guid) === id))
       .filter(job => job !== undefined);
 
@@ -313,8 +313,8 @@ export default async function handler(req, res) {
     const now = new Date();
     const ageMinutes = Math.round((now - lastUpdate) / (1000 * 60));
 
-    const hasMore = startOffset + maxResults < totalMatches;
-    const remainingResults = hasMore ? totalMatches - (startOffset + maxResults) : 0;
+    let hasMore = startOffset + maxResults < totalMatches; // Cambiado a 'let' para poder actualizar en NIVEL 1+
+    let remainingResults = hasMore ? totalMatches - (startOffset + maxResults) : 0; // Cambiado a 'let'
 
     // ENRIQUECIMIENTO: Nearby Cities (usa mapa dinámico)
     let nearbyCities = null;
@@ -535,10 +535,11 @@ export default async function handler(req, res) {
 
               results = results.concat(nearbyToAdd);
 
-              // Actualizar totalMatches para reflejar combinación
+              // ✅ ACTUALIZAR variables globales con valores combinados
               const combinedTotal = nivel1Count + totalNearbyMatches;
-              const returnedResults = results.length;
-              const hasMore = startOffset + returnedResults < combinedTotal;
+              totalMatches = combinedTotal; // Actualizar totalMatches global
+              hasMore = startOffset + maxResults < combinedTotal; // Actualizar hasMore global
+              remainingResults = hasMore ? combinedTotal - (startOffset + maxResults) : 0; // Actualizar remainingResults
 
               amplificationUsed = {
                 type: 'nivel_1_nearby',
@@ -551,7 +552,7 @@ export default async function handler(req, res) {
                 total_nearby_found: totalNearbyMatches
               };
 
-              console.log(`   ✅ NIVEL 1+: Combinados ${nivel1Count} locales + ${nearbyToAdd.length} de ${mostCommonCity} (${mostCommonDistance}km). Total: ${returnedResults}`);
+              console.log(`   ✅ NIVEL 1+: Combinados ${nivel1Count} locales + ${nearbyToAdd.length} de ${mostCommonCity} (${mostCommonDistance}km). Total: ${results.length}/${totalMatches}`);
             } else {
               console.log(`   ℹ️  No se encontraron ofertas de "${query}" en ciudades cercanas`);
             }
@@ -875,18 +876,13 @@ export default async function handler(req, res) {
       }
     }
 
-    // En NIVEL 1+ nearby, NO devolver ofertas originales en páginas siguientes
-    const finalResults = (amplificationUsed?.type === 'nivel_1_nearby' && relatedOffset > 0)
-      ? []
-      : results;
-
     // OPTIMIZACIÓN: Eliminar campo enriched de las ofertas antes de enviarlas
     // El campo enriched se usa en el backend para búsquedas, pero NO se necesita en el frontend/chat
     // Esto reduce el tamaño del JSON en ~20-30% (6.3 KB en ~32 KB response)
     // Para debugging, se puede agregar ?include_enriched=true en la query
     const includeEnrichedData = include_enriched === 'true';
 
-    const cleanResults = includeEnrichedData ? finalResults : finalResults.map(offer => {
+    const cleanResults = includeEnrichedData ? results : results.map(offer => {
       const { enriched, ...cleanOffer } = offer;
       return cleanOffer;
     });

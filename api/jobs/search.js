@@ -394,7 +394,7 @@ export default async function handler(req, res) {
     if (debugMode) debugLogs.push(debugInfo1);
 
     // NIVEL 1+: Si hay 0-9 resultados, buscar MISMO puesto en ciudades cercanas ≤100km
-    if (query && location && totalMatches < 10 && startOffset === 0 && !relatedJobsResults) {
+    if (query && location && totalMatches < 10 && !relatedJobsResults) {
       try {
         console.log(`🔍 NIVEL 1+: Solo ${totalMatches} resultados en "${location}", buscando MISMO puesto en ciudades cercanas...`);
 

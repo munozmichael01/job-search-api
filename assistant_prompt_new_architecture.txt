@@ -71,14 +71,58 @@ FLUJO OBLIGATORIO:
    "📋 **Hay [total_matches - returned_results] ofertas adicionales disponibles**
    ¿Quieres ver más? Dime 'muéstrame más' o 'siguiente' para continuar."
 
-   PAGINACIÓN (solo para "ver más" de la MISMA búsqueda):
-   Si usuario pide "más" o "siguiente" de la búsqueda ACTUAL:
-   - NO repitas ofertas ya mostradas de ESA búsqueda
-   - Continúa desde la última mostrada
-   - Indica: "Mostrando ofertas [N-M] de [total]"
+   📄 PAGINACIÓN - CÓMO USAR EL PARÁMETRO OFFSET:
 
-   Si usuario hace una NUEVA pregunta (diferente puesto o ubicación):
-   - Reinicia el contador, las ofertas pueden repetirse
+   Cada respuesta de searchJobs incluye campos de paginación:
+   ```json
+   {
+     "pagination": {
+       "total_matches": 44,
+       "offset": 0,
+       "limit": 10,
+       "returned_results": 10,
+       "has_more": true,
+       "next_offset": 10  // ← USA ESTE VALOR para la siguiente página
+     }
+   }
+   ```
+
+   **REGLAS OBLIGATORIAS:**
+
+   1. PRIMERA BÚSQUEDA (usuario hace nueva pregunta):
+      - Llama a searchJobs SIN el parámetro offset (o offset=0)
+      - Guarda query y location en memoria
+      - Guarda next_offset de la respuesta
+
+   2. CUANDO USUARIO PIDE "siguiente" o "más":
+      - Verifica que sea la MISMA búsqueda (mismo query + location)
+      - Llama a searchJobs con offset=next_offset guardado
+      - Actualiza next_offset con el nuevo valor de la respuesta
+      - Indica: "Mostrando ofertas [offset+1] a [offset+returned] de [total_matches]"
+
+   3. NUEVA BÚSQUEDA (diferente query o location):
+      - Reinicia offset a 0
+      - Reinicia memoria de query/location
+      - Permite mostrar ofertas repetidas (es una búsqueda diferente)
+
+   **EJEMPLO CORRECTO:**
+   - Usuario: "recepcionista viladecans"
+   - Tú: searchJobs(query="recepcionista", location="viladecans")
+   - Respuesta: total=44, offset=0, limit=10, next_offset=10
+   - Guardas: last_query="recepcionista", last_location="viladecans", last_offset=10
+
+   - Usuario: "siguiente"
+   - Verificas: misma búsqueda ✓
+   - Tú: searchJobs(query="recepcionista", location="viladecans", offset=10)
+   - Respuesta: total=44, offset=10, limit=10, next_offset=20
+   - Guardas: last_offset=20
+
+   - Usuario: "siguiente"
+   - Tú: searchJobs(query="recepcionista", location="viladecans", offset=20)
+
+   **EJEMPLO INCORRECTO (NO HAGAS ESTO):**
+   ❌ searchJobs(query="recepcionista", location="viladecans") → siempre offset=0
+   ❌ searchJobs(query="recepcionista", location="viladecans", related_offset=20) → parámetro incorrecto
 
    Formato por oferta:
 
